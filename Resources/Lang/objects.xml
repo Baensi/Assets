@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<data>
+	<lang name="ru">
+	
+		<object_dictionary>
+		
+			<item id="healthpotion_id_name">Зелье здоровья</item>
+			<item id="healthpotion_id_caption">Здоровье +50</item>
+			
+			<item id="manapotion_id_name">Зелье маны</item>
+			<item id="manapotion_id_caption">Мана +50</item>
+			
+			<item id="food_rawbread_name">Тесто</item>
+			<item id="food_rawbread_caption">Сырое тесто</item>
+			
+			<item id="food_rawbread_name">Хлеб</item>
+			<item id="food_rawbread_caption">Здоровье +1</item>
+			
+			<item id="food_rawbread_name">Окорок</item>
+			<item id="food_rawbread_caption">Сырой окорок</item>
+			
+			<item id="food_rawbread_name">Жареный окорок</item>
+			<item id="food_rawbread_caption">Здоровье +10</item>
+			
+			<item id="food_rawbread_name">Зелёное яблоко</item>
+			<item id="food_rawbread_caption">Здоровье +1</item>
+			
+			<item id="food_rawbread_name">Красное яблоко</item>
+			<item id="food_rawbread_caption">Здоровье +1</item>
+			
+			<item id="food_rawbread_name">Запечёное зелёное яблоко</item>
+			<item id="food_rawbread_caption">Здоровье +2</item>
+			
+			<item id="food_rawbread_name">Запечёное красное яблоко</item>
+			<item id="food_rawbread_caption">Здоровье +2</item>
+			
+		</object_dictionary>
+	
+	</lang>
+</data>
