@@ -29,11 +29,11 @@ namespace Engine.EGUI.Inventory {
 
 		public void show(){
 			visible = true;
-			GameConfig.Game.GameMode = GameConfig.Game.MODE_GUI;
+			GameConfig.GameMode = GameConfig.MODE_GUI;
 		}
 		public void hide(){
 			visible=false;
-			GameConfig.Game.GameMode = GameConfig.Game.MODE_GAME;
+			GameConfig.GameMode = GameConfig.MODE_GAME;
 		}
 		public bool isVisible(){
 			return visible;

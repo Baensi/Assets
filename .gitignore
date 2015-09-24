@@ -1,0 +1,29 @@
+# Compiled source #
+###################
+*.bat
+*.cmd
+*.com
+*.dll
+*.exe
+*.meta
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini

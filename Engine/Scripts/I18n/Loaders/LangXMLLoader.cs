@@ -7,8 +7,10 @@ namespace Engine.I18N {
 
 	public class LangXMLLoader : ILangLoader {
 
-		private static string itemName        = "item";
-		private static string itemIdAttribute = "id";
+		private static string LOCALIZATION_NAME      = "lang";
+		private static string LOCALIZATION_ATTRIBUTE = "name";
+		private static string ITEM_NAME              = "item";
+		private static string ITEM_ATTRIBUTE         = "id";
 
 		private string fileName;
 
@@ -16,25 +18,35 @@ namespace Engine.I18N {
 			this.fileName = fileName;
 		}
 
-		public void getData(ref SortedDictionary<string,string> data){
+		public void getData(ref SortedDictionary<string,string> data, ref List<string> localizations){
 			XmlTextReader reader = new XmlTextReader (fileName);
 
+			string currentLocal="ru";
 			string key;
 			string value;
 
 				reader.Read();
 
-					while (reader.Read()) {
-						if(reader.Name.Equals(itemName)){
-							key = reader.GetAttribute(itemIdAttribute);
-							value = reader.ReadElementString();
-							
-							if(key!=null)
-								data.Add(key,value);
-						}
+				while (reader.Read()) {
+
+					if (reader.Name.Equals(LOCALIZATION_NAME)) {
+						currentLocal = reader.GetAttribute(ITEM_ATTRIBUTE);
+
+						if (!localizations.Contains(currentLocal))
+							localizations.Add(currentLocal);
 					}
 
-				reader.Close ();
+					if(reader.Name.Equals(ITEM_NAME)){
+						key = reader.GetAttribute(ITEM_ATTRIBUTE);
+						value = reader.ReadElementString();
+						
+						if(key!=null)
+							data.Add(currentLocal+key, value);
+					}
+				}
+
+			reader.Close();
+			reader  = null;
 
 		}
 

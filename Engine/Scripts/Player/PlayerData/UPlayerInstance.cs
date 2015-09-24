@@ -18,11 +18,11 @@ namespace Engine.Player {
 
 			// Инициализация свойств персонажа
 		void Start() {
-			//level          = GetComponent<PlayerLevel>();
-			//states         = GetComponent<PlayerStates>();
-			//specifications = GetComponent<PlayerSpecifications>();
+			level          = GetComponent<PlayerLevel>();
+			states         = GetComponent<PlayerStates>();
+			specifications = GetComponent<PlayerSpecifications>();
 
-			//skills         = GetComponent<PlayerSkills>();
+			skills         = GetComponent<PlayerSkills>();
 		}
 
 		public PlayerStates getStates(){

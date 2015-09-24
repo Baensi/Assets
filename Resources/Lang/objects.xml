@@ -13,26 +13,26 @@
 			<item id="food_rawbread_name">Тесто</item>
 			<item id="food_rawbread_caption">Сырое тесто</item>
 			
-			<item id="food_rawbread_name">Хлеб</item>
-			<item id="food_rawbread_caption">Здоровье +1</item>
+			<item id="food_cookedbread_name">Хлеб</item>
+			<item id="food_cookedbread_caption">Здоровье +1</item>
 			
-			<item id="food_rawbread_name">Окорок</item>
-			<item id="food_rawbread_caption">Сырой окорок</item>
+			<item id="food_rawham_name">Окорок</item>
+			<item id="food_rawham_caption">Сырой окорок</item>
 			
-			<item id="food_rawbread_name">Жареный окорок</item>
-			<item id="food_rawbread_caption">Здоровье +10</item>
+			<item id="food_cookedham_name">Жареный окорок</item>
+			<item id="food_cookedham_caption">Здоровье +10</item>
 			
-			<item id="food_rawbread_name">Зелёное яблоко</item>
-			<item id="food_rawbread_caption">Здоровье +1</item>
+			<item id="food_applegreen_name">Зелёное яблоко</item>
+			<item id="food_applegreen_caption">Здоровье +1</item>
 			
-			<item id="food_rawbread_name">Красное яблоко</item>
-			<item id="food_rawbread_caption">Здоровье +1</item>
+			<item id="food_applered_name">Красное яблоко</item>
+			<item id="food_applered_caption">Здоровье +1</item>
 			
-			<item id="food_rawbread_name">Запечёное зелёное яблоко</item>
-			<item id="food_rawbread_caption">Здоровье +2</item>
+			<item id="food_appleyellow_name">Жёлтое яблоко</item>
+			<item id="food_appleyellow_caption">Здоровье +1</item>
 			
-			<item id="food_rawbread_name">Запечёное красное яблоко</item>
-			<item id="food_rawbread_caption">Здоровье +2</item>
+			<item id="food_cookedapple_name">Запечёное яблоко</item>
+			<item id="food_cookedapple_caption">Здоровье +2</item>
 			
 		</object_dictionary>
 	
