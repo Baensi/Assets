@@ -4,7 +4,6 @@ using UnityStandardAssets.CrossPlatformInput;
 
 namespace Engine.EGUI.Inventory {
 
-	[ExecuteInEditMode]
 	public class UInventory : MonoBehaviour, IInventory, IRendererGUI {
 
 		[SerializeField] public Texture2D selectCellImage;
@@ -12,7 +11,7 @@ namespace Engine.EGUI.Inventory {
 		[SerializeField] public Texture2D errorCellImage;
 
 		[SerializeField] public List<RectangleSlot> slots;
-		[SerializeField] public bool visible;
+		[SerializeField] public bool visible = false;
 		
 		public float     offsetX;
 		public float     offsetY;

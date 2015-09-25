@@ -12,8 +12,8 @@ namespace Engine {
 		public static int MODE_GAME = 0x00;
 		public static int MODE_GUI  = 0x01;
 
-		public static string       Localization = "ru";
-		public static int          GameMode = MODE_GAME;
+		public static string Localization = "ru";
+		public static int    GameMode     = MODE_GAME;
 
 		public static void Init() {
 			ConfigReader reader = new ConfigReader();

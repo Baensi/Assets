@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Engine.Objects {
 	
+	/// <summary>
+	/// Корзина
+	/// </summary>
 	public class Trash {
 	
 		public static Trash instance;
@@ -14,10 +17,17 @@ namespace Engine.Objects {
 				trashData = new List<GameObject>();
 			}
 		
+		/// <summary>
+		/// Помечает объект removeObject как удалённый и заносит в корзину
+		/// </summary>
+		/// <param name="removeObject">Объект который планируется удалить</param>
 		public void Add(GameObject removeObject){
 			trashData.Add(removeObject);
 		}
 		
+		/// <summary>
+		/// Удаление всех объектов в корзине и очистка корзины
+		/// </summary>
 		public void Clean(){
 			
 			if(trashData.Count<=0)

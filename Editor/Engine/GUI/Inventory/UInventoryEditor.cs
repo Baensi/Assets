@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Engine.EGUI.Inventory;
 
-namespace Engine.EGUI.Inventory {
+namespace Engine.EGUI.InventoryA {
 	
-
 	[CustomEditor(typeof(UInventory))]
 	public class UInventoryEditor : Editor {
 
@@ -17,7 +17,7 @@ namespace Engine.EGUI.Inventory {
 		private UInventory inventory;
 
 		void OnEnable() {
-			inventory = (UInventory)target;
+			inventory = target as UInventory;
 
 			window = (InventarWindow)EditorWindow.GetWindow(typeof(InventarWindow));
 			window.titleContent = new GUIContent("Инвентарь");

@@ -33,7 +33,7 @@ namespace Engine.I18N {
 		
 		public string get(string key){ // возвращаем слово из словаря
 			string result = "";
-				mapData.TryGetValue (GameConfig.getInstance().getData(GameConfig.CONFIG_CURRENT_LANGUAGE)+key, out result);
+				mapData.TryGetValue(GameConfig.Localization+key, out result);
 			return result;
 		}
 

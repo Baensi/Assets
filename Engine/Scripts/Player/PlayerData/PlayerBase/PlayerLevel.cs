@@ -4,22 +4,15 @@ using UnityEngine;
 namespace Engine.Player.Data {
 	
 	[Serializable]
-	public class PlayerLevel : MonoBehaviour {
+	public struct PlayerLevel {
 		
-		[SerializeField] public int level = 0;
+		public int level;
 		
-		[SerializeField] public int experience          = 0;
-		[SerializeField] public int experienceNextLevel = 50;
+			public int experience          ;
+			public int experienceNextLevel;
 		
-		[SerializeField] public int specificationsPoint = 0;
-		[SerializeField] public int skillsPoint         = 0;
-
-		//public void Setup(Camera camera) {
-			//CheckStatus(camera);
-
-			//C/amera = camera;
-			//originalFov = camera.fieldOfView;
-		//}
+		public int specificationsPoint;
+		public int skillsPoint;
 		
 	}
 	                     

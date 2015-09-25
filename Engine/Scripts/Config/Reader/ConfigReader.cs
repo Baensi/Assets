@@ -53,6 +53,8 @@ namespace Engine {
 			} catch (Exception e) {
 
 				Debug.LogError("Не удалось прочитать конфигурации! ["+configFile+"]");
+				foreach(object d in e.Data.Keys)
+					Debug.LogError(d.ToString()+": "+e.Data[d].ToString());
 
             }
 
@@ -82,6 +84,8 @@ namespace Engine {
 			} catch (Exception e) {
 
 				Debug.LogError("Не удалось создать конфигурации! ["+configFile+"]");
+				foreach (object d in e.Data.Keys)
+					Debug.LogError(d.ToString()+": "+e.Data[d].ToString());
 
 			}
 

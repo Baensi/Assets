@@ -6,7 +6,7 @@ namespace Engine.EGUI.Inventory {
 
 	public interface IItem {
 
-		ItemSize getSize();
+		ItemSize     getSize();
 		ItemPosition getPosition();
 
 		void setSize(ItemSize size);

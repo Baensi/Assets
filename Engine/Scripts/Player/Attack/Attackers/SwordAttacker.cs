@@ -3,7 +3,8 @@ using UnityEngine;
 using Engine.Player.Animations;
 
 namespace Engine.Player.Attack {
-	
+
+	[Serializable]
 	public class SwordAttacker : MonoBehaviour, IAttacker {
 		
 		private IAnimations actions;

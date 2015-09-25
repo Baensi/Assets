@@ -8,8 +8,8 @@ namespace Engine.Objects {
 	public interface IDynamicObject {
 
 		TextDisplayed getDisplayed();
-		IItem          getItem();
-		GameObject     toObject();
+		IItem         getItem();
+		GameObject    toObject();
 
 		int    getId();
 		string getName();

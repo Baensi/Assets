@@ -25,6 +25,13 @@ namespace Engine.Objects.Doors {
 
 		}
 
+		/// <summary>
+		/// Итерация приближения позиции
+		/// </summary>
+		/// <param name="v1">Откуда двигаться</param>
+		/// <param name="v2">Куда двигаться</param>
+		/// <param name="speed">Скорость движения</param>
+		/// <returns>Промежуточный вектор движения</returns>
 		private Vector3 iterationTo(Vector3 v1, Vector3 v2, float speed) {
 
 			return new Vector3( v1.x == v2.x ? v1.x : v1.x + (v1.x > v2.x ? -speed : speed),

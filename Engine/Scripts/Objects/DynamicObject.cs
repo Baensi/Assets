@@ -81,14 +81,19 @@ namespace Engine.Objects {
 			return id;
 		}
 
+		/// <summary>
+		/// Уничтожение этого экземпляра объекта
+		/// </summary>
+		/// <param name="presently">Если положительно (true), данный объект уничтожается сразу,
+		/// иначе, почемается как удалённый и очищается позже, в момент создания других объектов</param>
 		public void Destroy(bool presently = false) {
-			destroy = true;
-			objectsSelector.ResetSelected();
+			destroy = true; // помечаем объект как удалённый
+			objectsSelector.ResetSelected(); // сбрасываем выделение, чтобы исключить попытку доступа к удалённому объекту
 			
 			if(presently)
 				Destroy(this.gameObject);
 			else
-				Trash.getInstance().Add(this.gameObject);
+				Trash.getInstance().Add(this.gameObject); // добавляем этот экземпляр в корзину
 		}
 
 		public bool isDestroy() {

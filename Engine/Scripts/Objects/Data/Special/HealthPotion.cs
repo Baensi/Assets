@@ -27,7 +27,6 @@ namespace Engine.Objects.Special {
 		public bool onUse() {
 
 
-
 			base.Destroy(true);
 			return true;
 		}

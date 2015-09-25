@@ -6,13 +6,13 @@ using UnityEngine;
 namespace Engine.EGUI.Inventory {
 
 	[Serializable]
-	public class SlotSet : MonoBehaviour {
+	public struct SlotSet {
 
-		[SerializeField] public float OffsetX = 0f;
-		[SerializeField] public float OffsetY = 0f;
+		public float OffsetX;
+		public float OffsetY;
 
-		[SerializeField] public int CellsXCount = 0;
-		[SerializeField] public int CellsYCount = 0;
+		public int CellsXCount;
+		public int CellsYCount;
 
 		public float SlotWidth {
 			set { }

@@ -72,7 +72,8 @@ namespace Engine.Player.Movement {
 			// вызываем метод update из класса
 		void Update() {
 
-			if (GameConfig.GameMode != GameConfig.MODE_GAME) return;
+			if (GameConfig.GameMode != GameConfig.MODE_GAME)
+				return;
 
 			if (currentMovement!=null)
 				currentMovement.update();
@@ -81,7 +82,8 @@ namespace Engine.Player.Movement {
 			// вызываем метод fixUpdate из класса
 		void FixedUpdate() {
 
-			if (GameConfig.GameMode != GameConfig.MODE_GAME) return;
+			if (GameConfig.GameMode != GameConfig.MODE_GAME)
+				return;
 
 			if (currentMovement != null)
 				currentMovement.fixUpdate();

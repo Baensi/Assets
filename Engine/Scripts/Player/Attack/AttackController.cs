@@ -16,7 +16,8 @@ namespace Engine.Player.Attack {
 		private IAttacker swordAttacker; // атакер мечём
 		private IAttacker rangeAttacker; // атакер стрельбой
 		private IAttacker magicAttacker; // атакер магией
-		
+
+		private EAttacker currentAttackerType;
 		private IAttacker currentAttacker; // текущий атакер
 		
 		void Start(){
@@ -34,6 +35,7 @@ namespace Engine.Player.Attack {
 		}
 		
 		public void setAttacker(EAttacker attackerType){ // Меняем атакер по умолчанию
+			currentAttackerType=attackerType;
 			switch(attackerType){
 				case EAttacker.swordAttacker:
 					currentAttacker=swordAttacker;
@@ -45,6 +47,14 @@ namespace Engine.Player.Attack {
 					currentAttacker=magicAttacker;
 					break;
 			}
+		}
+
+		public EAttacker getCurrentAttackerType() {
+			return currentAttackerType;
+		}
+
+		public IAttacker getCurrentAttacker() {
+			return currentAttacker;
 		}
 		
 		public void startAttack(){ // посылаем команду атакеру "Атака"

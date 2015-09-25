@@ -4,6 +4,7 @@ using Engine.Player.Animations;
 
 namespace Engine.Player.Attack {
 	
+	[Serializable]
 	public class MagicAttacker : MonoBehaviour, IAttacker {
 		
 		private IAnimations actions;

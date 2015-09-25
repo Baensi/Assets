@@ -2,8 +2,6 @@
 using UnityEditor;
 using UnityEngine;
 
-
-
 namespace Engine.EGUI.Inventory {
 
 	public class InventarWindow : EditorWindow {

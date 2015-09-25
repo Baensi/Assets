@@ -6,19 +6,25 @@ using UnityEditor;
 namespace Engine.EGUI.Inventory {
 	
 	[Serializable]
-	public class RectangleSlot : MonoBehaviour {
+	public class RectangleSlot {
 
-		[SerializeField] public Texture2D Background = null;
-		[SerializeField] public List<IItem> Items = new List<IItem>();
-		[SerializeField] public Rect backgroundRect = new Rect(0, 0, 0, 0);
-		[SerializeField] public SlotSet position;
+		[SerializeField] public Texture2D   background;
+		[SerializeField] public List<IItem> Items;
+		[SerializeField] public SlotSet     position;
+
+		private Rect backgroundRect;
 
 		public void redraw(float x, float y){
 
-			if (Background==null) return;
+			if (background==null) return;
+
+			backgroundRect = new Rect(position.OffsetX + CellSettings.cellPaddingX,
+									  position.OffsetY + CellSettings.cellPaddingY,
+									  position.SlotWidth,
+									  position.SlotHeight);
 
 			Rect rect = new Rect(backgroundRect.x+x, backgroundRect.y+y, backgroundRect.width, backgroundRect.height);
-			GUI.DrawTexture(rect, Background);
+			GUI.DrawTexture(rect, background);
 
 				if(Items.Count>0)
 					foreach(IItem item in Items)
@@ -26,29 +32,6 @@ namespace Engine.EGUI.Inventory {
 					           		position.OffsetY+y);
 
 		}
-
-		void OnValidate() {
-
-			backgroundRect = new Rect(position.OffsetX + CellSettings.cellPaddingX,
-									  position.OffsetY + CellSettings.cellPaddingY,
-									  position.SlotWidth,
-									  position.SlotHeight);
-
-		}
-
-		public SlotSet Position {
-			private get {return position;}
-
-			set {
-				position = value;
-				backgroundRect = new Rect(position.OffsetX + CellSettings.cellPaddingX,
-										  position.OffsetY + CellSettings.cellPaddingY,
-										  position.SlotWidth,
-										  position.SlotHeight);
-			}
-
-		}
-
 
 	}
 
