@@ -10,16 +10,14 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class CookedGreenApple : DynamicObject, IUsedType {
+	public class CookedApple : DynamicObject, IUsedType {
 
-		private static Texture2D ICON = Resources.Load<Texture2D>("Objects/Food/cooked_green_apple_icon");
+		public CookedApple() : base(DObjectList.S_Cooked_Apple) {
 
-		public CookedGreenApple() : base(DObjectList.S_Cooked_Green_Apple) {
+			objectName    = "food_cookedapple_name";
+			objectCaption = "food_cookedapple_caption";
 
-			objectName    = "food_cookedgreenapple_name";
-			objectCaption = "food_cookedgreenapple_caption";
-
-			item = new Item(this, ICON, new ItemSize(1,1), 1);
+			item = DObjectList.Items.Food.CookedApple;
 
 		}
 

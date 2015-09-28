@@ -3,13 +3,13 @@ using System.Collections;
 
 namespace Engine.Objects.Doors {
 
-	public class RotationGameObjectAnimation : IGameObjectAnimation {
+	public class RotationGameObjectAnimator : IGameObjectAnimation {
 
 		private static IGameObjectAnimation instance;
 
 		public static IGameObjectAnimation getInstance(){
 			if(instance==null)
-				instance = new RotationGameObjectAnimation();
+				instance = new RotationGameObjectAnimator();
 			return instance;
 		}
 

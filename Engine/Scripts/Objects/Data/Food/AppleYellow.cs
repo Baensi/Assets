@@ -10,28 +10,28 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class RawFish : DynamicObject, ICookedType {
+	public class AppleYellow : DynamicObject, ICookedType, IUsedType {
 
-		private static string    COOKED     = "Objects/Food/cooked_fish";
-		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/raw_fish_cook");
-	
+		private static string    COOKED     = "Objects/Food/cooked_red_apple";
+		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/raw_red_apple_cook");
+
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
-		public RawFish() : base(DObjectList.S_Raw_Fish) {
+		public AppleYellow() : base(DObjectList.S_Apple_Yellow) {
 
-			objectName    = "food_rawfish_name";
-			objectCaption = "food_rawfish_caption";
+			objectName    = "food_applered_name";
+			objectCaption = "food_applered_caption";
 
-			item = DObjectList.Items.Food.RawFish;
+			item = DObjectList.Items.Food.AppleYellow;
 
 		}
 
 		void Start() {
 			base.OnStart();
 
-			cookTemplate = new ObjectCooked(this, COOK_SOUND, 10);
+			cookTemplate = new ObjectCooked(this, COOK_SOUND, 5);
 			zones        = new List<CookingZone>();
 		}
 
@@ -64,6 +64,13 @@ namespace Engine.Objects.Food {
 
 		void OnGUI() {
 
+		}
+		
+		public bool onUse(){
+			
+			
+			base.Destroy(true);
+			return true;
 		}
 
 		void Update() {

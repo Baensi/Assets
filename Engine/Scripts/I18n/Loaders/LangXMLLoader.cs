@@ -21,7 +21,7 @@ namespace Engine.I18N {
 		public void getData(ref SortedDictionary<string,string> data, ref List<string> localizations){
 			XmlTextReader reader = new XmlTextReader (fileName);
 
-			string currentLocal="ru";
+			string currentLocal=GameConfig.Localization;
 			string key;
 			string value;
 
@@ -30,18 +30,21 @@ namespace Engine.I18N {
 				while (reader.Read()) {
 
 					if (reader.Name.Equals(LOCALIZATION_NAME)) {
-						currentLocal = reader.GetAttribute(ITEM_ATTRIBUTE);
+						currentLocal = reader.GetAttribute(LOCALIZATION_ATTRIBUTE);
 
 						if (!localizations.Contains(currentLocal))
 							localizations.Add(currentLocal);
+
 					}
 
 					if(reader.Name.Equals(ITEM_NAME)){
+
 						key = reader.GetAttribute(ITEM_ATTRIBUTE);
 						value = reader.ReadElementString();
-						
-						if(key!=null)
+
+						if (key!=null) 
 							data.Add(currentLocal+key, value);
+
 					}
 				}
 

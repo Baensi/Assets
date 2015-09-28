@@ -3,14 +3,17 @@
 	<lang name="ru">
 
 		<dictionary>
+      
 			<item id="count">шт.</item>
-			<item id ="door_state_opened">Открыто</item>
-			<item id ="door_state_closed">Закрыто</item>
-			<item id ="door_state_locked">Закрыто на ключ</item>
 
-			<item id ="lever_state_state1">Выключен</item>
-			<item id ="lever_state_state2">Включен</item>
-			<item id ="lever_state_locked">Не поддаётся</item>
+			<item id="door_state_opened">Открыто</item>
+			<item id="door_state_closed">Закрыто</item>
+			<item id="door_state_locked">Закрыто на ключ</item>
+
+			<item id="lever_state_state1">Выключен</item>
+			<item id="lever_state_state2">Включен</item>
+			<item id="lever_state_locked">Не поддаётся</item>
+      
 		</dictionary>
 		
 	</lang>

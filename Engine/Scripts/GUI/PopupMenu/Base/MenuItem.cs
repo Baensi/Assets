@@ -37,18 +37,22 @@ namespace Engine.EGUI.PopupMenu {
 			
 			if(selected)
 				if(selectTransf<1f)
-					selectTransf+=0.05;
+					selectTransf+=0.05f;
 				else
 					selectTransf=1f;
 			else
 				if(selectTransf>0f)
-					selectTransf-=0.05;
+					selectTransf-=0.05f;
 				else
 					selectTransf=0f;
-			
-			
-			GUI.Label(...);
-			
+
+			Rect rect = new Rect(bounds);
+			rect.x+=offsetX;
+			rect.y+=offsetY;
+
+
+
+			GUI.Label(rect, getText());
 			
 		}
 		

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-using Engine.Player.Data;
+using Engine.Player;
 
 namespace Engine.Objects {
 	

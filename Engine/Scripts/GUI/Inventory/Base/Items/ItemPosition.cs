@@ -1,12 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Engine.Objects;
+using UnityEngine;
 
 namespace Engine.EGUI.Inventory {
 	
+	[Serializable]
 	public class ItemPosition {
 		
-		public int X;
-		public int Y;
+		[SerializeField] public int X;
+		[SerializeField] public int Y;
 
 		public ItemPosition(){
 

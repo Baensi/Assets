@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using Engine.Player.Data;
+using Engine.Player;
 
 namespace Engine.Player.Calculators {
 	
@@ -15,7 +15,7 @@ namespace Engine.Player.Calculators {
 		}
 		
 		public static int getSkillsPoint(int newLevel){
-			return 15;
+			return 2;
 		}
 		
 	}

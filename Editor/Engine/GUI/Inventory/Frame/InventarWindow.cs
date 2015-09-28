@@ -20,6 +20,8 @@ namespace Engine.EGUI.Inventory {
 			width  = this.position.width;
 			height = this.position.height;
 
+			
+
 		}
 
 		void OnGUI() {
@@ -27,7 +29,7 @@ namespace Engine.EGUI.Inventory {
 
 			if (this.position.width!=width || this.position.height!=height) {
 				width = this.position.width;
-				height = this.position.height;
+				height = this.position.height+200;
 				inventory.onResizeWindow(width, height); // изменяем размер окна
 			}
 

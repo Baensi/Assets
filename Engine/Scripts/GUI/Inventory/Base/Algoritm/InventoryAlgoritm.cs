@@ -76,28 +76,28 @@ namespace Engine.EGUI.Inventory {
 		/// </summary>
 		/// <param name="cellX"></param>
 		/// <param name="cellY"></param>
-		/// <returns>Если предмет не найден вернёт null</returns>
-		public IItem getItem(RectangleSlot slot, int cellX, int cellY) {
+		/// <returns>Если предмет не найден вернёт Item.NULL</returns>
+		public Item getItem(RectangleSlot slot, int cellX, int cellY) {
 
-			if (slots==null) return null;
+			if (slots==null) return Item.NULL;
 
-			foreach (IItem item in slot.Items) {
+			foreach (Item item in slot.Items) {
 
 				if ((item.getPosition().X == cellX && item.getPosition().Y == cellY)) // предмет лежит в этой ячейке
 					return item;
 
 				if (cellX>=item.getPosition().X
-					&& cellX<=item.getPosition().X+item.getSize().getWidth()
+					&& cellX<item.getPosition().X+item.getSize().getWidth()
 					&& cellY>=item.getPosition().Y
-					&& cellY<=item.getPosition().Y+item.getSize().getHeight()) // предмет занимает эту ячейку
+					&& cellY<item.getPosition().Y+item.getSize().getHeight()) // предмет занимает эту ячейку
 					return item;
 
 			}
 
-			return null; // предмета в ячейке нет
+			return Item.NULL; // предмета в ячейке нет
 		}
 
-		public bool addItem(IItem item){
+		public bool addItem(Item item){
 
 			foreach (RectangleSlot slot in slots) {
 				foreach(IItem i in slot.Items){
@@ -114,7 +114,7 @@ namespace Engine.EGUI.Inventory {
 					for(int x=1;x<=slot.position.CellsXCount;x++){
 
 						bool result = true;
-						foreach(IItem i in slot.Items){
+						foreach(Item i in slot.Items){
 							
 							if(x>=i.getPosition().X &&
 							   x<i.getPosition().X+i.getSize().getWidth() &&
@@ -142,12 +142,12 @@ namespace Engine.EGUI.Inventory {
 
 		}
 
-		public bool removeItem(IItem item){
+		public bool removeItem(Item item){
 
-			List<IItem> removeList = new List<IItem>();
+			List<Item> removeList = new List<Item>();
 
 				foreach (RectangleSlot slot in slots) {
-					foreach(IItem i in slot.Items)
+					foreach(Item i in slot.Items)
 
 						if(i.Equals(item)){
 
@@ -159,7 +159,7 @@ namespace Engine.EGUI.Inventory {
 							return true;
 						}
 
-					foreach (IItem i in removeList)
+					foreach (Item i in removeList)
 						slot.Items.Remove(i);
 
 					removeList.Clear();

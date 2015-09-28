@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Engine.Player.Data {
+namespace Engine.Player {
 
 	[Serializable]
 	public struct PlayerSpecifications {

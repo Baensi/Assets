@@ -1,29 +1,57 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using Engine.Objects;
 using Engine.I18N;
+using UnityEngine;
 
 namespace Engine.EGUI.Inventory {
 
-	public class Item : IItem {
+	[Serializable]
+	public struct Item : IItem {
 
-		private static Color labelColor = new Color(1.0f,1.0f,0.5f);
+		public static Item NULL = new Item() { gameObject=null };
 
-		private ItemPosition position;
-		private ItemSize     size;
-		private Texture      icon;
-		private bool         isSelect;
-		private int          count = 1;
-		private int          maxCount;
+		private static GUIStyle labelStyle = null;
+		private static Color    labelColor = new Color(1.0f,1.0f,0.5f);
 
-		private IDynamicObject dynamicObject;
+		public ItemPosition position;
+		public ItemSize     size;
+		public Texture      icon;
+		public bool         isSelect;
+		public int          count;
+		public int          maxCount;
+
+		private GameObject  gameObject;
+
+		public static GUIStyle getLabelStyle() {
+
+			if (labelStyle==null) {
+				labelStyle = new GUIStyle(GUI.skin.label);
+				labelStyle.alignment = TextAnchor.MiddleRight;
+				labelStyle.normal.textColor = labelColor;
+				labelStyle.fontSize = 15;
+				labelStyle.fontStyle = FontStyle.Bold;
+			}
+
+			return labelStyle;
+
+		}
+
+		public static bool operator ==(Item i1, Item i2) {
+			return i1.gameObject==i2.gameObject;
+		}
+
+		public static bool operator !=(Item i1, Item i2) {
+			return !(i1==i2);
+		}
 
 		public override bool Equals(object obj){
 			IItem item = obj as IItem;
 
 				if(item==null) return false;
 
-			return (item.toDynamicObject().Equals(toDynamicObject()));
+			return (item.toGameObject().Equals(toGameObject()));
 
 		}
 
@@ -35,8 +63,8 @@ namespace Engine.EGUI.Inventory {
 			return maxCount;
 		}
 
-		public IDynamicObject toDynamicObject(){
-			return dynamicObject;
+		public GameObject toGameObject(){
+			return gameObject;
 		}
 
 		public void incCount(){
@@ -83,12 +111,13 @@ namespace Engine.EGUI.Inventory {
 			this.isSelect=selected;
 		}
 
-		public Item(IDynamicObject dynamicObject, Texture icon, ItemSize size, int maxCount){
-			this.dynamicObject=dynamicObject;
+		public Item Create(GameObject gameObject, Texture icon, ItemSize size, int maxCount) {
+			this.gameObject=gameObject;
 			this.icon=icon;
 			this.size=size;
 			this.maxCount=maxCount;
 			this.count=1;
+			return this;
 		}
 
 		public void redraw(float posX, float posY){
@@ -103,17 +132,12 @@ namespace Engine.EGUI.Inventory {
 			if(count>1){
 
 				Rect labelRectangle = new Rect(cellRectangle.x,
-				                               cellRectangle.y+cellRectangle.height-18.0f,
-				                               cellRectangle.width,
+				                               cellRectangle.y+cellRectangle.height-22.0f,
+				                               cellRectangle.width-8,
 				                               20.0f);
 
-				GUIStyle style = new GUIStyle(GUI.skin.label);
-				style.alignment = TextAnchor.MiddleCenter;
-				style.normal.textColor = labelColor;
-				style.fontSize = 12;
-				style.fontStyle = FontStyle.Normal;
+				GUI.Label(labelRectangle, count.ToString()+CLang.getInstance().get(Dictionary.K_COUNT), getLabelStyle());
 
-				GUI.Label(labelRectangle,count+CLang.getInstance().get(Dictionary.K_COUNT));
 			}
 
 		}

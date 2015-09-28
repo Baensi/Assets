@@ -12,14 +12,12 @@ namespace Engine.Objects.Food {
 
 	public class CookedHam : DynamicObject, IUsedType {
 
-		private static Texture2D ICON = Resources.Load<Texture2D>("Objects/Food/cooked_ham_icon");
-
 		public CookedHam() : base(DObjectList.S_Cooked_Ham) {
 
 			objectName    = "food_cookedham_name";
 			objectCaption = "food_cookedham_caption";
 
-			item = new Item(this, ICON, new ItemSize(1,1), 1);
+			item = DObjectList.Items.Food.CookedHam;
 
 		}
 

@@ -14,12 +14,13 @@ namespace Engine.I18N {
 		public static CLang getInstance(){
 			if (instance == null)
 				instance = new CLang();
+
 			return instance;
 		}
 
 		// инициализация словаря
 		public CLang(){
-			
+
 			mapData = new SortedDictionary<string,string>(); // инициализируем словарь
 			localizations = new List<string>(); // инициализируем сисок локализаций
 
@@ -28,6 +29,8 @@ namespace Engine.I18N {
 				loader.getData(ref mapData, ref localizations); // записываем прочитанные данные в словарь
 				loader = null;
 			}
+
+			GameConfig.Init();
 			
 		}
 		

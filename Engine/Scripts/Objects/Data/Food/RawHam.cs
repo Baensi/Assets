@@ -14,7 +14,6 @@ namespace Engine.Objects.Food {
 
 		private static string    COOKED     = "Objects/Food/cooked_ham";
 		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/raw_ham_cook");
-		private static Texture2D ICON       = Resources.Load<Texture2D>("Objects/Food/Food/raw_ham_icon");
 	
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
@@ -25,7 +24,7 @@ namespace Engine.Objects.Food {
 			objectName    = "food_rawham_name";
 			objectCaption = "food_rawham_caption";
 
-			item = new Item(this, ICON, new ItemSize(1,1), 1);
+			item = DObjectList.Items.Food.RawHam;
 
 		}
 

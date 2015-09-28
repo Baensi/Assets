@@ -4,6 +4,22 @@ using UnityStandardAssets.CrossPlatformInput;
 
 namespace Engine.EGUI.Inventory {
 
+	public enum InventarEvent : int {
+
+		None       = 0x00,
+		ItemPickUp = 0x01,
+		ItemMove   = 0x02,
+		ItemPut    = 0x03
+
+	};
+
+	public class EventContainer {
+
+		public InventarEvent eventType;
+		public Item          item;
+
+	}
+
 	public class UInventory : MonoBehaviour, IInventory, IRendererGUI {
 
 		[SerializeField] public Texture2D selectCellImage;
@@ -19,11 +35,15 @@ namespace Engine.EGUI.Inventory {
 		private float mouseX;
 		private float mouseY;
 
-		private RectangleSlot selectedSlot = null;
-		private ItemPosition  selectedCell = new ItemPosition(-1, -1);
+		private RectangleSlot  selectedSlot = null;
+		private ItemPosition   selectedCell = new ItemPosition(-1, -1);
+		private Item           selectedItem = Item.NULL;
+		private EventContainer eventData    = new EventContainer();
+
 		private Rect          inventarFramePosition;
 		private Rect          cellRect;
 
+		private static Rect       textCoords = new Rect(1, 1, 1, 1);
 		private InventoryAlgoritm algoritm = new InventoryAlgoritm();
 
 		public void show(){
@@ -46,11 +66,11 @@ namespace Engine.EGUI.Inventory {
 			return offsetY;
 		}
 
-		public bool addItem(IItem item){
+		public bool addItem(Item item){
 			return algoritm.addItem(item);
 		}
 
-		public bool removeItem(IItem item){
+		public bool removeItem(Item item){
 			return algoritm.removeItem(item);
 		}
 
@@ -73,11 +93,15 @@ namespace Engine.EGUI.Inventory {
 			}
 
 		public void redraw(){
+
 			foreach (RectangleSlot slot in slots)
 				if (slot!=null)
 					slot.redraw(offsetX,offsetY);
 
 			OnDrawCells(mouseX, mouseY);
+
+			OnDrawPicked(mouseX, mouseY);
+			
 		}
 
 	// Режим редактора
@@ -128,8 +152,8 @@ namespace Engine.EGUI.Inventory {
 
 			if (selectedSlot==null) return;
 
-			int cellX = (int)(mouseX-offsetX-CellSettings.cellPaddingX-selectedSlot.position.OffsetX) / CellSettings.cellWidth;
-			int cellY = (int)(mouseY-offsetY-CellSettings.cellPaddingY-selectedSlot.position.OffsetY) / CellSettings.cellHeight;
+			int cellX = 1+(int)(mouseX-offsetX-CellSettings.cellPaddingX-selectedSlot.position.OffsetX) / CellSettings.cellWidth;
+			int cellY = 1+(int)(mouseY-offsetY-CellSettings.cellPaddingY-selectedSlot.position.OffsetY) / CellSettings.cellHeight;
 
 			if(cellX!=selectedCell.X || cellY!=selectedCell.Y){ // Ячейка новая
 
@@ -140,20 +164,37 @@ namespace Engine.EGUI.Inventory {
 					selectedCell.X > selectedSlot.position.CellsXCount ||
 					selectedCell.Y > selectedSlot.position.CellsYCount) return; // Если ничего не выбрано
 
-				cellRect.x = offsetX + cellX * CellSettings.cellWidth  + CellSettings.cellPaddingX + selectedSlot.position.OffsetX;
-				cellRect.y = offsetY + cellY * CellSettings.cellHeight + CellSettings.cellPaddingY + selectedSlot.position.OffsetY;
-
-				cellRect.width  = CellSettings.cellWidth;
-				cellRect.height = CellSettings.cellHeight;
+				selectedItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
 
 			}
 
-			if (selectedCell.X==-1 || selectedCell.Y==-1 ||
-				selectedCell.X > selectedSlot.position.CellsXCount ||
-				selectedCell.Y > selectedSlot.position.CellsYCount) return; // Если ничего не выбрано
+			if (selectedItem.getSize()==null)
+				return;
 
-			GUI.DrawTexture(cellRect, correctCellImage);
+			DrawCellsItem(selectedSlot, offsetX, offsetY, selectedItem, correctCellImage);
 
+		}
+
+		public void OnDrawPicked(float mouseX, float mouseY) {
+
+			if (Input.GetMouseButtonDown(0) && eventData.item==Item.NULL) {
+				
+			}
+
+			//if (pickItem.icon==null)
+			//	return;
+
+			//pickItem.redraw(mouseX, mouseY);
+
+		}
+
+		public void DrawCellsItem(RectangleSlot slot, float offsetX, float offsetY, Item item, Texture2D image) {
+			Rect cellRect = new Rect();
+				cellRect.x = offsetX + (item.getPosition().X-1) * CellSettings.cellWidth  + CellSettings.cellPaddingX + slot.position.OffsetX;
+				cellRect.y = offsetY + (item.getPosition().Y-1) * CellSettings.cellHeight + CellSettings.cellPaddingY + slot.position.OffsetY;
+				cellRect.width  = CellSettings.cellWidth * item.getSize().getWidth();
+				cellRect.height = CellSettings.cellHeight * item.getSize().getHeight();
+			GUI.DrawTextureWithTexCoords(cellRect, image, textCoords);
 		}
 
 		void OnGUI(){

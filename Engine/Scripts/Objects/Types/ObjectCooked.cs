@@ -4,7 +4,6 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Engine.Player.Data;
 using Engine.Objects.Types;
 
 namespace Engine.Objects {

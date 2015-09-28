@@ -1,5 +1,5 @@
 using System;
-using Engine.Player.Data;
+using Engine.Player;
 
 namespace Engine.Player.Calculators {
 	

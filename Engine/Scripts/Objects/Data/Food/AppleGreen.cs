@@ -10,22 +10,21 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class RawGreenApple : DynamicObject, ICookedType, IUsedType {
+	public class AppleGreen : DynamicObject, ICookedType, IUsedType {
 
-		private static string    COOKED     = "Objects/Food/cooked_green_apple";
-		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/raw_green_apple_cook");
-		private static Texture2D ICON       = Resources.Load<Texture2D>("Objects/Food/raw_green_apple_icon");
+		private static string    COOKED     = "Objects/Food/cooked_apple";
+		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/apple_green_cook");
 	
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
-		public RawGreenApple() : base(DObjectList.S_Raw_Green_Apple) {
+		public AppleGreen() : base(DObjectList.S_Apple_Green) {
 
 			objectName    = "food_rawgreenapple_name";
 			objectCaption = "food_rawgreenapple_caption";
 
-			item = new Item(this, ICON, new ItemSize(1,1), 1);
+			item = DObjectList.Items.Food.AppleGreen;
 
 		}
 

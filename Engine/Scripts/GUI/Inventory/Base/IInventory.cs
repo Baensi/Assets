@@ -11,8 +11,8 @@ namespace Engine.EGUI.Inventory {
 		List<RectangleSlot> getSlots();
 		void                redraw();
 
-			bool addItem(IItem item);
-			bool removeItem(IItem item);
+			bool addItem(Item item);
+			bool removeItem(Item item);
 
 		void show();
 		void hide();

@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using Engine.Objects;
+using UnityEngine;
 
 namespace Engine.EGUI.Inventory {
 
+	[Serializable]
 	public class ItemSize {
 
-		private int width;
-		private int height;
+		[SerializeField] private int width;
+		[SerializeField] private int height;
 
 		public ItemSize(){
 		}

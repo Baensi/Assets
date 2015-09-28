@@ -9,7 +9,7 @@ namespace Engine.EGUI.Inventory {
 	public class RectangleSlot {
 
 		[SerializeField] public Texture2D   background;
-		[SerializeField] public List<IItem> Items;
+		[SerializeField] public List<Item>  Items = new List<Item>();
 		[SerializeField] public SlotSet     position;
 
 		private Rect backgroundRect;
@@ -26,7 +26,7 @@ namespace Engine.EGUI.Inventory {
 			Rect rect = new Rect(backgroundRect.x+x, backgroundRect.y+y, backgroundRect.width, backgroundRect.height);
 			GUI.DrawTexture(rect, background);
 
-				if(Items.Count>0)
+			if (Items!=null && Items.Count>0)
 					foreach(IItem item in Items)
 						item.redraw(position.OffsetX+x,
 					           		position.OffsetY+y);

@@ -25,7 +25,7 @@ namespace Engine.EGUI.Inventory {
 		bool isSelected();
 		void setSelected(bool selected);
 
-		IDynamicObject toDynamicObject();
+		GameObject toGameObject();
 
 		void redraw(float posX, float posY);
 

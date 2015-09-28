@@ -12,9 +12,9 @@ namespace Engine.Objects.Doors {
 
 		public static IGameObjectAnimation getAnimator(GameObjectAnimatorCollection type){
 			switch(type){
-				case GameObjectAnimatorCollection.Rotation: return RotationGameObjectAnimation.getInstance();
+				case GameObjectAnimatorCollection.Rotation: return RotationGameObjectAnimator.getInstance();
 				case GameObjectAnimatorCollection.Position: return PositionGameObjectAnimator.getInstance();
-				default : return RotationGameObjectAnimation.getInstance();
+				default : return RotationGameObjectAnimator.getInstance();
 			}
 		}
 

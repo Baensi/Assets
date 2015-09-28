@@ -8,11 +8,20 @@ namespace Engine {
 		public static class PlayerObjectsConstants {
 
 			public static string PLAYER_OBJECT_NAME = "Player";
+			public static string PLAYER_BODY_NAME   = "PlayerBody";
 			public static string PLAYER_HANDS_NAME  = "PlayerHands";
 			public static string PLAYER_ATTACK_NAME = "PlayerAttack";
 			public static string PLAYER_STATE_NAME  = "PlayerState";
 			public static string PLAYER_GUI_NAME    = "PlayerGUI";
-		
+
+			public static class GUI {
+
+				public static string HEALTH_BAR = "PlayerGUI";
+				public static string MANA_BAR   = "PlayerGUI";
+				public static string ENERGY_BAR = "PlayerGUI";
+
+			}
+
 		}
 
 		public static class Input {
@@ -37,6 +46,10 @@ namespace Engine {
 
 		public static GameObject getPlayer() {
 			return GameObject.Find(PlayerObjectsConstants.PLAYER_OBJECT_NAME);
+		}
+
+		public static GameObject getPlayerBody() {
+			return GameObject.Find(PlayerObjectsConstants.PLAYER_BODY_NAME);
 		}
 		
 		public static GameObject getGUI(){

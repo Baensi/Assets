@@ -55,7 +55,7 @@ namespace Engine.Player.Movement {
 
 		void Start(){
 			
-			actions				= playerHands.GetComponent<Actions>();
+			actions = playerHands.GetComponent<Actions>();
 			
 			movementType = EMovementType.inground;
 			
