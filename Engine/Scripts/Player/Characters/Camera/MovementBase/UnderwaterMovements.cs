@@ -19,7 +19,6 @@ namespace Engine.Player.Movement.Movements {
 		private bool isSitdown = false;
 		private bool isWalking;
 		private bool isJumping;
-		private bool jump = false;
 
 		private Vector3 moveDir = Vector3.zero;
 
@@ -61,7 +60,8 @@ namespace Engine.Player.Movement.Movements {
 				this.fovKick=fovKick;
 				this.headBob=headBob;
 				this.jumpBob=jumpBob;
-				
+
+				this.attackController=attackController;
 
 				this.mainCameraObject    = SingletonNames.getMainCamera();
 				this.playerObject        = SingletonNames.getPlayer();
@@ -86,16 +86,6 @@ namespace Engine.Player.Movement.Movements {
 		public void update(){
 
 				RotateView();
-
-				if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ATTACK1)) {
-					attackController.setAttacker(EAttacker.swordAttacker);
-					attackController.startAttack();
-				}
-
-				if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ATTACK_MAGIC)) {
-					attackController.setAttacker(EAttacker.magicAttacker);
-					attackController.startAttack();
-				}
 
 				if (CrossPlatformInputManager.GetButton(SingletonNames.Input.JUMP)) {
 					isJumping = true;

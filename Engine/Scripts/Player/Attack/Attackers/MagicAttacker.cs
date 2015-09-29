@@ -7,12 +7,12 @@ namespace Engine.Player.Attack {
 	[Serializable]
 	public class MagicAttacker : MonoBehaviour, IAttacker {
 		
-		private IAnimations actions;
+		//private IAnimations actions;
 
 		[SerializeField] public UnityEngine.Object magicPart;
 		
 		public void setActions(IAnimations actions){
-			this.actions=actions;
+			//this.actions=actions;
 		}
 		
 		public void attack(){

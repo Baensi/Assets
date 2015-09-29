@@ -12,11 +12,7 @@ namespace Engine.Objects.Food {
 
 	public class CookedFish : DynamicObject, IUsedType {
 
-		public CookedFish() : base(DObjectList.S_Cooked_Fish) {
-
-			objectName    = "food_cookedfish_name";
-			objectCaption = "food_cookedfish_caption";
-
+		public CookedFish() : base() {
 			item = DObjectList.Items.Food.CookedFish;
 		}
 

@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Collections;
 using Engine.Objects;
 using Engine.I18N;
-using UnityEngine;
 
 namespace Engine.EGUI.Inventory {
 
@@ -15,9 +14,11 @@ namespace Engine.EGUI.Inventory {
 		private static GUIStyle labelStyle = null;
 		private static Color    labelColor = new Color(1.0f,1.0f,0.5f);
 
-		public ItemPosition position;
-		public ItemSize     size;
-		public Texture      icon;
+		public ItemDescription description;
+		public ItemPosition    position;
+		public ItemSize        size;
+		public Texture         icon;
+
 		public bool         isSelect;
 		public int          count;
 		public int          maxCount;
@@ -111,12 +112,13 @@ namespace Engine.EGUI.Inventory {
 			this.isSelect=selected;
 		}
 
-		public Item Create(GameObject gameObject, Texture icon, ItemSize size, int maxCount) {
+		public Item Create(GameObject gameObject, Texture icon, ItemSize size, int maxCount, ItemDescription description) {
 			this.gameObject=gameObject;
 			this.icon=icon;
 			this.size=size;
 			this.maxCount=maxCount;
 			this.count=1;
+			this.description=description;
 			return this;
 		}
 

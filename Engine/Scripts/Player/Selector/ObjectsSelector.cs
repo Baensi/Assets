@@ -41,11 +41,12 @@ namespace Engine.Player {
 		private Vector3        cursorPosition;
 
 		private GUIController guiController;
+		public AudioSource    audioSource;
 
 		void Start () {
 
 			playerCamera = SingletonNames.getMainCamera();
-			AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+			this.audioSource = gameObject.AddComponent<AudioSource>();
 
 				// центр экрана
 			cursorPosition = new Vector3(Screen.width/2.0f,

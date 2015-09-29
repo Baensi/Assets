@@ -15,14 +15,9 @@ namespace Engine.Objects {
 	public class DynamicObject : MonoBehaviour, IDynamicObject {
 
 		public Item      item = Item.NULL;
-		protected int    id   = 0x0;
 		
 		protected TextDisplayed displayed  = TextDisplayed.Displayed;
-		protected string objectName        = "Dynamic";
-		protected string objectCaption     = "DynamicObject";
-		protected float  costValue         = 0.0f;
-
-		protected Renderer renderer;
+		protected Renderer      currentRenderer;
 
 		protected static Shader selectedShader = null;
 		protected Shader defaultShader;
@@ -39,9 +34,9 @@ namespace Engine.Objects {
 			gameObject.AddComponent<Rigidbody>();
 			gameObject.AddComponent<BoxCollider>();
 			objectsSelector = SingletonNames.getMainCamera().GetComponent<ObjectsSelector>();
-
-			renderer = gameObject.GetComponent<Renderer>();
-			defaultShader = renderer.material.shader;
+			
+			currentRenderer = gameObject.GetComponent<Renderer>();
+			defaultShader = currentRenderer.material.shader;
 			
 			if(selectedShader==null)
 				selectedShader = Shader.Find("DynamicObject/Selected");
@@ -49,7 +44,7 @@ namespace Engine.Objects {
 		}
 
 		public float getCostValue(){
-			return this.costValue;
+			return this.item.description.costValue;
 		}
 		
 		public override bool Equals(object obj){
@@ -66,9 +61,9 @@ namespace Engine.Objects {
 			if (destroy) return;
 
 			if (selected) {
-				renderer.material.shader = selectedShader;
+				currentRenderer.material.shader = selectedShader;
 			} else {
-				renderer.material.shader = defaultShader;
+				currentRenderer.material.shader = defaultShader;
 			}
 
 		}
@@ -78,7 +73,7 @@ namespace Engine.Objects {
 		}
 
 		public override int GetHashCode() {
-			return id;
+			return item.description.id;
 		}
 
 		/// <summary>
@@ -108,8 +103,8 @@ namespace Engine.Objects {
 			return item;
 		}
 	
-		public DynamicObject(int id){
-			this.id=id;
+		public DynamicObject(){
+
 		}
 
 		public GameObject toObject(){
@@ -118,15 +113,15 @@ namespace Engine.Objects {
 		}
 
 		public string getName(){
-			return objectName;
+			return item.description.name;
 		}
 
 		public string getCaption(){
-			return objectCaption;
+			return item.description.caption;
 		}
 
 		public int getId(){
-			return id;
+			return item.description.id;
 		}
 	
 	}

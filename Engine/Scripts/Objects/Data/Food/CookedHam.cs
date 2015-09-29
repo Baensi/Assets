@@ -12,13 +12,8 @@ namespace Engine.Objects.Food {
 
 	public class CookedHam : DynamicObject, IUsedType {
 
-		public CookedHam() : base(DObjectList.S_Cooked_Ham) {
-
-			objectName    = "food_cookedham_name";
-			objectCaption = "food_cookedham_caption";
-
+		public CookedHam() : base() {
 			item = DObjectList.Items.Food.CookedHam;
-
 		}
 
 		void Start() {

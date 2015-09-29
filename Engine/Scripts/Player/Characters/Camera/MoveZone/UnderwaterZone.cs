@@ -12,7 +12,7 @@ namespace Engine.Player.Movement {
 		private VignetteAndChromaticAberration scriptBlur;
 		private PlayerMovementController       playerController;
 		private CharacterController            characterController;
-		private Rigidbody                      playerRigidBody;
+
 		private BoxCollider                    water;
 
 		private Vector3 impulse = Vector3.zero;
@@ -34,8 +34,7 @@ namespace Engine.Player.Movement {
 			playerController    = SingletonNames.getPlayer().GetComponent<PlayerMovementController>();
 			scriptBlur          = SingletonNames.getMainCamera().GetComponent<VignetteAndChromaticAberration>();
 			characterController = playerController.GetComponent<CharacterController>();
-			playerRigidBody     = playerController.GetComponent<Rigidbody>();
-
+			
 			scriptBlur.enabled = false;
 			RenderSettings.fog = false;
 
@@ -45,24 +44,27 @@ namespace Engine.Player.Movement {
 		}
 
 		void OnTriggerEnter(Collider other) {
+			if (getPlayerTopYPoint() > getWaterTopYPoint())
+				return;
 
-			
-
+			setUnderwater();
 		}
 
-		
-
 		void OnTriggerExit(Collider other) {
+			if (getPlayerTopYPoint() < getWaterTopYPoint())
+				return;
 
-			//if (playerController.getMovementType().Equals(EMovementType.inground)) return;
-			//if (getPlayerTopYPoint() < getWaterTopYPoint()) return;
-
-			//	setInground();
-
+			setInground();
 		}
 
 		void OnTriggerStay(Collider other) {
 
+			Rigidbody rigid = other.gameObject.GetComponent<Rigidbody>();
+
+			if (rigid!=null)
+				rigid.velocity*=0.98f; // усиливаем трение
+
+			/*
 			if (//other.GetComponent<PlayerMovementController>() == null || // если мы не в воде или эффекты уже наложены, выходим
 				getPlayerTopYPoint() > getWaterTopYPoint()) {
 
@@ -70,7 +72,7 @@ namespace Engine.Player.Movement {
 						setInground();
 
 						if (CrossPlatformInputManager.GetButton("Jump"))
-							impulse.y += 50.0f;
+							impulse.y += 5.0f;
 
 					playerController.getCurrentMovement().addImpulse(impulse);
 
@@ -82,7 +84,7 @@ namespace Engine.Player.Movement {
 				playerController.getCurrentMovement().addImpulse(impulse);
 
 
-			}
+			}*/
 
 		}
 

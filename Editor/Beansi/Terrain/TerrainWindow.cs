@@ -183,14 +183,6 @@ namespace EngineEditor.Terrain {
 
 		}
 
-		private float GetDistance(Vector3 point1, Vector3 point2) {
-			return Mathf.Sqrt(
-				Mathf.Pow(point1.x-point2.x,2)+
-				Mathf.Pow(point1.y-point2.y,2)+
-				Mathf.Pow(point1.z-point2.z,2)
-			);
-		}
-
 		/// <summary>
 		/// Метод обрабатывающий лучи добра, посланные в окно SceveView
 		/// </summary>
@@ -218,7 +210,7 @@ namespace EngineEditor.Terrain {
 
 					if (deleteModeOn)
 						foreach (AutoGen obj in UnityEngine.Object.FindObjectsOfType<AutoGen>())
-							if (GetDistance(obj.transform.position, hitInfo.point) <= windowGUI.brushSize) 
+							if (Vector3.Distance(obj.transform.position, hitInfo.point) <= windowGUI.brushSize) 
 								DestroyImmediate(obj.gameObject);
 
 					break;

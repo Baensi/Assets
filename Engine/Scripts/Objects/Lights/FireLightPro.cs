@@ -34,8 +34,6 @@ namespace Engine.Objects {
 		private float rndY = 0.0f;
 		private float rndZ = 0.0f;
 		
-		private float timeStamp = 0.0f;
-		
 		private bool isBurning = true;
 		private Light lightObject;
 		

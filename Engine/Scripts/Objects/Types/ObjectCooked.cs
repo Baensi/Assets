@@ -13,7 +13,6 @@ namespace Engine.Objects {
 		public AudioClip cookingSound;
 		public int cookingInSeconds; // Время готовки еды
 		
-		private bool activeCooking = false; // Показывает, готовится ли еда в текущий момент
 		private bool isCook        = false; // Показывает, готова ли еда
 		
 		private float    cookState = 0.0f; // текущее состояние готовности еды

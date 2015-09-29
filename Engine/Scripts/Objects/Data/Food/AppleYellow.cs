@@ -19,13 +19,8 @@ namespace Engine.Objects.Food {
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
-		public AppleYellow() : base(DObjectList.S_Apple_Yellow) {
-
-			objectName    = "food_applered_name";
-			objectCaption = "food_applered_caption";
-
+		public AppleYellow() : base() {
 			item = DObjectList.Items.Food.AppleYellow;
-
 		}
 
 		void Start() {

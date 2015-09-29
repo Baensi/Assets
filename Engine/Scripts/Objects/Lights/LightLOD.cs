@@ -12,14 +12,14 @@ namespace Engine.Objects {
 		[SerializeField] public bool  useSmoothIntensity = true;
 		
 		private float      defaultIntensity = 1f;
-		private Light      light;
+		private Light      currentLight;
 		private Transform  player;
 		
 		void Start(){
 			this.player = SingletonNames.getPlayer().transform;
-			this.light  = gameObject.GetComponent<Light>();
-			
-			defaultIntensity = light.intensity;
+			this.currentLight  = gameObject.GetComponent<Light>();
+
+			defaultIntensity = currentLight.intensity;
 		}
 
 		//public Light toObject() {
@@ -35,15 +35,9 @@ namespace Engine.Objects {
 			
 		}
 		
-		private float calcRange(){
-			return Mathf.Sqrt(Mathf.Pow(player.position.x-transform.position.x,2)
-							 +Mathf.Pow(player.position.y-transform.position.y,2)
-							 +Mathf.Pow(player.position.z-transform.position.z,2));
-		}
-		
 		void Update(){
-			
-			float range = calcRange();
+
+			float range = Vector3.Distance(player.position, transform.position);
 			
 			if(range>=disableRange){
 
@@ -56,8 +50,8 @@ namespace Engine.Objects {
 					gameObject.SetActive(true);
 				
 				if(useSmoothIntensity) {
-				
-					light.intensity = defaultIntensity * range / disableRange;
+
+					currentLight.intensity = defaultIntensity * range / disableRange;
 				
 				}
 				

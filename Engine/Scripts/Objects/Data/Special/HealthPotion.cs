@@ -9,13 +9,8 @@ namespace Engine.Objects.Special {
 
 	public class HealthPotion : DynamicObject, IUsedType {
 
-		public HealthPotion() : base(DObjectList.S_Health_Potion) {
-			
-			objectName    = "healthpotion_id_name";
-			objectCaption = "healthpotion_id_caption";
-
+		public HealthPotion() : base() {
 			item = DObjectList.Items.HealthPotion;
-
 		}
 
 		void Start() {
@@ -24,6 +19,7 @@ namespace Engine.Objects.Special {
 
 		public bool onUse() {
 
+			GamePlayer.states.Health+=50;
 
 			base.Destroy(true);
 			return true;

@@ -54,7 +54,6 @@ namespace Engine.Player.Movement.Movements {
 		//private Rigidbody  playerRigidBody;
 
 		private Vector3        moveDirAddition = Vector3.zero;
-		private static Vector3 playerGravity = new Vector3(0f,0f,0f);
 
 			public void setUp(Actions             actions,
 							  MouseLook           mouseLook,

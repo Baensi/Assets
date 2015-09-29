@@ -19,13 +19,8 @@ namespace Engine.Objects.Food {
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
-		public RawHam() : base(DObjectList.S_Raw_Ham) {
-
-			objectName    = "food_rawham_name";
-			objectCaption = "food_rawham_caption";
-
+		public RawHam() : base() {
 			item = DObjectList.Items.Food.RawHam;
-
 		}
 
 		void Start() {
