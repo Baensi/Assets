@@ -95,7 +95,6 @@ namespace EngineEditor.Terrain {
 
 				RaycastHit hitInfo = new RaycastHit();
 
-
 				Handles.color=new Color(1f, 0f, 0f);
 				result += rotation * new Vector3(0, 0, 1f);
 

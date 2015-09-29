@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityStandardAssets.CrossPlatformInput;
+using Engine.I18N;
 
 namespace Engine.EGUI.Inventory {
 
@@ -172,6 +173,7 @@ namespace Engine.EGUI.Inventory {
 				return;
 
 			DrawCellsItem(selectedSlot, offsetX, offsetY, selectedItem, correctCellImage);
+			GUI.Box(new Rect(mouseX, mouseY, 0, 0), selectedItem.description.dName + " - " + selectedItem.description.dCaption);
 
 		}
 

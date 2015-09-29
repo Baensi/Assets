@@ -12,7 +12,6 @@ namespace EngineEditor.Terrain {
 		public bool consoleMode = true;
 
 		// Кисточка
-		//public EBrushType brushType = EBrushType.BrushCircle;
 		public float brushSize      = 1.23f;
 		public int brushSensitivity = 3;
 
@@ -56,9 +55,8 @@ namespace EngineEditor.Terrain {
 
 			GUILayout.Label("Кисть", EditorStyles.boldLabel);
 
-				//brushType        = (EBrushType)EditorGUILayout.EnumPopup("Тип", brushType);
 				brushSize        = EditorGUILayout.Slider("Размер", brushSize, 0.05f, 10f);
-				brushSensitivity = EditorGUILayout.IntSlider("Число объектов", brushSensitivity, 1, 20);
+				brushSensitivity = EditorGUILayout.IntSlider("Число объектов", brushSensitivity, 1, 50);
 
 			EditorGUILayout.Separator();
 
@@ -76,7 +74,7 @@ namespace EngineEditor.Terrain {
 			generateRandomPosition=EditorGUILayout.BeginToggleGroup(new GUIContent("Разброс позиционирования"), generateRandomPosition);
 
 				useRaycast = EditorGUILayout.Toggle(new GUIContent("Проецировать на плоскость"), useRaycast);
-				useRandom  = EditorGUILayout.Toggle(new GUIContent("Смещать случайно"), useRandom);
+				useRandom  = EditorGUILayout.Toggle(new GUIContent("Смещать случайно"), !useRaycast);
 
 				EditorGUILayout.BeginHorizontal();
 					offsetFromValue = EditorGUILayout.FloatField(new GUIContent("Y смещение от"), offsetFromValue);

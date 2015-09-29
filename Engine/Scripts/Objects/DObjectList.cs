@@ -95,6 +95,24 @@ namespace Engine.Objects {
 										 
 		public const int S_Cooked_Apple  = 0x000c;
 
+
+		public static void ReCreate() {
+
+			Items.HealthPotion.description.ReCreate();
+			Items.ManaPotion.description.ReCreate();
+			Items.Food.AppleGreen.description.ReCreate();
+			Items.Food.AppleYellow.description.ReCreate();
+			Items.Food.AppleRed.description.ReCreate();
+			Items.Food.CookedApple.description.ReCreate();
+			Items.Food.CookedBread.description.ReCreate();
+			Items.Food.CookedFish.description.ReCreate();
+			Items.Food.CookedHam.description.ReCreate();
+			Items.Food.RawBread.description.ReCreate();
+			Items.Food.RawFish.description.ReCreate();
+			Items.Food.RawHam.description.ReCreate();
+
+		}
+
 	}
 
 }
