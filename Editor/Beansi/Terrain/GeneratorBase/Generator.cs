@@ -50,36 +50,44 @@ namespace EngineEditor.Terrain {
 			return result;
 		}
 
-		public static Vector3 generatePosition(Vector3    position,
+		public static void generateRandom(TempObject tmp) {
+			tmp.PositionRandom = new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+		}
+
+		public static Vector3 generatePosition(Vector3    random,
+											   Vector3    position,
 											   Quaternion rotation,
 											   Bounds     bounds,
 											   Vector3    scale,
 											   float      offsetFromValue,
 											   float      offsetToValue,
 											   float      brushSize,
-											   EBrushType brushType,
 											   bool       useRayCast = false) {
 
-			//Vector3 left   = (rotation * new Vector3(-brushSize/2, 0, 0));
-			//Vector3 top    = (rotation * new Vector3(0, brushSize/2, 0));
-			//Vector3 right  = (rotation * new Vector3(brushSize/2,0, 0));
-			//Vector3 bottom = (rotation * new Vector3(0, -brushSize/2, 0));
+			Vector3 left   = (rotation * new Vector3(-brushSize/2, 0, 0));
+			Vector3 top    = (rotation * new Vector3(0, brushSize/2, 0));
+			Vector3 right  = (rotation * new Vector3(brushSize/2,0, 0));
+			Vector3 bottom = (rotation * new Vector3(0, -brushSize/2, 0));
 
-			//Handles.Label(position+left, new GUIContent("v1"));
-			//Handles.Label(position+bottom, new GUIContent("v2"));
-			//Handles.Label(position+right, new GUIContent("v3"));
-			//Handles.Label(position+top, new GUIContent("v4"));
+			if (Event.current.shift) {
+				Handles.color=new Color(1f, 1f, 0f);
 
-			//Handles.DrawLine(position+left,   position+top);
-			//Handles.DrawLine(position+top,    position+right);
-			//Handles.DrawLine(position+right,  position+bottom);
-			//Handles.DrawLine(position+bottom, position+left);
+				Handles.Label(position+left, new GUIContent("v1l"));
+				Handles.Label(position+bottom, new GUIContent("v2b"));
+				Handles.Label(position+right, new GUIContent("v3r"));
+				Handles.Label(position+top, new GUIContent("v4t"));
 
-			//Vector3[] vectors = new Vector3[] { left, top, right, bottom };
+					Handles.DrawLine(position+left, position+top);
+					Handles.DrawLine(position+top, position+right);
+					Handles.DrawLine(position+right, position+bottom);
+					Handles.DrawLine(position+bottom, position+left);
+			}
 
-			float x =-0.2f;//minX(vectors) + (maxX(vectors) - minX(vectors)) * UnityEngine.Random.value;
-			float y = 0.6f;//minY(vectors) + (maxY(vectors) - minY(vectors)) * UnityEngine.Random.value;
-			float z = 0.1f;//minZ(vectors) + (maxZ(vectors) - minZ(vectors)) * UnityEngine.Random.value;
+			Vector3[] vectors = new Vector3[] { left, top, right, bottom };
+
+			float x = position.x + minX(vectors) + (maxX(vectors) - minX(vectors)) * random.x;
+			float y = position.y + minY(vectors) + (maxY(vectors) - minY(vectors)) * random.y;
+			float z = position.z + minZ(vectors) + (maxZ(vectors) - minZ(vectors)) * random.z;
 
 			Vector3 result = new Vector3(x, y, z); // вычисляем ожидание с фиксированным x
 
@@ -101,18 +109,17 @@ namespace EngineEditor.Terrain {
 					Handles.DotCap(0, hitInfo.point, rotation, 0.02f);
 					Handles.DrawLine(result, hitInfo.point);
 
-					result = hitInfo.point + mul(mul(bounds.max,scale), (rotation * new Vector3(0, 0, 1))); // прибиваем траекторию к поверхности
+					result = hitInfo.point;// + (rotation * new Vector3(0, 0, 1)); // прибиваем траекторию к поверхности
 
-					Handles.color=new Color(1f, 0f, 0f);
-					Handles.DotCap(0, hitInfo.point + bounds.min, rotation, 0.025f);
+					//Handles.color=new Color(1f, 0f, 0f);
+					//Handles.DotCap(0, hitInfo.point + bounds.min, rotation, 0.025f);
 
-					Handles.color=new Color(1f, 0f, 0f);
-					Handles.DotCap(0, hitInfo.point + bounds.max, rotation, 0.03f);
+					//Handles.color=new Color(1f, 0f, 0f);
+					//Handles.DotCap(0, hitInfo.point + bounds.max, rotation, 0.03f);
 
-					Handles.color=new Color(1f, 1f, 0f);
-
+					//Handles.color=new Color(1f, 1f, 0f);
 					
-					Handles.DotCap(0, hitInfo.point + bounds.max, rotation, 0.03f);
+					//Handles.DotCap(0, hitInfo.point + bounds.max, rotation, 0.03f);
 
 
 				} else {
@@ -126,13 +133,6 @@ namespace EngineEditor.Terrain {
 
 			}
 
-			
-				if(brushType==EBrushType.BrushCircle){
-
-					//...
-					
-				}
-
 			return result-position;
 		}
 
@@ -143,33 +143,31 @@ namespace EngineEditor.Terrain {
 			return v1;
 		}
 
-		public static Vector3 generateScale(float minX,
-											float maxX,
-											float minY,
-											float maxY,
-											float minZ,
-											float maxZ) {
+		public static Vector3 generateScale(Vector3    random,
+											float      minX,
+											float      maxX,
+											float      minY,
+											float      maxY,
+											float      minZ,
+											float      maxZ) {
 
-				Vector3 scale = new Vector3(minX + UnityEngine.Random.value * (maxX - minX),
-								   minY + UnityEngine.Random.value * (maxY - minY),
-								   minZ + UnityEngine.Random.value * (maxZ - minZ));
-
-			return scale;
+			return new Vector3(minX + random.x * (maxX - minX),
+							   minY + random.y * (maxY - minY),
+							   minZ + random.z * (maxZ - minZ));
 
 		}
 
-		public static Quaternion generateRotation(float minX,
-												  float maxX,
-												  float minY,
-												  float maxY,
-												  float minZ,
-												  float maxZ) {
+		public static Quaternion generateRotation(Vector3    random,
+												  float      minX,
+												  float      maxX,
+												  float      minY,
+												  float      maxY,
+												  float      minZ,
+												  float      maxZ) {
 
-
-
-			return Quaternion.Euler(minX + UnityEngine.Random.value * (maxX - minX),
-									minY + UnityEngine.Random.value * (maxY - minY),
-									minZ + UnityEngine.Random.value * (maxZ - minZ));
+			return Quaternion.Euler(minX + random.x * (maxX - minX),
+									minY + random.y * (maxY - minY),
+									minZ + random.z * (maxZ - minZ));
 
 		}
 

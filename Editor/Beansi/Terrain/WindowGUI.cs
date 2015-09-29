@@ -12,7 +12,7 @@ namespace EngineEditor.Terrain {
 		public bool consoleMode = true;
 
 		// Кисточка
-		public EBrushType brushType = EBrushType.BrushCircle;
+		//public EBrushType brushType = EBrushType.BrushCircle;
 		public float brushSize      = 1.23f;
 		public int brushSensitivity = 3;
 
@@ -56,7 +56,7 @@ namespace EngineEditor.Terrain {
 
 			GUILayout.Label("Кисть", EditorStyles.boldLabel);
 
-				brushType        = (EBrushType)EditorGUILayout.EnumPopup("Тип", brushType);
+				//brushType        = (EBrushType)EditorGUILayout.EnumPopup("Тип", brushType);
 				brushSize        = EditorGUILayout.Slider("Размер", brushSize, 0.05f, 10f);
 				brushSensitivity = EditorGUILayout.IntSlider("Число объектов", brushSensitivity, 1, 20);
 

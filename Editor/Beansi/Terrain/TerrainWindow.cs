@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Engine.Objects;
 
 namespace EngineEditor.Terrain {
 	
@@ -17,16 +18,21 @@ namespace EngineEditor.Terrain {
 		private PickObjectData       pickSceneObject = null; // Объект захваченный для кисточки
 		private List<HideObjectData> gameData        = new List<HideObjectData>();
 
-		private EEditorMode      currentMode = EEditorMode.ModeAdd;
-		private List<TempObject> tmpData     = new List<TempObject>();
+		private EEditorMode          currentMode = EEditorMode.ModeAdd;
+		private List<TempObject>     tmpData     = new List<TempObject>();
 
-		private Vector3    oldPosition              = new Vector3(0, 0, 0);
-		private Quaternion oldRotation              = new Quaternion(0,0,0,0);
+		private Vector3              oldPosition = new Vector3(0, 0, 0);
+		private Quaternion           oldRotation = new Quaternion(0,0,0,0);
 
 		private bool selectModeOn = false;
 		private bool addingModeOn = false;
+		private bool deleteModeOn = false;
 		
 		private static WindowGUI windowGUI;
+
+		void OnEnable() {
+
+		}
 
 		public GameObject selection {
 			get { return selectionObject; }
@@ -100,6 +106,7 @@ namespace EngineEditor.Terrain {
 
 			GUILayout.Width(600f);
 			GUILayout.Height(800f);
+
 			windowGUI.CreateBrushSettings();
 			windowGUI.CreateModeSettings();
 			windowGUI.CreateGenerationSettings();
@@ -171,9 +178,17 @@ namespace EngineEditor.Terrain {
 				currentMode = EEditorMode.ModeAdd;
 
 			selectModeOn = Event.current.alt && Event.current.type == EventType.MouseUp && Event.current.button == 0;
+			addingModeOn = Event.current.shift && Event.current.type == EventType.MouseDown;
+			deleteModeOn = Event.current.control && Event.current.type == EventType.mouseDown;
 
-			addingModeOn = Event.current.shift && Event.current.type == EventType.MouseUp && Event.current.button == 0;
+		}
 
+		private float GetDistance(Vector3 point1, Vector3 point2) {
+			return Mathf.Sqrt(
+				Mathf.Pow(point1.x-point2.x,2)+
+				Mathf.Pow(point1.y-point2.y,2)+
+				Mathf.Pow(point1.z-point2.z,2)
+			);
 		}
 
 		/// <summary>
@@ -195,20 +210,27 @@ namespace EngineEditor.Terrain {
 
 					OnCleanGenerateObjects();
 
-					
-
 					Handles.color = designDeleteColor;
-					
+
+					Handles.CircleCap(0, hitInfo.point, startRot, windowGUI.brushSize);
+					Handles.CircleCap(2, hitInfo.point, startRot, windowGUI.brushSize*0.9f);
+					Handles.CircleCap(3, hitInfo.point, startRot, windowGUI.brushSize*0.8f);
+
+					if (deleteModeOn)
+						foreach (AutoGen obj in UnityEngine.Object.FindObjectsOfType<AutoGen>())
+							if (GetDistance(obj.transform.position, hitInfo.point) <= windowGUI.brushSize) 
+								DestroyImmediate(obj.gameObject);
+
 					break;
 				case EEditorMode.ModeAdd:
 
-					if (windowGUI.baseObjectPrefab!=null)
+					if (windowGUI.baseObjectPrefab!=null) {
 						if (tmpData.Count != windowGUI.brushSensitivity) {
 							OnGenerateObjects(hitInfo.point, startRot);
 						} else {
 
 							foreach (TempObject tmp in tmpData)
-								OnSetupSettings(tmp, hitInfo.point, startRot,!GUI.changed);
+								OnSetupSettings(tmp, hitInfo.point, startRot, false);
 
 						}
 
@@ -216,6 +238,8 @@ namespace EngineEditor.Terrain {
 							OnAddObjectToTerrainData();
 							addingModeOn=false;
 						}
+
+					}
 
 					if(Event.current.shift)
 						Handles.color = designPickColor;
@@ -238,18 +262,7 @@ namespace EngineEditor.Terrain {
 					break;
 			}
 
-			Handles.DrawLine(hitInfo.point, cameraPoint);
-
-				switch (windowGUI.brushType) { // рисуем кисточку
-					case EBrushType.BrushBox:
-
-						//Event.Handles.RectangleCap(0, hitInfo.point, startRot, windowGUI.brushSize);
-
-						break;
-					case EBrushType.BrushCircle:
-						//Event.Handles.CircleCap(0, hitInfo.point, startRot, windowGUI.brushSize);
-						break;
-				}
+				Handles.DrawLine(hitInfo.point, cameraPoint);
 
 					// рисуем разметку кисточки
 				Handles.color = designToolsColor;
@@ -257,10 +270,7 @@ namespace EngineEditor.Terrain {
 				Handles.DrawLine(hitInfo.point, hitInfo.point + (startRot * new Vector3(windowGUI.brushSize, 0, 0)));
 				Handles.DrawLine(hitInfo.point, hitInfo.point + (startRot * new Vector3(0, windowGUI.brushSize, 0)));
 				Handles.DrawLine(hitInfo.point, hitInfo.point + (startRot * new Vector3(0, -windowGUI.brushSize, 0)));
-
-
-
-
+				
 					// направление нормали
 				Handles.DrawLine(hitInfo.point, hitInfo.point + (startRot * new Vector3(0, 0, windowGUI.brushSize*0.2f)));
 
@@ -277,7 +287,7 @@ namespace EngineEditor.Terrain {
 			sceneView.Repaint();
 		}
 
-		private void OnSetupSettings(TempObject tmp, Vector3 position, Quaternion rotation, bool unlock=true) {
+		private void OnSetupSettings(TempObject tmp, Vector3 position, Quaternion rotation, bool newRandom = false) {
 
 			Renderer renderer = tmp.toGameObject().GetComponent<Renderer>();
 			Bounds   bounds;
@@ -288,20 +298,20 @@ namespace EngineEditor.Terrain {
 					bounds = new Bounds();
 				}
 
-			tmp.BlockChange = unlock;
+			if (newRandom)
+				Generator.generateRandom(tmp);
+
+			if (windowGUI.generateRandomPosition)
+				tmp.PositionOffset = Generator.generatePosition(tmp.PositionRandom, position, rotation, bounds, tmp.toGameObject().transform.lossyScale, windowGUI.offsetFromValue, windowGUI.offsetToValue, windowGUI.brushSize, windowGUI.useRaycast);
+
+			if (windowGUI.generateRandomRotation)
+				tmp.RotationOffset = Generator.generateRotation(tmp.PositionRandom, windowGUI.minRotationXValue, windowGUI.maxRotationXValue, windowGUI.minRotationYValue, windowGUI.maxRotationYValue, windowGUI.minRotationZValue, windowGUI.maxRotationZValue);
+
+			if (windowGUI.generateChangeScale)
+				tmp.ScaleOffset = Generator.generateScale(tmp.PositionRandom, windowGUI.minScaleXValue, windowGUI.maxScaleXValue, windowGUI.minScaleYValue, windowGUI.maxScaleYValue, windowGUI.minScaleZValue, windowGUI.maxScaleZValue);
 
 			tmp.SetupSettings(position, rotation); // устанавливаем свойства
 
-				if (windowGUI.generateRandomPosition)
-					tmp.PositionOffset = Generator.generatePosition(position, rotation, bounds, tmp.toGameObject().transform.lossyScale, windowGUI.offsetFromValue, windowGUI.offsetToValue, windowGUI.brushSize, windowGUI.brushType, windowGUI.useRaycast);
-
-				if (windowGUI.generateRandomRotation)
-					tmp.RotationOffset = Generator.generateRotation(windowGUI.minRotationXValue, windowGUI.maxRotationXValue, windowGUI.minRotationYValue, windowGUI.maxRotationYValue, windowGUI.minRotationZValue, windowGUI.maxRotationZValue);
-
-				if (windowGUI.generateChangeScale)
-					tmp.ScaleOffset = Generator.generateScale(windowGUI.minScaleXValue, windowGUI.maxScaleXValue, windowGUI.minScaleYValue, windowGUI.maxScaleYValue, windowGUI.minScaleZValue, windowGUI.maxScaleZValue);
-			
-			tmp.BlockChange = true;
 		}
 
 		private void OnGenerateObject(Vector3 position, Quaternion rotation) {
@@ -311,7 +321,7 @@ namespace EngineEditor.Terrain {
 			TempObject tmp = new TempObject((GameObject)Instantiate(windowGUI.baseObjectPrefab, position, rotation));
 			tmp.toGameObject().transform.parent = getTmpContainer().transform;
 			
-				OnSetupSettings(tmp, position, rotation, false);
+				OnSetupSettings(tmp, position, rotation, true);
 			
 			tmpData.Add(tmp);
 		}
@@ -339,23 +349,19 @@ namespace EngineEditor.Terrain {
 
 		private void OnAddObjectToTerrainData() {
 
-			if (tmpData==null || tmpData.Count==0) return;
-
-			int index=0;
+			if (tmpData==null || tmpData.Count==0)
+				return;
 
 				foreach(TempObject tmp in tmpData){
 
-					Vector3    position = tmp.toGameObject().transform.position;
-					Quaternion rotation = tmp.toGameObject().transform.rotation;
-
-					GameObject obj = (GameObject)Instantiate(tmp.toGameObject(), position, rotation);
-					obj.layer = 0;
-					obj.transform.parent = getDataContainer().transform;
-					obj.name = "object"+(index++).ToString();
+					GameObject obj = tmp.toGameObject();
+						obj.layer = 0;
+						obj.transform.parent = getDataContainer().transform;
+						obj.AddComponent<AutoGen>();
 
 				}
 
-			OnCleanGenerateObjects();
+			tmpData.Clear();
 
 		}
 
@@ -370,7 +376,6 @@ namespace EngineEditor.Terrain {
 			if (!windowGUI.designMode) {
 				if (Selection.activeGameObject != selection)
 					this.Repaint();
-				//OnCleanGenerateObjects();
 				return;
 			}
 
