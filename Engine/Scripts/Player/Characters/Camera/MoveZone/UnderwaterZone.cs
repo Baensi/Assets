@@ -13,9 +13,9 @@ namespace Engine.Player.Movement {
 		private PlayerMovementController       playerController;
 		private CharacterController            characterController;
 
-		private BoxCollider                    water;
+		//private BoxCollider                    water;
 
-		private Vector3 impulse = Vector3.zero;
+		//private Vector3 impulse = Vector3.zero;
 
 		[SerializeField] public Color fogColor = new Color(0f,0.4f,0.7f,0.6f);
 		[SerializeField] public float fogDistance = 0.6f;
@@ -30,7 +30,7 @@ namespace Engine.Player.Movement {
 
 		void Start() {
 
-			water               = GetComponent<BoxCollider>();
+			//water               = GetComponent<BoxCollider>();
 			playerController    = SingletonNames.getPlayer().GetComponent<PlayerMovementController>();
 			scriptBlur          = SingletonNames.getMainCamera().GetComponent<VignetteAndChromaticAberration>();
 			characterController = playerController.GetComponent<CharacterController>();

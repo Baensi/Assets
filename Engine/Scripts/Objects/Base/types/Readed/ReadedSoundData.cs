@@ -10,13 +10,13 @@ namespace Engine.Objects.Types.Readed {
 
 		private static ReadedSoundData instance;
 		
-		private List<AudioClip> openReaded;
+		private List<AudioClip> openReaded = new List<AudioClip>();
 		private int             openReadedPrevIndex  = 0;
-		
-		private List<AudioClip> closeReaded;
+
+		private List<AudioClip> closeReaded = new List<AudioClip>();
 		private int             closeReadedPrevIndex = 0;
-		
-		private List<AudioClip> changePage;
+
+		private List<AudioClip> changePage = new List<AudioClip>();
 		private int             changePagePrevIndex  = 0;
 	
 		public static ReadedSoundData getInstance(){

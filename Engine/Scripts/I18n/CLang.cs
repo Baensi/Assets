@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using Engine.Objects;
 
 namespace Engine.I18N {
 
@@ -14,7 +15,6 @@ namespace Engine.I18N {
 		public static CLang getInstance(){
 			if (instance == null)
 				instance = new CLang();
-
 			return instance;
 		}
 
@@ -24,7 +24,7 @@ namespace Engine.I18N {
 			mapData = new SortedDictionary<string,string>(); // инициализируем словарь
 			localizations = new List<string>(); // инициализируем сисок локализаций
 
-			foreach(string xmlDataBase in Directory.GetFiles(Dictionary.DictionaryDirectoryName, "*.xml")){ // перебираем все xml базы в папке со словорями
+			foreach(string xmlDataBase in Directory.GetFiles(Dictionary.DictionaryI18nDirectoryName, "*.xml")){ // перебираем все xml базы в папке со словорями
                 ILangLoader loader = new LangXMLLoader(xmlDataBase);
 				loader.getData(ref mapData, ref localizations); // записываем прочитанные данные в словарь
 				loader = null;

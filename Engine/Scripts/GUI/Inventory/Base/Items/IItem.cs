@@ -20,7 +20,6 @@ namespace Engine.EGUI.Inventory {
 		void setCount(int count);
 
 		Texture getIcon();
-		void    setIcon(Texture icon);
 
 		bool isSelected();
 		void setSelected(bool selected);

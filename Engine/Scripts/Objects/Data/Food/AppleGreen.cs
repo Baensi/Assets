@@ -12,21 +12,22 @@ namespace Engine.Objects.Food {
 
 	public class AppleGreen : DynamicObject, ICookedType, IUsedType {
 
-		private static string    COOKED     = "Objects/Food/cooked_apple";
-		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/apple_green_cook");
+		private string    COOKED = "Objects/Food/cooked_apple";
 	
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
-		public AppleGreen() : base() {
-			item = DObjectList.Items.Food.AppleGreen;
+		void OnEnable() {
+			
 		}
 
 		void Start() {
 			base.OnStart();
 
-			cookTemplate = new ObjectCooked(this, COOK_SOUND, 5);
+			item         = DObjectList.getInstance().getItem("AppleGreen");
+
+			cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 5);
 			zones        = new List<CookingZone>();
 		}
 

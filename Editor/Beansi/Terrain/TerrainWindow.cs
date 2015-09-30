@@ -14,15 +14,12 @@ namespace EngineEditor.Terrain {
 		private static Color designDeleteColor = new Color(1.0f,0.0f,0.0f);
 		private static Color designPickColor   = new Color(1.0f, 1.0f, 0.0f);
 
-		private GameObject           selectionObject = null; // Объект выбранный в сцене
-		private PickObjectData       pickSceneObject = null; // Объект захваченный для кисточки
-		private List<HideObjectData> gameData        = new List<HideObjectData>();
+		private GameObject           selectionObject; // Объект выбранный в сцене
+		private PickObjectData       pickSceneObject; // Объект захваченный для кисточки
+		private List<HideObjectData> gameData;
 
-		private EEditorMode          currentMode = EEditorMode.ModeAdd;
-		private List<TempObject>     tmpData     = new List<TempObject>();
-
-		private Vector3              oldPosition = new Vector3(0, 0, 0);
-		private Quaternion           oldRotation = new Quaternion(0,0,0,0);
+		private EEditorMode      currentMode;
+		private List<TempObject> tmpData;
 
 		private bool selectModeOn = false;
 		private bool addingModeOn = false;
@@ -31,7 +28,11 @@ namespace EngineEditor.Terrain {
 		private static WindowGUI windowGUI;
 
 		void OnEnable() {
+			gameData    = new List<HideObjectData>();
+			currentMode = EEditorMode.ModeAdd;
+			tmpData     = new List<TempObject>();
 
+			windowGUI   = new WindowGUI(this);
 		}
 
 		public GameObject selection {
@@ -42,10 +43,6 @@ namespace EngineEditor.Terrain {
 		public PickObjectData pickupObject {
 			get { return pickSceneObject; }
 			set { pickSceneObject = value; }
-		}
-
-		public TerrainWindow() {
-			windowGUI = new WindowGUI(this);
 		}
 
 		public GameObject getDataContainer() {
@@ -110,17 +107,8 @@ namespace EngineEditor.Terrain {
 			windowGUI.CreateBrushSettings();
 			windowGUI.CreateModeSettings();
 			windowGUI.CreateGenerationSettings();
-
 			windowGUI.CreatePickSettings();
-
-			GUILayout.BeginHorizontal();
-
-				if (GUILayout.Button("Перегенерировать")) {
-					OnGenerateObjects(oldPosition, oldRotation);
-				}
-				windowGUI.CreateHelpSettings();
-
-			GUILayout.EndHorizontal();
+			windowGUI.CreateHelpSettings();
 
 		}
 
@@ -194,8 +182,15 @@ namespace EngineEditor.Terrain {
 			Vector3    cameraPoint = sceneView.camera.transform.position + sceneView.camera.transform.forward + sceneView.camera.transform.right;
 			Quaternion startRot    = Quaternion.LookRotation(hitInfo.normal);
 
-			oldPosition = hitInfo.point;
-			oldRotation = startRot;
+			if (windowGUI.consoleMode) {
+
+				Handles.color = textColor;
+
+				Handles.Label(collider.transform.position, new GUIContent(Utils.ToString(collider.transform.position)));
+				Handles.Label(hitInfo.point, new GUIContent("\n"+Utils.ToString(hitInfo.normal)+"\n"+Utils.ToString(hitInfo.barycentricCoordinate)));
+				Handles.Label(hitInfo.point, Utils.ToString(startRot));
+
+			}
 
 			switch (currentMode) {
 				case EEditorMode.ModeDelete:
@@ -216,7 +211,7 @@ namespace EngineEditor.Terrain {
 					break;
 				case EEditorMode.ModeAdd:
 
-					if (windowGUI.baseObjectPrefab!=null) {
+					if (windowGUI.PrefabObject!=null) {
 						if (tmpData.Count != windowGUI.brushSensitivity) {
 							OnGenerateObjects(hitInfo.point, startRot);
 						} else {
@@ -265,16 +260,6 @@ namespace EngineEditor.Terrain {
 				
 					// направление нормали
 				Handles.DrawLine(hitInfo.point, hitInfo.point + (startRot * new Vector3(0, 0, windowGUI.brushSize*0.2f)));
-
-				if (windowGUI.consoleMode) {
-
-					Handles.color = textColor;
-
-					Handles.Label(collider.transform.position, new GUIContent(Utils.ToString(collider.transform.position)));
-					Handles.Label(hitInfo.point, new GUIContent("\n"+Utils.ToString(hitInfo.normal)+"\n"+Utils.ToString(hitInfo.barycentricCoordinate)));
-					Handles.Label(hitInfo.point, Utils.ToString(startRot));
-
-				}
 			
 			sceneView.Repaint();
 		}
@@ -308,9 +293,9 @@ namespace EngineEditor.Terrain {
 
 		private void OnGenerateObject(Vector3 position, Quaternion rotation) {
 
-			if (windowGUI.baseObjectPrefab==null) return;
+			if (windowGUI.PrefabObject==null) return;
 
-			TempObject tmp = new TempObject((GameObject)Instantiate(windowGUI.baseObjectPrefab, position, rotation));
+			TempObject tmp = new TempObject((GameObject)Instantiate(windowGUI.PrefabObject, position, rotation));
 			tmp.toGameObject().transform.parent = getTmpContainer().transform;
 			
 				OnSetupSettings(tmp, position, rotation, true);
@@ -381,7 +366,6 @@ namespace EngineEditor.Terrain {
 				OnRaycast(sceneView,hitInfo); // дёргаем метод обрабатывающий одобреный объект
 
 		}
-
 		
 	}
 	

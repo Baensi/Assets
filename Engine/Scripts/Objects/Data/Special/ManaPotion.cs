@@ -10,7 +10,7 @@ namespace Engine.Objects.Special {
 	public class ManaPotion : DynamicObject, IUsedType {
 
 		public ManaPotion() : base() {
-			item = DObjectList.Items.ManaPotion;
+			item = DObjectList.getInstance().getItem("ManaPotion");
 		}
 
 		void Start() {

@@ -179,14 +179,23 @@ namespace Engine.EGUI.Inventory {
 
 		public void OnDrawPicked(float mouseX, float mouseY) {
 
+#if !UNITY_EDITOR
+
 			if (Input.GetMouseButtonDown(0) && eventData.item==Item.NULL) {
 				
 			}
 
-			//if (pickItem.icon==null)
-			//	return;
+#else
 
-			//pickItem.redraw(mouseX, mouseY);
+			if (Event.current.type==EventType.MouseDown) {
+				eventData.eventType = InventarEvent.ItemPickUp;
+				eventData.item = selectedItem;
+			}
+
+#endif
+
+			if (eventData.item.getSize()!=null)
+				eventData.item.redraw(mouseX, mouseY);
 
 		}
 

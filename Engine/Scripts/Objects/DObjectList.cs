@@ -1,116 +1,86 @@
 using System;
+using System.Xml;
+using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
 using Engine.EGUI.Inventory;
+using Engine.I18N;
 
 namespace Engine.Objects {
 
-	public static class DObjectList {
+	public class DObjectList {
 
-			// предметы в инвентаре
-		public static class Items {
+		private static DObjectList instance;
+		private static SortedDictionary<string,Item> items = null;
 
-			public static Item HealthPotion = new Item().Create(
-				Resources.Load<GameObject>("Objects/health_potion"),
-				Resources.Load<Texture2D>("Objects/health_potion_icon"),
-				new ItemSize(1, 1), 5, new ItemDescription().Create(S_Health_Potion, "healthpotion_id_name", "healthpotion_id_caption", 1f)
-			);
-
-			public static Item ManaPotion   = new Item().Create(
-				Resources.Load<GameObject>("Objects/mana_potion"),
-				Resources.Load<Texture2D>("Objects/mana_potion_icon"),
-				new ItemSize(1, 1), 5, new ItemDescription().Create(S_Mana_Potion, "manapotion_id_name", "manapotion_id_caption", 1.1f)
-			);
-
-			public static class Food {
-
-				public static Item RawBread    = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/raw_bread"),
-					Resources.Load<Texture2D>("Objects/Food/raw_bread_icon"),
-					new ItemSize(1, 1), 1, new ItemDescription().Create(S_Raw_Bread, "rawbread_id_name", "rawbread_id_caption", 0.1f)
-				);
-				public static Item RawHam      = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/raw_ham"),
-					Resources.Load<Texture2D>("Objects/Food/raw_ham_icon"),
-					new ItemSize(1, 1), 1, new ItemDescription().Create(S_Raw_Ham, "rawham_id_name", "rawham_id_caption", 0.3f)
-				);
-				public static Item RawFish     = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/raw_fish"),
-					Resources.Load<Texture2D>("Objects/Food/raw_fish_icon"),
-					new ItemSize(1, 1), 1, new ItemDescription().Create(S_Raw_Fish, "rawfish_id_name", "rawfish_id_caption", 0.2f)
-				);
-
-				public static Item CookedBread = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/cooked_bread"),
-					Resources.Load<Texture2D>("Objects/Food/cooked_bread_icon"),
-					new ItemSize(1, 1), 1, new ItemDescription().Create(S_Cooked_Bread, "cookedbread_id_name", "cookedbread_id_caption", 0.2f)
-				);
-				public static Item CookedHam   = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/cooked_ham"),
-					Resources.Load<Texture2D>("Objects/Food/cooked_ham_icon"),
-					new ItemSize(1, 1), 1, new ItemDescription().Create(S_Cooked_Ham, "cookedham_id_name", "cookedham_id_caption", 0.4f)
-				);
-				public static Item CookedFish  = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/cooked_fish"),
-					Resources.Load<Texture2D>("Objects/Food/cooked_fish_icon"),
-					new ItemSize(1, 1), 1, new ItemDescription().Create(S_Cooked_Fish, "cookedfish_id_name", "cookedfish_id_caption", 0.3f)
-				);
-
-				public static Item AppleGreen  = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/apple_green"),
-					Resources.Load<Texture2D>("Objects/Food/apple_green_icon"),
-					new ItemSize(1, 1), 3, new ItemDescription().Create(S_Apple_Green, "applegreen_id_name", "applegreen_id_caption", 0.07f)
-				);
-				public static Item AppleYellow = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/apple_yellow"),
-					Resources.Load<Texture2D>("Objects/Food/apple_yellow_icon"),
-					new ItemSize(1, 1), 3, new ItemDescription().Create(S_Apple_Yellow, "appleyellow_id_name", "appleyellow_id_caption", 0.07f)
-				);
-				public static Item AppleRed    = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/apple_red"),
-					Resources.Load<Texture2D>("Objects/Food/apple_red_icon"),
-					new ItemSize(1, 1), 3, new ItemDescription().Create(S_Apple_Red, "applered_id_name", "applered_id_caption", 0.07f)
-				);
-				public static Item CookedApple = new Item().Create(
-					Resources.Load<GameObject>("Objects/Food/cooked_apple"),
-					Resources.Load<Texture2D>("Objects/Food/cooked_apple_icon"),
-					new ItemSize(1, 1), 3, new ItemDescription().Create(S_Cooked_Apple, "cookedapple_id_name", "cookedapple_id_caption", 0.1f)
-				);
-			}
-
+		public static DObjectList getInstance() {
+			if (instance==null)
+				instance = new DObjectList();
+			return instance;
 		}
 
-		public const int S_Health_Potion = 0xf001;
-		public const int S_Mana_Potion   = 0xf002;
-		
-		public const int S_Raw_Bread     = 0x0003;
-		public const int S_Cooked_Bread  = 0x0004;
-		public const int S_Raw_Ham       = 0x0005;
-		public const int S_Cooked_Ham    = 0x0006;
-		public const int S_Raw_Fish      = 0x0007;
-		public const int S_Cooked_Fish   = 0x0008;
-										 
-		public const int S_Apple_Green   = 0x0009;
-		public const int S_Apple_Yellow  = 0x000a;
-		public const int S_Apple_Red     = 0x000b;
-										 
-		public const int S_Cooked_Apple  = 0x000c;
+		public SortedDictionary<string, Item> readItems(string fileName) {
+			SortedDictionary<string, Item> result = new SortedDictionary<string, Item>();
 
+				XmlDocument xDocument = new XmlDocument();
+				XmlTextReader reader = new XmlTextReader(fileName);
+				xDocument.Load(reader);
+				XmlNodeList objectsList = xDocument.GetElementsByTagName("item");
 
-		public static void ReCreate() {
+				foreach (XmlElement item in objectsList) {
 
-			Items.HealthPotion.description.ReCreate();
-			Items.ManaPotion.description.ReCreate();
-			Items.Food.AppleGreen.description.ReCreate();
-			Items.Food.AppleYellow.description.ReCreate();
-			Items.Food.AppleRed.description.ReCreate();
-			Items.Food.CookedApple.description.ReCreate();
-			Items.Food.CookedBread.description.ReCreate();
-			Items.Food.CookedFish.description.ReCreate();
-			Items.Food.CookedHam.description.ReCreate();
-			Items.Food.RawBread.description.ReCreate();
-			Items.Food.RawFish.description.ReCreate();
-			Items.Food.RawHam.description.ReCreate();
+					XmlElement  property    = (XmlElement)item.GetElementsByTagName("property")[0];
+					XmlElement  description = (XmlElement)item.GetElementsByTagName("description")[0];
+					XmlNodeList sounds      = description.GetElementsByTagName("sounds");
 
+					string     name = item.GetAttribute("name");
+					GameObject gameObject = Resources.Load<GameObject>(item.GetAttribute("gameObject"));
+					int        id = Convert.ToInt32(item.GetAttribute("id"));
+					
+					Texture2D  icon = Resources.Load<Texture2D>(description.GetAttribute("icon"));
+					List<SoundPack> soundList = null;
+
+					if(sounds.Count>0)
+						foreach(XmlElement sound in sounds)
+							soundList.Add(new SoundPack(Resources.Load<AudioClip>(sound.GetAttribute("sound")),sound.GetAttribute("name")));
+
+					int width  = Convert.ToInt32(property.GetAttribute("width"));
+					int height = Convert.ToInt32(property.GetAttribute("height"));
+					int count  = Convert.ToInt32(property.GetAttribute("count"));
+
+					ItemResource resource = new ItemResource(icon, soundList);
+					ItemSize     size = new ItemSize(width,height);
+
+					string textName    = description.GetAttribute("textName");
+					string textCaption = description.GetAttribute("textCaption");
+					float  costValue   = Convert.ToSingle(description.GetAttribute("costValue"));
+
+					ItemDescription itemDescription = new ItemDescription().Create(id,textName,textCaption,costValue);
+
+					result.Add(name, new Item().Create(gameObject, resource, size, count, itemDescription));
+				}
+
+				reader.Close();
+				reader    = null;
+				xDocument = null;
+
+			return result;
+		}
+
+		public Item getItem(string key) {
+
+			if (items==null)
+				items = readItems(Dictionary.DictionaryObjectsFileName);
+
+			Item result;
+
+			items.TryGetValue(key, out result);
+			return result;
+		}
+
+		public void ReCreate() {
+			foreach (Item value in items.Values)
+				value.description.ReCreate();
 		}
 
 	}

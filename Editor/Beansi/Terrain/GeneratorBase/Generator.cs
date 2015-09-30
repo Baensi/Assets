@@ -95,10 +95,10 @@ namespace EngineEditor.Terrain {
 
 				RaycastHit hitInfo = new RaycastHit();
 
-				Handles.color=new Color(1f, 0f, 0f);
+				//Handles.color=new Color(1f, 0f, 0f);
 				result += rotation * new Vector3(0, 0, 1f);
 
-				Handles.DrawLine(position, result);
+				//Handles.DrawLine(position, result);
 
 				Ray ray = new Ray(result, rotation * new Vector3(0, 0, -1)); // генерируем луч в сторону поверхности
 
@@ -106,7 +106,7 @@ namespace EngineEditor.Terrain {
 
 					Handles.color=new Color(0f, 0f, 1f);
 					Handles.DotCap(0, hitInfo.point, rotation, 0.02f);
-					Handles.DrawLine(result, hitInfo.point);
+					//Handles.DrawLine(result, hitInfo.point);
 
 					result = hitInfo.point;// + (rotation * new Vector3(0, 0, 1)); // прибиваем траекторию к поверхности
 

@@ -17,7 +17,7 @@ namespace Engine.EGUI.Inventory {
 		public ItemDescription description;
 		public ItemPosition    position;
 		public ItemSize        size;
-		public Texture         icon;
+		public ItemResource    resource;
 
 		public bool         isSelect;
 		public int          count;
@@ -84,10 +84,7 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public Texture getIcon(){
-			return icon;
-		}
-		public void setIcon(Texture icon){
-			this.icon=icon;
+			return resource.icon;
 		}
 
 		public ItemPosition getPosition(){
@@ -112,9 +109,9 @@ namespace Engine.EGUI.Inventory {
 			this.isSelect=selected;
 		}
 
-		public Item Create(GameObject gameObject, Texture icon, ItemSize size, int maxCount, ItemDescription description) {
+		public Item Create(GameObject gameObject, ItemResource resource, ItemSize size, int maxCount, ItemDescription description) {
 			this.gameObject=gameObject;
-			this.icon=icon;
+			this.resource=resource;
 			this.size=size;
 			this.maxCount=maxCount;
 			this.count=1;
@@ -129,7 +126,7 @@ namespace Engine.EGUI.Inventory {
 					                      (float)CellSettings.cellWidth,
 					                      (float)CellSettings.cellHeight);
 
-			GUI.DrawTexture(cellRectangle,icon);
+			GUI.DrawTexture(cellRectangle, resource.icon);
 
 			if(count>1){
 

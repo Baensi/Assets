@@ -12,21 +12,22 @@ namespace Engine.Objects.Food {
 
 	public class RawFish : DynamicObject, ICookedType {
 
-		private static string    COOKED     = "Objects/Food/cooked_fish";
-		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/raw_fish_cook");
+		private string    COOKED = "Objects/Food/cooked_fish";
 	
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
-		public RawFish() : base() {
-			item = DObjectList.Items.Food.RawFish;
+		void OnEnable() {
+
 		}
 
 		void Start() {
 			base.OnStart();
 
-			cookTemplate = new ObjectCooked(this, COOK_SOUND, 10);
+			item         = DObjectList.getInstance().getItem("RawFish");
+
+			cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 10);
 			zones        = new List<CookingZone>();
 		}
 

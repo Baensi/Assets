@@ -33,10 +33,11 @@ namespace Engine.Objects {
 			
 			gameObject.AddComponent<Rigidbody>();
 			gameObject.AddComponent<BoxCollider>();
+
 			objectsSelector = SingletonNames.getMainCamera().GetComponent<ObjectsSelector>();
 			
 			currentRenderer = gameObject.GetComponent<Renderer>();
-			defaultShader = currentRenderer.material.shader;
+			defaultShader   = currentRenderer.material.shader;
 			
 			if(selectedShader==null)
 				selectedShader = Shader.Find("DynamicObject/Selected");

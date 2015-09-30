@@ -10,7 +10,7 @@ namespace Engine.Objects.Special {
 	public class HealthPotion : DynamicObject, IUsedType {
 
 		public HealthPotion() : base() {
-			item = DObjectList.Items.HealthPotion;
+			item = DObjectList.getInstance().getItem("HealthPotion");
 		}
 
 		void Start() {

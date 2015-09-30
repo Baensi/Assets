@@ -9,24 +9,25 @@ using Engine.Player;
 using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
-
+	
 	public class AppleYellow : DynamicObject, ICookedType, IUsedType {
 
-		private static string    COOKED     = "Objects/Food/cooked_red_apple";
-		private static AudioClip COOK_SOUND = Resources.Load<AudioClip>("Objects/Food/raw_red_apple_cook");
+		private string    COOKED = "Objects/Food/cooked_red_apple";
 
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
-		public AppleYellow() : base() {
-			item = DObjectList.Items.Food.AppleYellow;
+		void OnEnable() {
+
 		}
 
 		void Start() {
 			base.OnStart();
 
-			cookTemplate = new ObjectCooked(this, COOK_SOUND, 5);
+			item         = DObjectList.getInstance().getItem("AppleYellow");
+
+			cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 5);
 			zones        = new List<CookingZone>();
 		}
 

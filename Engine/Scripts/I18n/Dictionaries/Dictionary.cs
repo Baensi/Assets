@@ -4,7 +4,8 @@ namespace Engine.I18N {
 
 	public static class Dictionary {
 
-		public static string DictionaryDirectoryName = "assets/resources/lang/";
+		public static string DictionaryI18nDirectoryName = "assets/resources/lang/";
+		public static string DictionaryObjectsFileName   = "assets/resources/objects/data.xml";
 
 		public static string K_COUNT = "count";
 

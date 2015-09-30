@@ -12,12 +12,10 @@ namespace Engine.Objects.Food {
 
 	public class CookedApple : DynamicObject, IUsedType {
 
-		public CookedApple() : base() {
-			item = DObjectList.Items.Food.CookedApple;
-		}
-
 		void Start() {
 			base.OnStart();
+
+			item = DObjectList.getInstance().getItem("CookedApple");
 		}
 
 		void OnGUI() {

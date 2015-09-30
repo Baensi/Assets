@@ -21,7 +21,7 @@ namespace Engine.Objects {
 		private static string readedType_caption    = "Можно прочитать";
 
 		void OnEnable() {
-
+			
 		}
 
 		public override void OnInspectorGUI() {
@@ -34,6 +34,7 @@ namespace Engine.Objects {
 			EditorGUILayout.Separator();
 			EditorGUILayout.LabelField(name_caption + dynamicObject.getName());
 			EditorGUILayout.LabelField(caption_caption + dynamicObject.getCaption());
+
 			EditorGUILayout.Separator();
 			EditorGUILayout.LabelField(properties_caption);
 
@@ -53,7 +54,4 @@ namespace Engine.Objects {
 
 	}
 
-	// Собираем библиотеку редакторов предметов
-	//[CustomEditor(typeof(HealthWater))] public class HealthWaterEditor : DynamicObjectEditor { }
-	//[CustomEditor(typeof(RawBread))]    public class RawBreadEditor    : DynamicObjectEditor { }
 }

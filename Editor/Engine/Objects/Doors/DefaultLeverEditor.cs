@@ -32,6 +32,9 @@ namespace Engine.Objects.Doors {
 
 				lever.OnUpdate();
 
+				if (lever.door!=null)
+					lever.door.OnUpdate();
+
 			#endif
 
 		}

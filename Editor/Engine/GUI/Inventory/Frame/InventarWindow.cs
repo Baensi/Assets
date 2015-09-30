@@ -19,13 +19,13 @@ namespace Engine.EGUI.Inventory {
 
 			width  = this.position.width;
 			height = this.position.height;
-
-			
-
 		}
 
 		void OnGUI() {
 			Handles.BeginGUI();
+
+			if (inventory==null)
+				return;
 
 			if (this.position.width!=width || this.position.height!=height) {
 				width = this.position.width;

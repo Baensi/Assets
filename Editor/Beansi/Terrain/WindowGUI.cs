@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -6,6 +7,9 @@ using UnityEditor;
 namespace EngineEditor.Terrain {
 	
 	public class WindowGUI {
+
+		private static Color lineColor  = new Color(0.7f, 0.7f, 0.8f);
+		private static Color lineShadow = new Color(0.4f, 0.4f, 0.4f);
 
 		// Режим редактирвоания
 		public bool designMode  = true;
@@ -42,13 +46,14 @@ namespace EngineEditor.Terrain {
 		
 		public Color minColor = new Color(0.15f, 0.50f, 0.09f);
 		public Color maxColor = new Color(0.45f, 0.50f, 0.09f);
-		
-		public GameObject baseObjectPrefab;
 
 		private TerrainWindow terrainWindow;
 
+		private List<GameObject> prefabList = new List<GameObject>();
+
 			public WindowGUI(TerrainWindow terrainWindow) {
 				this.terrainWindow=terrainWindow;
+				prefabList.Add(null);
 			}
 
 		public void CreateBrushSettings() {
@@ -62,11 +67,40 @@ namespace EngineEditor.Terrain {
 
 		}
 
+		public GameObject PrefabObject {
+			get {
+				int i = UnityEngine.Random.Range(0, prefabList.Count);
+				return prefabList[i];
+			}
+			private set { }
+		}
+
 		public void CreateGenerationSettings() {
 
 			EditorGUILayout.Separator();
 
-			baseObjectPrefab = (GameObject)EditorGUILayout.ObjectField(new GUIContent("Объект"), baseObjectPrefab, typeof(GameObject), true);
+			GUILayout.Label("Префабы", EditorStyles.boldLabel);
+
+			drawLine();
+
+			EditorGUILayout.BeginHorizontal();
+				if (GUILayout.Button("Добавить"))
+					prefabList.Add(null);
+				if (GUILayout.Button("Удалить"))
+					prefabList.RemoveAt(prefabList.Count-1);
+			EditorGUILayout.EndHorizontal();
+
+			for (int i=0; i<prefabList.Count; i++) {
+
+				EditorGUILayout.BeginHorizontal();
+
+					prefabList[i] = (GameObject)EditorGUILayout.ObjectField(new GUIContent("Объект ["+i.ToString()+"]"), prefabList[i], typeof(GameObject), true);
+
+				EditorGUILayout.EndHorizontal();
+
+			}
+
+			drawLine();
 
 			EditorGUILayout.Separator();
 			EditorGUILayout.Separator();
@@ -172,11 +206,19 @@ namespace EngineEditor.Terrain {
 					+" левый Ctrl - переводит в режим \"Удаление\"\n"
 					+" левый Alt+ЛКМ - захватить выбранный объект\n\n"
 
+					+" левый Shift+ЛКМ - добавить объекты в сцену\n"
+					+" левый Ctrl+ПКМ - удалить сгенерированные объекты под кисточкой\n\n"
+
 					+" NumPade \"+\" - увеличивает область кисточки\n"
 					+" NumPade \"-\" - уменьшает область кисточки\n",
 					"Закрыть");
 			}
 
+		}
+
+		public void drawLine() {
+			EditorGUI.DrawRect(GUILayoutUtility.GetRect(120, 2), lineColor);
+			EditorGUI.DrawRect(GUILayoutUtility.GetRect(120, 2), lineShadow);
 		}
 	
 	}
