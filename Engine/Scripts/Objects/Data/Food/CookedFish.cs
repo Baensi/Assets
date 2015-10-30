@@ -22,11 +22,11 @@ namespace Engine.Objects.Food {
 
 		}
 
-		public bool onUse(){
-			
-			
-			base.Destroy(true);
-			return true;
+		public bool onUse() {
+			if (InventoryHelper.AddInInventory(item)) {
+				base.Destroy(true);
+				return true;
+			} return false;
 		}
 		
 	}

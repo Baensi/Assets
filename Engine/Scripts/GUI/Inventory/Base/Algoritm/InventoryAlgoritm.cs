@@ -53,6 +53,37 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		/// <summary>
+		/// ¬озвращает предмет с которым столкнулс€ item
+		/// </summary>
+		/// <param name="slot">слот в котором провер€ютс€ коллизии</param>
+		/// <param name="posX">положение выбранного предмета по x</param>
+		/// <param name="posY">положение выбранного предмета по y</param>
+		/// <returns>если столкновени€ нет, возвращает null</returns>
+		public ItemSlot getCollisionItem(RectangleSlot slot, ItemSlot target, int posX, int posY) {
+
+			foreach (ItemSlot item in slot.Items) {
+
+				if (item!=target &&
+
+					(item.position.X<=posX &&
+					item.position.Y<=posY &&
+					item.position.X+item.item.getSize().getWidth()>=posX+target.item.getSize().getWidth() &&
+					item.position.Y+item.item.getSize().getHeight()>=posY+target.item.getSize().getHeight()
+					||
+					item.position.X>=posX &&
+					item.position.Y>=posY &&
+					item.position.X+item.item.getSize().getWidth()<=posX+target.item.getSize().getWidth() &&
+					item.position.Y+item.item.getSize().getHeight()<=posY+target.item.getSize().getHeight()
+					)) // провер€ем коллизию
+
+					return item;
+
+			}
+
+			return null; // коллизий не обнаружено
+		}
+
+		/// <summary>
 		/// »щет слот в указанной области под курсором
 		/// </summary>
 		/// <param name="posX"></param>
@@ -76,25 +107,25 @@ namespace Engine.EGUI.Inventory {
 		/// </summary>
 		/// <param name="cellX"></param>
 		/// <param name="cellY"></param>
-		/// <returns>≈сли предмет не найден вернЄт Item.NULL</returns>
-		public Item getItem(RectangleSlot slot, int cellX, int cellY) {
+		/// <returns>≈сли предмет не найден вернЄт null</returns>
+		public ItemSlot getItem(RectangleSlot slot, int cellX, int cellY) {
 
-			if (slots==null) return Item.NULL;
+			if (slots==null) return null;
 
-			foreach (Item item in slot.Items) {
+			foreach (ItemSlot item in slot.Items) {
 
 				if ((item.getPosition().X == cellX && item.getPosition().Y == cellY)) // предмет лежит в этой €чейке
 					return item;
 
 				if (cellX>=item.getPosition().X
-					&& cellX<item.getPosition().X+item.getSize().getWidth()
+					&& cellX<item.getPosition().X+item.item.getSize().getWidth()
 					&& cellY>=item.getPosition().Y
-					&& cellY<item.getPosition().Y+item.getSize().getHeight()) // предмет занимает эту €чейку
+					&& cellY<item.getPosition().Y+item.item.getSize().getHeight()) // предмет занимает эту €чейку
 					return item;
 
 			}
 
-			return Item.NULL; // предмета в €чейке нет
+			return null; // предмета в €чейке нет
 		}
 
 		public bool addItem(Item item){
@@ -114,12 +145,12 @@ namespace Engine.EGUI.Inventory {
 					for(int x=1;x<=slot.position.CellsXCount;x++){
 
 						bool result = true;
-						foreach(Item i in slot.Items){
+						foreach(ItemSlot i in slot.Items){
 							
 							if(x>=i.getPosition().X &&
-							   x<i.getPosition().X+i.getSize().getWidth() &&
+							   x<i.getPosition().X+i.item.getSize().getWidth() &&
 							   y>=i.getPosition().Y &&
-							   y<i.getPosition().Y+i.getSize().getHeight()){
+							   y<i.getPosition().Y+i.item.getSize().getHeight()){
 								result=false;
 								break;
 							}
@@ -127,8 +158,7 @@ namespace Engine.EGUI.Inventory {
 						}
 
 						if(result){
-							item.setPosition(new ItemPosition(x,y));
-							slot.Items.Add(item);
+							slot.Items.Add(new ItemSlot(item, new ItemPosition(x, y)));
 							return true;
 						}
 
@@ -142,32 +172,91 @@ namespace Engine.EGUI.Inventory {
 
 		}
 
-		public bool removeItem(Item item){
+		/// <summary>
+		/// ”дал€ет предмет из инвентар€
+		/// </summary>
+		/// <param name="item">предмет который надо удалить из инвентар€</param>
+		/// <param name="equals">если true - провер€етс€ эквивалентность (item1.Equals(item2)), если false, провер€етс€ адрес (item1==item2)</param>
+		/// <param name="full">если true - удал€ет предме, независимо от количества</param>
+		/// <param name="count">число удал€емых предметов (действует при full=true)</param>
+		/// <returns>¬озращает успех операции</returns>
+		public bool removeItem(Item item, bool equals=true, bool full = true, int count = 1){
 
-			List<Item> removeList = new List<Item>();
+			bool flagResult = false;
+
+			int dropCount = count;
+			List<DropItemData> changeCountList = new List<DropItemData>();
+
+			ItemSlot       removedItem=null;
+			RectangleSlot  removedSlot=null;
 
 				foreach (RectangleSlot slot in slots) {
-					foreach(Item i in slot.Items)
 
-						if(i.Equals(item)){
+					foreach(ItemSlot i in slot.Items){
 
-							if(i.getCount()>1)
-								i.decCount();
-							else
-								removeList.Add(item);
+						if ((equals && i.item.Equals(item)) || (!equals && i.item==item)) {
 
-							return true;
+							if(full) {
+
+								removedItem=i;
+								removedSlot = slot;
+
+								flagResult = true;
+								break;
+							} else {
+
+								if (dropCount>0) {
+
+									int dropResult = i.item.decCount(dropCount);
+									changeCountList.Add(new DropItemData(slot,i, dropCount-dropResult)); // сохран€ем историю изменений
+									dropCount = dropResult;
+
+								} else {
+
+									flagResult = true;
+									break;
+								}
+
+							}
+
 						}
 
-					foreach (Item i in removeList)
-						slot.Items.Remove(i);
+					}
 
-					removeList.Clear();
+					if (flagResult)
+						break;
+
 				}
 
-			removeList = null;
+			if (!full) {
+				if (dropCount>0) { // если не все предметы удалось выкинуть (их попросту нет)
 
-			return false;
+					foreach (DropItemData droppedItem in changeCountList)
+						droppedItem.item.item.incCount(droppedItem.changeValue); // возвращаем всЄ взад
+
+				} else {
+
+					foreach (DropItemData droppedItem in changeCountList) {
+
+						if (droppedItem.item.item.getCount()==0)
+							droppedItem.slot.Items.Remove(droppedItem.item);
+
+						droppedItem.Clear();
+					}
+
+					changeCountList.Clear();
+
+				}
+			} else {
+
+				if (removedItem!=null)
+					removedSlot.Items.Remove(removedItem);
+
+			}
+
+			changeCountList = null;
+
+			return flagResult;
 		}
 
 

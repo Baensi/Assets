@@ -8,7 +8,7 @@ namespace Engine.Objects.Doors {
 	[CustomEditor(typeof(DefaultDoor), true)]
 	public class DefaultDoorEditor : Editor {
 
-		private bool        previewMode = true;
+		private bool        previewMode = false;
 		private DefaultDoor door;
 
 		void OnEnable() {

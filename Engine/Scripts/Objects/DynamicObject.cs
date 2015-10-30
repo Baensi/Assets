@@ -14,7 +14,7 @@ namespace Engine.Objects {
 	/// </summary>
 	public class DynamicObject : MonoBehaviour, IDynamicObject {
 
-		public Item      item = Item.NULL;
+		public Item      item = null;
 		
 		protected TextDisplayed displayed  = TextDisplayed.Displayed;
 		protected Renderer      currentRenderer;

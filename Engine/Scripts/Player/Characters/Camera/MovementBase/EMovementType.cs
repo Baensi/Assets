@@ -11,7 +11,8 @@ namespace Engine.Player.Movement.Movements {
 	public enum EMovementType : int {
 		
 		inground   = 0, // наземное перемещение
-		underwater = 1  // подводное перемещение
+		inwater    = 1, // надводное перемещение
+		underwater = 2  // подводное перемещение
 		
 	};
 	

@@ -1,4 +1,4 @@
-Shader "Hidden/Sepiatone Effect" {
+Shader "Engine/UnderwaterShader" {
 Properties {
 	_MainTex ("Base (RGB)", 2D) = "white" {}
 }

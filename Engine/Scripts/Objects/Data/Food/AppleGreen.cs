@@ -12,8 +12,6 @@ namespace Engine.Objects.Food {
 
 	public class AppleGreen : DynamicObject, ICookedType, IUsedType {
 
-		private string    COOKED = "Objects/Food/cooked_apple";
-	
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
@@ -63,10 +61,10 @@ namespace Engine.Objects.Food {
 		}
 		
 		public bool onUse(){
-			
-			
-			base.Destroy(true);
-			return true;
+			if (InventoryHelper.AddInInventory(item)) {
+				base.Destroy(true);
+				return true;
+			} return false;
 		}
 
 		void Update() {
@@ -74,7 +72,9 @@ namespace Engine.Objects.Food {
 			if (!isCooked) return;
 
 			base.Destroy(); // Добавляем текущий экземпляр в корзину
-			Instantiate(Resources.Load(COOKED), this.transform.position, this.transform.rotation); // создаём новый экземпляр объекта
+
+			GameObject cookedObject = DObjectList.getInstance().getItem("CookedApple").toGameObject();
+			Instantiate(cookedObject, this.transform.position, this.transform.rotation); // создаём новый экземпляр объекта
 			
 		}
 		

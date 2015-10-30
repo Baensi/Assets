@@ -7,57 +7,39 @@ using Engine.I18N;
 namespace Engine.EGUI.Inventory {
 
 	[Serializable]
-	public struct Item : IItem {
+	public class Item : IItem {
 
-		public static Item NULL = new Item() { gameObject=null };
+		[SerializeField] public ItemDescription description;
+		[SerializeField] public ItemSize        size;
+		[SerializeField] public ItemResource    resource;
 
-		private static GUIStyle labelStyle = null;
-		private static Color    labelColor = new Color(1.0f,1.0f,0.5f);
-
-		public ItemDescription description;
-		public ItemPosition    position;
-		public ItemSize        size;
-		public ItemResource    resource;
-
-		public bool         isSelect;
-		public int          count;
-		public int          maxCount;
+		[SerializeField] public int  count;
+		[SerializeField] public int  maxCount;
 
 		private GameObject  gameObject;
-
-		public static GUIStyle getLabelStyle() {
-
-			if (labelStyle==null) {
-				labelStyle = new GUIStyle(GUI.skin.label);
-				labelStyle.alignment = TextAnchor.MiddleRight;
-				labelStyle.normal.textColor = labelColor;
-				labelStyle.fontSize = 15;
-				labelStyle.fontStyle = FontStyle.Bold;
-			}
-
-			return labelStyle;
-
-		}
-
-		public static bool operator ==(Item i1, Item i2) {
-			return i1.gameObject==i2.gameObject;
-		}
-
-		public static bool operator !=(Item i1, Item i2) {
-			return !(i1==i2);
-		}
 
 		public override bool Equals(object obj){
 			IItem item = obj as IItem;
 
 				if(item==null) return false;
 
+				if (item.toGameObject()==null && toGameObject()==null)
+					return true;
+
 			return (item.toGameObject().Equals(toGameObject()));
 
 		}
 
 		public override int GetHashCode() {
-			return base.GetHashCode();
+			return gameObject.GetHashCode();
+		}
+
+		/// <summary>
+		/// Число экземпляров равно максимальному числу экземпляров
+		/// </summary>
+		/// <returns></returns>
+		public bool isFullCount() {
+			return count==maxCount;
 		}
 
 		public int getMaxCount(){
@@ -68,12 +50,64 @@ namespace Engine.EGUI.Inventory {
 			return gameObject;
 		}
 
-		public void incCount(){
-			count++;
+		/// <summary>
+		/// Увеличивает число предметов на value
+		/// </summary>
+		/// <param name="value">Число добавляемых экземпляров</param>
+		/// <returns>Если предметы не влезли, возвращает остаток</returns>
+		public int incCount(int value) {
+
+			if (count+value>maxCount) {
+
+				int result = value+count - maxCount;
+				count = maxCount;
+
+				return result;
+
+			} else {
+
+				count+=value;
+
+			}
+
+			return 0;
 		}
 
-		public void decCount(){
+		/// <summary>
+		/// Уменьшает число предметов на value
+		/// </summary>
+		/// <param name="value">Число отнимаемых экземпляров</param>
+		/// <returns>Если уменьшено до числа меньшего 0, возвращает остаток</returns>
+		public int decCount(int value) {
+
+			if (count<value) {
+
+				int result = value - count;
+				count = 0;
+
+				return result;
+
+			}
+
+			count-=value;
+
+			return 0;
+		}
+
+		public int incCount(){
+			if (count==maxCount)
+				return 1;
+
+			count++;
+			return 0;
+		}
+
+		public int decCount(){
+			if (count==0)
+				return 1;
+
 			count--;
+			return 0;
 		}
 
 		public int getCount(){
@@ -83,15 +117,12 @@ namespace Engine.EGUI.Inventory {
 			this.count=count;
 		}
 
-		public Texture getIcon(){
-			return resource.icon;
+		public ItemDescription getDescription() {
+			return description;
 		}
 
-		public ItemPosition getPosition(){
-			return position;
-		}
-		public void setPosition(ItemPosition position){
-			this.position=position;
+		public Texture getIcon(){
+			return resource.icon;
 		}
 
 		public ItemSize getSize(){
@@ -101,12 +132,18 @@ namespace Engine.EGUI.Inventory {
 			this.size=size;
 		}
 
-		public bool isSelected(){
-			return isSelect;
-		}
+		public Item Clone() {
+			Item result = new Item();
 
-		public void setSelected(bool selected){
-			this.isSelect=selected;
+				result.gameObject  = gameObject;
+				result.description = description;
+				result.resource    = resource;
+				result.size        = size;
+
+				result.count    = count;
+				result.maxCount = maxCount;
+
+			return result;
 		}
 
 		public Item Create(GameObject gameObject, ItemResource resource, ItemSize size, int maxCount, ItemDescription description) {
@@ -117,28 +154,6 @@ namespace Engine.EGUI.Inventory {
 			this.count=1;
 			this.description=description;
 			return this;
-		}
-
-		public void redraw(float posX, float posY){
-
-			Rect cellRectangle = new Rect(posX+CellSettings.cellPaddingX+(position.X-1)*CellSettings.cellWidth,
-					                      posY+CellSettings.cellPaddingY+(position.Y-1)*CellSettings.cellHeight,
-					                      (float)CellSettings.cellWidth,
-					                      (float)CellSettings.cellHeight);
-
-			GUI.DrawTexture(cellRectangle, resource.icon);
-
-			if(count>1){
-
-				Rect labelRectangle = new Rect(cellRectangle.x,
-				                               cellRectangle.y+cellRectangle.height-22.0f,
-				                               cellRectangle.width-8,
-				                               20.0f);
-
-				GUI.Label(labelRectangle, count.ToString()+CLang.getInstance().get(Dictionary.K_COUNT), getLabelStyle());
-
-			}
-
 		}
 
 	}

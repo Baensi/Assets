@@ -33,7 +33,7 @@ namespace Engine.EGUI.Inventory {
 				inventory.onResizeWindow(width, height); // изменяем размер окна
 			}
 
-			inventory.OnEditorUpdate(Event.current.mousePosition.x, Event.current.mousePosition.y);
+			inventory.OnEditorUpdate();
 
 			DrawScreen();
 			DrawSlots();

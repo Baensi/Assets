@@ -140,6 +140,9 @@ namespace Engine.Objects.Doors {
 
 		void Start () {
 
+			if (gameObject.layer != 0)
+				gameObject.layer = 0;
+
 			audioSource = gameObject.GetComponent<AudioSource>();
 
 			if (audioSource==null)

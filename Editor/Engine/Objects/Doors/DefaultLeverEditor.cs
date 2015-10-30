@@ -8,7 +8,7 @@ namespace Engine.Objects.Doors {
 	[CustomEditor(typeof(DoorPushLever), true)]
 	public class DefaultLeverEditor : Editor {
 
-		private bool          previewMode = true;
+		private bool          previewMode = false;
 		private DoorPushLever lever;
 
 		void OnEnable() {

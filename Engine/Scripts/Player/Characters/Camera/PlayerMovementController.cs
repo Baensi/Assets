@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
@@ -24,12 +24,16 @@ namespace Engine.Player.Movement {
 
 		private Actions       actions;
 		
-		private EMovementType movementType; // тип текущего перемещения
-		private IMovement     ingroundMovement;   // реализация хотьбы по земле
-		private IMovement     underwaterMovement; // реализация перемешения под водой
-		private IMovement     currentMovement; // текущий класс перемещения
+		private EMovementType movementType;       // С‚РёРї С‚РµРєСѓС‰РµРіРѕ РїРµСЂРµРјРµС‰РµРЅРёСЏ
 
-		// Устанавливает класс управляющий персонажем
+			// СЃРїРёСЃРѕРє РєРѕРЅС‚СЂРѕР»Р»РµСЂРѕРІ
+		private IMovement ingroundMovement;   // СЂРµР°Р»РёР·Р°С†РёСЏ С…РѕС‚СЊР±С‹ РїРѕ Р·РµРјР»Рµ
+		private IMovement inwaterMovement;    // СЂРµР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµС‰РµРЅРёСЏ РЅР° РїРѕРІРµСЂС…РЅРѕСЃС‚Рё РІРѕРґС‹
+		private IMovement underwaterMovement; // СЂРµР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµС€РµРЅРёСЏ РїРѕРґ РІРѕРґРѕР№
+
+		private IMovement currentMovement;    // С‚РµРєСѓС‰РёР№ РєР»Р°СЃСЃ РїРµСЂРµРјРµС‰РµРЅРёСЏ
+
+		// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєР»Р°СЃСЃ СѓРїСЂР°РІР»СЏСЋС‰РёР№ РїРµСЂСЃРѕРЅР°Р¶РµРј
 		public void setMovementType(EMovementType movementType){
 
 			if (this.movementType.Equals(movementType)) return;
@@ -39,16 +43,27 @@ namespace Engine.Player.Movement {
 				case EMovementType.inground:
 					currentMovement = ingroundMovement;
 				break;
+				case EMovementType.inwater:
+					currentMovement = inwaterMovement;
+				break;
 				case EMovementType.underwater:
 					currentMovement = underwaterMovement;
 				break;
 			}
 		}
 
+		/// <summary>
+		/// Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РёРї С‚РµРєСѓС‰РµРіРѕ РїРµСЂРµРґРІРёР¶РµРЅРёСЏ
+		/// </summary>
+		/// <returns></returns>
 		public EMovementType getMovementType() {
 			return this.movementType;
 		}
 
+		/// <summary>
+		/// Р’РѕР·РІСЂР°С‰Р°РµС‚ РєР»Р°СЃСЃ С‚РµРєСѓС‰РµРіРѕ РїРµСЂРµРјРµС‰РµРЅРёСЏ
+		/// </summary>
+		/// <returns></returns>
 		public IMovement getCurrentMovement() {
 			return currentMovement;
 		}
@@ -59,17 +74,27 @@ namespace Engine.Player.Movement {
 			
 			movementType = EMovementType.inground;
 			
-				ingroundMovement = gameObject.AddComponent<IngroundMovements>();
+					// РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РєРѕРЅС‚СЂРѕР»Р»РµСЂС‹ РґРІРёР¶РµРЅРёСЏ
+				ingroundMovement = gameObject.GetComponent<IngroundMovements>();
+				if (ingroundMovement==null)
+					ingroundMovement = gameObject.AddComponent<IngroundMovements>();
 				ingroundMovement.setUp(actions, mouseLook, fovKick, headBob, jumpBob, attackController);
 
-				underwaterMovement = gameObject.AddComponent<UnderwaterMovements>();
+				underwaterMovement = gameObject.GetComponent<UnderwaterMovements>();
+				if (underwaterMovement == null)
+					underwaterMovement = gameObject.AddComponent<UnderwaterMovements>();
 				underwaterMovement.setUp(actions, mouseLook, fovKick, headBob, jumpBob, attackController);
+
+				inwaterMovement = gameObject.GetComponent<InwaterMovements>();
+				if (inwaterMovement == null)
+					inwaterMovement = gameObject.AddComponent<InwaterMovements>();
+				inwaterMovement.setUp(actions, mouseLook, fovKick, headBob, jumpBob, attackController);
 
 			currentMovement = ingroundMovement;
 			
 		}
 		
-			// вызываем метод update из класса
+			// РІС‹Р·С‹РІР°РµРј РјРµС‚РѕРґ update РёР· РєР»Р°СЃСЃР°
 		void Update() {
 
 			if (GameConfig.GameMode != GameConfig.MODE_GAME)
@@ -79,7 +104,7 @@ namespace Engine.Player.Movement {
 				currentMovement.update();
 		}
 
-			// вызываем метод fixUpdate из класса
+			// РІС‹Р·С‹РІР°РµРј РјРµС‚РѕРґ fixUpdate РёР· РєР»Р°СЃСЃР°
 		void FixedUpdate() {
 
 			if (GameConfig.GameMode != GameConfig.MODE_GAME)

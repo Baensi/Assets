@@ -5,21 +5,53 @@ namespace Engine {
 
 	public static class SingletonNames {
 
-		public static class PlayerObjectsConstants {
+		public static class Constants {
 
 			public static string PLAYER_OBJECT_NAME = "Player";
-			public static string PLAYER_BODY_NAME   = "PlayerBody";
-			public static string PLAYER_HANDS_NAME  = "PlayerHands";
+			public static string PLAYER_CAMERA_NAME = "PlayerCamera";
+
+			public static string PLAYER_HEAD_NAME     = "Head";
+			public static string PLAYER_BODY_NAME     = "Body";
+			public static string PLAYER_HANDS_NAME    = "Hands";
+			public static string PLAYER_FOOTS_NAME    = "Foots";
+			public static string PLAYER_LEGGENS_NAME  = "Leggens";
+
 			public static string PLAYER_ATTACK_NAME = "PlayerAttack";
 			public static string PLAYER_STATE_NAME  = "PlayerState";
 			public static string PLAYER_GUI_NAME    = "PlayerGUI";
 
 			public static class GUI {
 
+				public static string INVENTAR = "PlayerGUI";
+
 				public static string HEALTH_BAR = "PlayerGUI";
 				public static string MANA_BAR   = "PlayerGUI";
 				public static string ENERGY_BAR = "PlayerGUI";
 
+			}
+
+		}
+
+		public static class Player {
+
+			public static GameObject getPlayerBody() {
+				return GameObject.Find(Constants.PLAYER_CAMERA_NAME+"/"+Constants.PLAYER_BODY_NAME);
+			}
+
+			public static GameObject getHead() {
+				return GameObject.Find(Constants.PLAYER_CAMERA_NAME + "/" + Constants.PLAYER_HEAD_NAME);
+			}
+
+			public static GameObject getHands() {
+				return GameObject.Find(Constants.PLAYER_CAMERA_NAME + "/" + Constants.PLAYER_HANDS_NAME);
+			}
+
+			public static GameObject getFoots() {
+				return GameObject.Find(Constants.PLAYER_CAMERA_NAME + "/" + Constants.PLAYER_FOOTS_NAME);
+			}
+
+			public static GameObject getLeggens() {
+				return GameObject.Find(Constants.PLAYER_CAMERA_NAME + "/" + Constants.PLAYER_LEGGENS_NAME);
 			}
 
 		}
@@ -45,15 +77,11 @@ namespace Engine {
 		}
 
 		public static GameObject getPlayer() {
-			return GameObject.Find(PlayerObjectsConstants.PLAYER_OBJECT_NAME);
+			return GameObject.Find(Constants.PLAYER_OBJECT_NAME);
 		}
 
-		public static GameObject getPlayerBody() {
-			return GameObject.Find(PlayerObjectsConstants.PLAYER_BODY_NAME);
-		}
-		
 		public static GameObject getGUI(){
-			return GameObject.Find(PlayerObjectsConstants.PLAYER_GUI_NAME);
+			return GameObject.Find(Constants.PLAYER_GUI_NAME);
 		}
 
 		public static Camera getMainCamera() {

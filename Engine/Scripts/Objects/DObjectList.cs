@@ -31,7 +31,6 @@ namespace Engine.Objects {
 
 					XmlElement  property    = (XmlElement)item.GetElementsByTagName("property")[0];
 					XmlElement  description = (XmlElement)item.GetElementsByTagName("description")[0];
-					XmlNodeList sounds      = description.GetElementsByTagName("sounds");
 
 					string     name = item.GetAttribute("name");
 					GameObject gameObject = Resources.Load<GameObject>(item.GetAttribute("gameObject"));
@@ -40,9 +39,14 @@ namespace Engine.Objects {
 					Texture2D  icon = Resources.Load<Texture2D>(description.GetAttribute("icon"));
 					List<SoundPack> soundList = null;
 
-					if(sounds.Count>0)
-						foreach(XmlElement sound in sounds)
-							soundList.Add(new SoundPack(Resources.Load<AudioClip>(sound.GetAttribute("sound")),sound.GetAttribute("name")));
+					XmlNodeList sounds = description.GetElementsByTagName("sound");
+
+					if (sounds.Count > 0) {
+						soundList = new List<SoundPack>();
+						foreach (XmlElement sound in sounds) {
+							soundList.Add(new SoundPack(Resources.Load<AudioClip>(sound.GetAttribute("sound")), sound.GetAttribute("tag")));
+						}
+					}
 
 					int width  = Convert.ToInt32(property.GetAttribute("width"));
 					int height = Convert.ToInt32(property.GetAttribute("height"));

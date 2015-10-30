@@ -10,10 +10,8 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class RawFish : DynamicObject, ICookedType {
+	public class RawFish : DynamicObject, ICookedType, IUsedType {
 
-		private string    COOKED = "Objects/Food/cooked_fish";
-	
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
@@ -62,12 +60,21 @@ namespace Engine.Objects.Food {
 
 		}
 
+		public bool onUse() {
+			if (InventoryHelper.AddInInventory(item)) {
+				base.Destroy(true);
+				return true;
+			} return false;
+		}
+
 		void Update() {
 
 			if (!isCooked) return;
 
 			base.Destroy(); // Добавляем текущий экземпляр в корзину
-			Instantiate(Resources.Load(COOKED), this.transform.position, this.transform.rotation); // создаём новый экземпляр объекта
+
+			GameObject cookedObject = DObjectList.getInstance().getItem("CookedFish").toGameObject();
+			Instantiate(cookedObject, this.transform.position, this.transform.rotation); // создаём новый экземпляр объекта
 
 		}
 		

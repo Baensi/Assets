@@ -9,7 +9,7 @@ namespace Engine.EGUI.Bars {
 		verticalTopToBottom
 	}; // список ориентаций прогрессбара
 
-	public class UBar : MonoBehaviour, IBar {
+	public class UBar : MonoBehaviour {
 		
 		[SerializeField] public Texture2D fullHealthPicture;
 		[SerializeField] public Texture2D emptyHealthPicture;

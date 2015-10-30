@@ -13,22 +13,12 @@ using UnityStandardAssets.CrossPlatformInput;
 
 namespace Engine.Player {
 
-	public enum SelectedType : int {
-
-		IsDynamic = 0x00, 
-		IsDoor    = 0x01,
-		IsLever   = 0x02
-
-	};
-
 	public class ObjectsSelector : MonoBehaviour {
 
 		[SerializeField] public Texture2D  backgroundCaptionTexture;
 		[SerializeField] public float      selectRange;
 
-		private SelectedType   selectType;
-		private MonoBehaviour  selectVariant  = null;
-		private IDynamicObject prevousObject;
+		private SelectionGroup selected;
 
 		private Camera         playerCamera;
 
@@ -43,6 +33,10 @@ namespace Engine.Player {
 		private GUIController guiController;
 		public AudioSource    audioSource;
 
+		void OnEnable() {
+
+		}
+
 		void Start () {
 
 			playerCamera = SingletonNames.getMainCamera();
@@ -56,7 +50,7 @@ namespace Engine.Player {
 			doorController = new DoorPhysXController();
 
 			guiController = SingletonNames.getGUI().GetComponent<GUIController>();
-
+			
 		}
 
 		void Update () {
@@ -66,37 +60,37 @@ namespace Engine.Player {
 
 			OnPickMove();
 
-			if (Physics.Raycast(ray, out hitInfo, selectRange, 1)) {
+			if (Physics.Raycast(ray, out hitInfo, selectRange)) {
 
 				MonoBehaviour obj = hitInfo.transform.GetComponent<MonoBehaviour>();
 
-				if (prevousObject != null)
-					prevousObject.setSelection(false);
-				
-				if(selectType==SelectedType.IsDynamic)
-					prevousObject = selectVariant as IDynamicObject;
+				if (selected.prevousObject != null)
+					selected.prevousObject.setSelection(false);
+
+				if (selected.selectType == SelectedType.IsDynamic)
+					selected.prevousObject = selected.selectedObject;
 
 				var dynamic = obj as IDynamicObject;
 
 				if (dynamic != null) { // объект типа IDynamicObject
-					selectVariant = obj;
-					selectType = SelectedType.IsDynamic;
+					selected.selectedObject = dynamic;
+					selected.selectType = SelectedType.IsDynamic;
 
 					if (OnUse(dynamic)) return;
 
-						OnPickUp(dynamic);
+					OnPickUp(dynamic);
 
-						if (dynamic.getDisplayed().Equals(TextDisplayed.Displayed))
-							dynamic.setSelection(true);
+					if (dynamic.getDisplayed().Equals(TextDisplayed.Displayed))
+						dynamic.setSelection(true);
 
 					return;
-				} 
+				}
 
 				var door = obj as IDoor;
 
-				if(door!=null){
-					selectVariant = obj;
-					selectType = SelectedType.IsDoor;
+				if (door != null) {
+					selected.selectedDoor = door;
+					selected.selectType = SelectedType.IsDoor;
 					doorController.update(door);
 					return;
 				}
@@ -104,26 +98,33 @@ namespace Engine.Player {
 				var lever = obj as ILever;
 
 				if (lever != null) {
-					selectVariant = obj;
-					selectType = SelectedType.IsLever;
+					selected.selectedLever = lever;
+					selected.selectType = SelectedType.IsLever;
 					doorController.update(lever);
 					return;
 				}
 
-				selectVariant = null;
-	
 			}
+
+			ResetSelected();
+
 		}
 
 		public void ResetSelected() {
-			if (prevousObject != null)
-				prevousObject.setSelection(false);
-			prevousObject  = null;
+			
+			if (selected.prevousObject != null)
+				selected.prevousObject.setSelection(false);
 
-			if (selectVariant != null && selectType==SelectedType.IsDynamic)
-				(selectVariant as IDynamicObject).setSelection(false);
+			selected.selectedLever=null;
+			selected.selectedDoor=null;
+			selected.selectedObject=null;
+			
+			if (selected.prevousObject != null && selected.selectType==SelectedType.IsDynamic)
+				selected.prevousObject.setSelection(false);
+			
+			selected.prevousObject=null;
 
-			selectVariant  = null;
+			selected.selectType = SelectedType.None;
 		}
 
 		private bool OnUse(IDynamicObject selectedObject) {
@@ -150,6 +151,21 @@ namespace Engine.Player {
 
 			}
 
+		}
+
+		public bool isPickedObject() {
+			return selected.selectType == SelectedType.IsDynamic && pickedObjectGameObject!=null;
+		}
+
+		public void OnPickDrop(float force) {
+
+			if (pickedObjectRigidBody == null)
+				return;
+
+				pickedObjectRigidBody.AddForce(ray.direction * force);
+
+			pickedObjectGameObject = null;
+			pickedObjectRigidBody = null;
 		}
 
 		private void OnPickUp(IDynamicObject selectedObject) {
@@ -182,18 +198,18 @@ namespace Engine.Player {
 				guiController.setInitGUIState(true);
 			}
 
-			if (selectVariant == null)
+			if (selected.selectType == SelectedType.None)
 				return;
 
-			switch(selectType){
+			switch (selected.selectType) {
 				case SelectedType.IsDynamic:
-					guiController.getDynamicObjectGUIRenderer().printLabel(selectVariant as IDynamicObject);
+					guiController.getDynamicObjectGUIRenderer().printLabel(selected.selectedObject);
 					break;
 				case SelectedType.IsDoor:
-					guiController.getDoorGUIRenderer().printLabel(selectVariant as IDoor);
+					guiController.getDoorGUIRenderer().printLabel(selected.selectedDoor);
 					break;
 				case SelectedType.IsLever:
-					guiController.getDoorGUIRenderer().printLabel(selectVariant as ILever);
+					guiController.getDoorGUIRenderer().printLabel(selected.selectedLever);
 					break;
 			}
 			

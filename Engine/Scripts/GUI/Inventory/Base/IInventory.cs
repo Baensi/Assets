@@ -12,7 +12,7 @@ namespace Engine.EGUI.Inventory {
 		void                redraw();
 
 			bool addItem(Item item);
-			bool removeItem(Item item);
+			bool removeItem(Item item, bool equals, bool full = true, int count = 1);
 
 		void show();
 		void hide();

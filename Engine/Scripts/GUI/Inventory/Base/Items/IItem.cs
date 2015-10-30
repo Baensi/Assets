@@ -6,27 +6,25 @@ namespace Engine.EGUI.Inventory {
 
 	public interface IItem {
 
-		ItemSize     getSize();
-		ItemPosition getPosition();
-
+		ItemSize getSize();
 		void setSize(ItemSize size);
-		void setPosition(ItemPosition position);
 
 		int getMaxCount();
 
-		void incCount();
-		void decCount();
+		bool isFullCount();
+
+		int incCount();
+		int decCount();
+		int incCount(int value);
+		int decCount(int value);
+
 		int  getCount();
 		void setCount(int count);
 
 		Texture getIcon();
-
-		bool isSelected();
-		void setSelected(bool selected);
+		ItemDescription getDescription();
 
 		GameObject toGameObject();
-
-		void redraw(float posX, float posY);
 
 	}
 

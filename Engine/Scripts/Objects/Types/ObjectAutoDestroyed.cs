@@ -9,21 +9,13 @@ namespace Engine.Objects.Types {
 	public class ObjectAutoDestroyed : MonoBehaviour {
 
 		[SerializeField] public float lifeTime = 1f;
-		private float timeStamp;
 
+		/// <summary>
+		/// Когда объект загружен
+		/// </summary>
 		void OnStart() {
-			timeStamp = Time.time;
+			Destroy(gameObject, lifeTime); // откладываем самоуничтожение на время жизни
 		}
-		
-		void Update() {
-
-			if (Time.time-timeStamp<lifeTime)
-				return;
-
-			Destroy(this.gameObject);
-
-		}
-
 
 	}
 

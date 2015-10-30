@@ -18,11 +18,10 @@ namespace Engine.Objects.Special {
 		}
 
 		public bool onUse() {
-
-			GamePlayer.states.Mana+=50;
-
-			base.Destroy(true);
-			return true;
+			if (InventoryHelper.AddInInventory(item)) {
+				base.Destroy(true);
+				return true;
+			} return false;
 		}
 
 		

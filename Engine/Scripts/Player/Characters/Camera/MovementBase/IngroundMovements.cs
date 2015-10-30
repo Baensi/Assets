@@ -21,12 +21,16 @@ namespace Engine.Player.Movement.Movements {
 
 		private Vector3 moveDir = Vector3.zero;
 
-		private float playerWalkSpeed = 5.00f;
-		private float playerRunSpeed  = 10.0f;
-		private float playerJumpSpeed = 10.0f;
+		private float playerWalkSpeed = 3.00f;
+		private float playerRunSpeed  = 7.0f;
+		private float playerJumpSpeed = 7.0f;
 
-		private float m_RunstepLenghten = 0.7f;
-		
+		private float m_RunstepLenghtenWalk = 0.7f;
+		private float m_RunstepLenghtenRun = 0.1f;
+
+		private float bobRangeWalk = 0.1f;
+		private float bobRangeRun = 0.15f;
+
 		private float stickToGroundForce = 10.0f;
 		private float gravityMultiplier  = 2.0f;
 		
@@ -34,7 +38,7 @@ namespace Engine.Player.Movement.Movements {
 		private Vector3        originalCameraPosition;
 		private bool           previouslyGrounded;
 		private float          stepCycle;
-		private float          stepInterval = 5.0f;
+		private float          stepInterval = 3f;
 		private float          nextStep;
 		
 		private Actions             actions;
@@ -48,10 +52,11 @@ namespace Engine.Player.Movement.Movements {
 		private AttackController    attackController;
 		private AudioSource         audioSource;
 
+		private ObjectsSelector objectsSelector;
+
 		private Vector2 input;
 
 		private GameObject playerObject;
-		//private Rigidbody  playerRigidBody;
 
 		private Vector3        moveDirAddition = Vector3.zero;
 
@@ -75,6 +80,8 @@ namespace Engine.Player.Movement.Movements {
 				this.audioData           = playerObject.GetComponent<MovementAudioData>();
 				this.characterController = playerObject.GetComponent<CharacterController>();
 
+				objectsSelector = mainCameraObject.GetComponent<ObjectsSelector>();
+
 				originalCameraPosition = mainCameraObject.transform.localPosition;
 
 				fovKick.Setup(mainCameraObject);
@@ -92,8 +99,18 @@ namespace Engine.Player.Movement.Movements {
 				RotateView();
 
 				if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ATTACK1)) {
-					attackController.setAttacker(EAttacker.swordAttacker);
-					attackController.startAttack();
+
+						// если в руках что то есть
+					if (objectsSelector.isPickedObject()) {
+
+						objectsSelector.OnPickDrop(200f); // выкидываем предмет
+
+					} else {
+
+						attackController.setAttacker(EAttacker.swordAttacker);
+						attackController.startAttack();
+
+					}
 				}
 
 				if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ATTACK_MAGIC)) {
@@ -199,7 +216,7 @@ namespace Engine.Player.Movement.Movements {
 		private void ProgressStepCycle(float speed) {
 
 			if (characterController.velocity.sqrMagnitude > 0 && (input.x != 0 || input.y != 0)) {
-				stepCycle += (characterController.velocity.magnitude + (speed * (isWalking ? 1f : m_RunstepLenghten))) *
+				stepCycle += (characterController.velocity.magnitude + (speed * (isWalking ? m_RunstepLenghtenWalk : m_RunstepLenghtenRun))) *
 							 Time.fixedDeltaTime;
 			}
 
@@ -228,7 +245,7 @@ namespace Engine.Player.Movement.Movements {
 		}
 
 		public void addImpulse(Vector3 velocity) {
-			moveDirAddition = velocity;
+			moveDir = velocity;
 		}
 
 		public Vector3 getImpulse() {
@@ -242,7 +259,7 @@ namespace Engine.Player.Movement.Movements {
 			if (characterController.velocity.magnitude > 0 && characterController.isGrounded) {
 
 				mainCameraObject.transform.localPosition = headBob.DoHeadBob(characterController.velocity.magnitude +
-									  (speed * (isWalking ? 1f : m_RunstepLenghten)));
+									  (speed * (isWalking ? m_RunstepLenghtenWalk : m_RunstepLenghtenRun)));
 				newCameraPosition = mainCameraObject.transform.localPosition;
 				newCameraPosition.y = mainCameraObject.transform.localPosition.y - jumpBob.Offset();
 			} else {
@@ -270,6 +287,14 @@ namespace Engine.Player.Movement.Movements {
 
 			speed = isWalking ? playerWalkSpeed : playerRunSpeed;
 			speed *= isSitdown ? 0.5f : 1.0f;
+
+			if (isWalking) {
+				headBob.HorizontalBobRange = bobRangeWalk;
+				headBob.VerticalBobRange   = bobRangeWalk;
+			} else {
+				headBob.HorizontalBobRange = bobRangeRun;
+				headBob.VerticalBobRange   = bobRangeRun;
+			}
 
 			input = new Vector2(horizontal, vertical);
 

@@ -15,19 +15,19 @@
   <item name="RawBread" gameObject="Objects/Food/raw_bread" id="2">
     <property width="1" height="1" count="1"/>
     <description icon="Objects/Food/raw_bread_icon" textName="rawbread_id_name" textCaption="rawbread_id_caption" costValue="0.1">
-      <sound name="cook" sound="Objects/Food/raw_bread_cook"/>
+      <sound tag="cook" sound="Objects/Food/raw_bread_cooking"/>
     </description>
   </item>
   <item name="RawHam" gameObject="Objects/Food/raw_ham" id="3">
     <property width="1" height="1" count="1"/>
     <description icon="Objects/Food/raw_ham_icon" textName="rawham_id_name" textCaption="rawham_id_caption" costValue="0.3">
-      <sound name="cook" sound="Objects/Food/raw_ham_cook"/>
+      <sound tag="cook" sound="Objects/Food/raw_ham_cooking"/>
     </description>
   </item>
   <item name="RawFish" gameObject="Objects/Food/raw_fish" id="4">
     <property width="1" height="1" count="1"/>
     <description icon="Objects/Food/raw_fish_icon" textName="rawfish_id_name" textCaption="rawfish_id_caption" costValue="0.2">
-      <sound name="cook" sound="Objects/Food/raw_fish_cook"/>
+      <sound tag="cook" sound="Objects/Food/raw_fish_cooking"/>
     </description>
   </item>
 
@@ -50,22 +50,24 @@
   <item name="AppleGreen" gameObject="Objects/Food/apple_green" id="5">
     <property width="1" height="1" count="3"/>
     <description icon="Objects/Food/apple_green_icon" textName="applegreen_id_name" textCaption="applegreen_id_caption" costValue="0.07">
+      <sound tag="cook" sound="Objects/Food/apple_cooking"/>
     </description>
   </item>
   <item name="AppleYellow" gameObject="Objects/Food/apple_yellow" id="6">
     <property width="1" height="1" count="3"/>
     <description icon="Objects/Food/apple_yellow_icon" textName="appleyellow_id_name" textCaption="appleyellow_id_caption" costValue="0.07">
+      <sound tag="cook" sound="Objects/Food/apple_cooking"/>
     </description>
   </item>
   <item name="AppleRed" gameObject="Objects/Food/apple_red" id="7">
     <property width="1" height="1" count="3"/>
     <description icon="Objects/Food/apple_red_icon" textName="applered_id_name" textCaption="applered_id_caption" costValue="0.07">
+      <sound tag="cook" sound="Objects/Food/apple_cooking"/>
     </description>
   </item>
   <item name="CookedApple" gameObject="Objects/Food/cooked_apple" id="8">
     <property width="1" height="1" count="3"/>
     <description icon="Objects/Food/cooked_apple_icon" textName="cookedapple_id_name" textCaption="cookedapple_id_caption" costValue="0.1">
-      <sound name="cook" sound="Objects/Food/cooked_apple"/>
     </description>
   </item>
 

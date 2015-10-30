@@ -12,19 +12,11 @@ namespace Engine.Player.Movement.Movements {
 
 	public class UnderwaterMovements : MonoBehaviour, IMovement {
 
-		private float playerStandupHeight = 2.0f;
-		private float playerSitdownHeight = 0.0f;
-
-		private bool isStay;
-		private bool isSitdown = false;
-		private bool isWalking;
-		private bool isJumping;
-
 		private Vector3 moveDir = Vector3.zero;
 
+		private bool isJumping;
+		private float playerJumpSpeed = 1.50f;
 		private float playerWalkSpeed = 2.00f;
-		private float playerRunSpeed = 4.0f;
-		private float playerJumpSpeed = 2.0f;
 
 		private float m_StickToGroundForce = 5.0f;
 		private float m_GravityMultiplier = 0.1f;
@@ -37,7 +29,6 @@ namespace Engine.Player.Movement.Movements {
 		private MovementAudioData audioData;
 		private MouseLook mouseLook;
 		private Camera mainCameraObject;
-		private FOVKick fovKick;
 		private CurveControlledBob headBob;
 		private LerpControlledBob jumpBob;
 		private CharacterController characterController;
@@ -57,7 +48,6 @@ namespace Engine.Player.Movement.Movements {
 				
 				this.actions=actions;
 				this.mouseLook=mouseLook;
-				this.fovKick=fovKick;
 				this.headBob=headBob;
 				this.jumpBob=jumpBob;
 
@@ -71,8 +61,6 @@ namespace Engine.Player.Movement.Movements {
 
 				originalCameraPosition = mainCameraObject.transform.localPosition;
 
-				isJumping = false;
-
 			}
 
 		public void addImpulse(Vector3 velocity) {
@@ -85,28 +73,8 @@ namespace Engine.Player.Movement.Movements {
 
 		public void update(){
 
-				RotateView();
+			RotateView();
 
-				if (CrossPlatformInputManager.GetButton(SingletonNames.Input.JUMP)) {
-					isJumping = true;
-				} else {
-					isJumping = false;
-				}
-
-				Sitdown();
-
-				if (!previouslyGrounded && characterController.isGrounded) {
-					StartCoroutine(jumpBob.DoBobCycle());
-					PlayLandingSound();
-					moveDir.y = 0f;
-					isJumping = false;
-				}
-
-				if (!characterController.isGrounded && !isJumping && previouslyGrounded)
-					moveDir.y = 0f;
-
-				previouslyGrounded = characterController.isGrounded;
-			
 		}
 		
 		public void fixUpdate(){
@@ -131,57 +99,13 @@ namespace Engine.Player.Movement.Movements {
 				moveDir += Physics.gravity * m_GravityMultiplier * Time.fixedDeltaTime;
 			}
 
-			if(isJumping)
-				moveDir.y=playerJumpSpeed;
+			if (isJumping)
+				moveDir.y = playerJumpSpeed;
 
 			collisionFlags = characterController.Move(moveDir * Time.fixedDeltaTime);
 
 			UpdateCameraPosition(speed);
 			
-		}
-
-		private void Sitdown() {
-
-			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.SITDOWN))
-				isSitdown = !isSitdown;
-
-			if (isSitdown && characterController.height != playerSitdownHeight) {
-				characterController.height = playerSitdownHeight;
-				actions.Sitdown();
-			}
-
-			if (!isSitdown && characterController.height != playerStandupHeight) {
-				characterController.height = playerStandupHeight;
-				actions.Standup();
-			}
-
-		}
-
-		private void PlayLandingSound() {
-			audioSource.clip = audioData.getLandSound();
-			audioSource.Play();
-			actions.Stay();
-		}
-
-
-		private void PlayJumpSound() {
-			audioSource.clip = audioData.getJumpSound();
-			audioSource.Play();
-			actions.Jump();
-		}
-
-		private void PlayFootStepAudio() {
-
-			if (!characterController.isGrounded)
-				return;
-
-			if (isWalking)
-				actions.Walk();
-			else
-				actions.Run();
-
-			audioSource.clip = audioData.getFootStepSound(audioSource.clip);
-			audioSource.PlayOneShot(audioSource.clip);
 		}
 
 
@@ -209,27 +133,17 @@ namespace Engine.Player.Movement.Movements {
 			float horizontal = CrossPlatformInputManager.GetAxis(SingletonNames.Input.HORIZONTAL);
 			float vertical = CrossPlatformInputManager.GetAxis(SingletonNames.Input.VERTICAL);
 
-			bool waswalking = isWalking;
+			isJumping = CrossPlatformInputManager.GetButton(SingletonNames.Input.JUMP);
 
 			if (Input.GetMouseButton(0))
 				attackController.startAttack();
 
-#if !MOBILE_INPUT
-			isWalking = !Input.GetKey(KeyCode.LeftShift);
-#endif
-
-			speed = isWalking ? playerWalkSpeed : playerRunSpeed;
-			speed *= isSitdown ? 0.5f : 1.0f;
+			speed = playerWalkSpeed;
 
 			input = new Vector2(horizontal, vertical);
 
 			if (input.sqrMagnitude > 1)
 				input.Normalize();
-
-			if (isWalking != waswalking && characterController.velocity.sqrMagnitude > 0) {
-				StopAllCoroutines();
-				StartCoroutine(!isWalking ? fovKick.FOVKickUp() : fovKick.FOVKickDown());
-			}
 
 		}
 

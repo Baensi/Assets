@@ -13,18 +13,24 @@ namespace Engine.Player.Movement {
 		private PlayerMovementController       playerController;
 		private CharacterController            characterController;
 
-		//private BoxCollider                    water;
+		private EMovementType movementType;
+
+		//private BoxCollider water;
 
 		//private Vector3 impulse = Vector3.zero;
 
 		[SerializeField] public Color fogColor = new Color(0f,0.4f,0.7f,0.6f);
 		[SerializeField] public float fogDistance = 0.6f;
 
-		private float getPlayerTopYPoint() {
+		public float getPlayerTopYPoint() {
 			return characterController.transform.position.y + characterController.height - 1.0f;
 		}
 
-		private float getWaterTopYPoint() {
+		public float getPlayerBodyTopY() {
+			return characterController.transform.position.y - 2f;
+		}
+
+		public float getWaterTopYPoint() {
 			return this.transform.position.y;
 		}
 
@@ -38,59 +44,71 @@ namespace Engine.Player.Movement {
 			scriptBlur.enabled = false;
 			RenderSettings.fog = false;
 
-			RenderSettings.fogColor   = fogColor;
-			RenderSettings.fogDensity = fogDistance;
+			
 
 		}
 
+		/// <summary>
+		/// Персонаж входит в воду
+		/// </summary>
+		/// <param name="other"></param>
 		void OnTriggerEnter(Collider other) {
-			if (getPlayerTopYPoint() > getWaterTopYPoint())
-				return;
 
-			setUnderwater();
+			if (getPlayerTopYPoint() > getWaterTopYPoint())
+				setInwater();
+			else
+				setUnderwater();
+
 		}
 
+		/// <summary>
+		/// Покидаем зону воды
+		/// </summary>
+		/// <param name="other"></param>
 		void OnTriggerExit(Collider other) {
-			if (getPlayerTopYPoint() < getWaterTopYPoint())
-				return;
 
-			setInground();
+			Vector3 impulse = playerController.getCurrentMovement().getImpulse();
+				setInground();
+			playerController.getCurrentMovement().addImpulse(impulse);
+			
 		}
 
 		void OnTriggerStay(Collider other) {
 
-			Rigidbody rigid = other.gameObject.GetComponent<Rigidbody>();
+			//Rigidbody rigid = other.gameObject.GetComponent<Rigidbody>();
 
-			if (rigid!=null)
-				rigid.velocity*=0.98f; // усиливаем трение
+			Vector3 impulse;
 
-			/*
-			if (//other.GetComponent<PlayerMovementController>() == null || // если мы не в воде или эффекты уже наложены, выходим
-				getPlayerTopYPoint() > getWaterTopYPoint()) {
+			if (getPlayerTopYPoint() > getWaterTopYPoint()) {
 
-					impulse = playerController.getCurrentMovement().getImpulse();
-						setInground();
+				impulse = playerController.getCurrentMovement().getImpulse();
+					setInwater();
+				playerController.getCurrentMovement().addImpulse(impulse);
 
-						if (CrossPlatformInputManager.GetButton("Jump"))
-							impulse.y += 5.0f;
+				if (getPlayerBodyTopY()+1f > getWaterTopYPoint()) {
 
-					playerController.getCurrentMovement().addImpulse(impulse);
+					playerController.transform.position = new Vector3(playerController.transform.position.x,
+																	  this.transform.position.y,
+																	  playerController.transform.position.z);
+
+				}
 
 			} else {
-
 
 				impulse = playerController.getCurrentMovement().getImpulse();
 					setUnderwater();
 				playerController.getCurrentMovement().addImpulse(impulse);
 
+					
 
-			}*/
+			}
 
 		}
 
 		void Update() {
 
-
+			RenderSettings.fogColor = fogColor;
+			RenderSettings.fogDensity = fogDistance;
 
 		}
 
@@ -106,6 +124,17 @@ namespace Engine.Player.Movement {
 			scriptBlur.enabled = false;
 
 			playerController.setMovementType(EMovementType.inground);
+		}
+
+		private void setInwater() {
+			RenderSettings.fog = false;
+			scriptBlur.enabled = false;
+
+			playerController.setMovementType(EMovementType.inwater);
+
+			InwaterMovements movement = playerController.getCurrentMovement() as InwaterMovements;
+			movement.setUpWaterObject(this);
+
 		}
 
 		private void setUnderwater() {

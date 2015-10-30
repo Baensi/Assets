@@ -178,7 +178,6 @@ namespace EngineEditor.Terrain {
 		/// <param name="hitInfo">Объект, до которого дотронулись лучи добра</param>
 		private void OnRaycast(SceneView sceneView, RaycastHit hitInfo) {
 
-			Collider   collider    = hitInfo.collider;
 			Vector3    cameraPoint = sceneView.camera.transform.position + sceneView.camera.transform.forward + sceneView.camera.transform.right;
 			Quaternion startRot    = Quaternion.LookRotation(hitInfo.normal);
 
@@ -186,7 +185,7 @@ namespace EngineEditor.Terrain {
 
 				Handles.color = textColor;
 
-				Handles.Label(collider.transform.position, new GUIContent(Utils.ToString(collider.transform.position)));
+				Handles.Label(hitInfo.collider.transform.position, new GUIContent(Utils.ToString(hitInfo.collider.transform.position)));
 				Handles.Label(hitInfo.point, new GUIContent("\n"+Utils.ToString(hitInfo.normal)+"\n"+Utils.ToString(hitInfo.barycentricCoordinate)));
 				Handles.Label(hitInfo.point, Utils.ToString(startRot));
 
