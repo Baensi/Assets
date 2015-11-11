@@ -58,12 +58,16 @@ namespace Engine {
 
 		public static class Input {
 
+			public static string ESC          = "Cancel";
+
 			public static string USE          = "Use";
 			public static string ATTACK1      = "Attack1";
 			public static string ATTACK_MAGIC = "AttackMagic";
 			public static string PICKUP       = "PickUp";
 			public static string SITDOWN      = "Sitdown";
 			public static string JUMP         = "Jump";
+
+			public static string INVENTAR     = "Inventar";
 
 			public static string NEXTPAGE     = "NextPage";
 			public static string BACKPAGE     = "BackPage";

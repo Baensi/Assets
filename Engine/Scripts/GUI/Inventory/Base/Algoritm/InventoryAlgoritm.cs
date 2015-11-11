@@ -55,7 +55,7 @@ namespace Engine.EGUI.Inventory {
 		/// <summary>
 		/// Возвращает предмет с которым столкнулся item
 		/// </summary>
-		/// <param name="slot">слот в котором проверяются коллизии</param>
+		/// <param name="slot">сумка в которой проверяются коллизии</param>
 		/// <param name="posX">положение выбранного предмета по x</param>
 		/// <param name="posY">положение выбранного предмета по y</param>
 		/// <returns>если столкновения нет, возвращает null</returns>
@@ -84,11 +84,11 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		/// <summary>
-		/// Ищет слот в указанной области под курсором
+		/// Ищет сумку в указанной области под курсором
 		/// </summary>
 		/// <param name="posX"></param>
 		/// <param name="posY"></param>
-		/// <returns>Если слот не найден вернёт null</returns>
+		/// <returns>Если сумка не найдена вернёт null</returns>
 		public RectangleSlot getSlot(float mouseX, float mouseY) {
 
 			if (slots==null) return null;
@@ -96,10 +96,10 @@ namespace Engine.EGUI.Inventory {
 			foreach (RectangleSlot slot in slots) {
 				if (slot.position.OffsetX<=mouseX && slot.position.OffsetX+slot.position.SlotWidth>=mouseX
 				 && slot.position.OffsetY<=mouseY && slot.position.OffsetY+slot.position.SlotHeight>=mouseY)
-					return slot; // возвращаем слот под курсором
+					return slot; // возвращаем сумку под курсором
 			}
 
-			return null; // слотов в указанной области не найдено
+			return null; // сумок в указанной области не найдено
 		}
 
 		/// <summary>
@@ -128,20 +128,29 @@ namespace Engine.EGUI.Inventory {
 			return null; // предмета в ячейке нет
 		}
 
-		public bool addItem(Item item){
 
-			foreach (RectangleSlot slot in slots) {
-				foreach(IItem i in slot.Items){
-					if(i.Equals(item) && i.getCount()<i.getMaxCount()){
-						i.incCount();
-						return true;
+		/// <summary>
+		/// Пытается добавить предмет в инвентарь
+		/// </summary>
+		/// <param name="item">Добавляемый предмет</param>
+		/// <returns>Возвращает число НЕ вместившихся экземпляров, если предмет не был полностью добавлен. 0 - если предмет успешно добавлен</returns>
+		public int addItem(Item item){
+
+			foreach (RectangleSlot slot in slots) { // перебираем все сумки
+
+				foreach (ItemSlot i in slot.Items) { // пытаемся найти идентичные предметы и попробовать объединить их
+					if (i.Equals(item) && !i.item.isFullCount()) { // если предмет идентичен, и он не полностью укомплектован
+
+						if (item.getCount()!=0) // пока у нас есть остаток экземпляров, которые надо раскидать
+							item.setCount(i.item.incCount(item.getCount()));
+
+						if (item.getCount()==0) // экземпляры кончились, можно выходить
+							return 0;
+
 					}
 				}
-			}
 
-			foreach (RectangleSlot slot in slots) {
-
-				for(int y=1;y<=slot.position.CellsYCount;y++){
+				for(int y=1;y<=slot.position.CellsYCount;y++){ // пытаемся найти свободную область, и засунуть предмет целиком (не разделяя)
 					for(int x=1;x<=slot.position.CellsXCount;x++){
 
 						bool result = true;
@@ -157,9 +166,9 @@ namespace Engine.EGUI.Inventory {
 								
 						}
 
-						if(result){
+						if(result){ // предметы можно полностью добавить
 							slot.Items.Add(new ItemSlot(item, new ItemPosition(x, y)));
-							return true;
+							return 0;
 						}
 
 					}
@@ -168,7 +177,7 @@ namespace Engine.EGUI.Inventory {
 
 			}
 
-			return false;
+			return item.getCount(); // возвращаем число отсавшихтся (не влезших) предметов
 
 		}
 

@@ -38,9 +38,6 @@ namespace Engine.EGUI.Inventory {
 			DrawScreen();
 			DrawSlots();
 
-				//Handles.color = new Color(1f, 0, 0);
-				//Handles.Label(new Vector3(1, 1), new GUIContent(Event.current.mousePosition.ToString()));
-
 			Handles.EndGUI();
 
 			this.Repaint();

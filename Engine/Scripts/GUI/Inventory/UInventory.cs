@@ -3,37 +3,11 @@ using System.Collections.Generic;
 using UnityStandardAssets.CrossPlatformInput;
 using Engine.I18N;
 using Engine.Objects;
+using Engine.EGUI.PopupMenu;
 
 namespace Engine.EGUI.Inventory {
 
-	public enum InventarEvent : int {
-
-		None       = 0x00,
-		ItemMove   = 0x01
-
-	};
-
-	public class MouseEvent {
-
-		public bool MouseDrag = false;
-		public bool MouseDown = false;
-		public bool MouseUp   = false;
-
-	}
-
-	public class EventContainer {
-
-		public Vector2       cursorPosition;
-		public MouseEvent    mouseEvent = new MouseEvent();
-		public InventarEvent eventType = InventarEvent.None;
-
-		public bool isDivMode = false; // Зажат шифт и предметы надо делить
-
-		public ItemSlot selected;
-		public ItemSlot collision;
-
-	}
-
+	[RequireComponent(typeof(InventoryPopupMenu))]
 	public class UInventory : MonoBehaviour, IInventory, IRendererGUI {
 
 		[SerializeField] public Texture2D selectCellImage;
@@ -56,6 +30,12 @@ namespace Engine.EGUI.Inventory {
 
 		private InventoryAlgoritm algoritm;
 		private SlotDrawService   drawService;
+
+		private InventoryPopupMenu popupMenu;
+
+#if UNITY_EDITOR
+		private bool degubMode = false;
+#endif
 
 		public void show(){
 			visible = true;
@@ -81,8 +61,8 @@ namespace Engine.EGUI.Inventory {
 		/// Пытается добавить предмет item в инвентарь
 		/// </summary>
 		/// <param name="item">Добавляемый предмет</param>
-		/// <returns>Возвращает результат операции</returns>
-		public bool addItem(Item item){
+		/// <returns>Возвращает число НЕ добавленных экземпляров предмета, 0 - если педмет успешно добавлен</returns>
+		public int addItem(Item item){
 			return algoritm.addItem(item);
 		}
 
@@ -98,18 +78,12 @@ namespace Engine.EGUI.Inventory {
 			return algoritm.removeItem(item, equals, full, count);
 		}
 
+		/// <summary>
+		/// Возвращает список текущих сумок
+		/// </summary>
+		/// <returns></returns>
 		public List<RectangleSlot> getSlots() {
 			return slots;
-		}
-
-		public void AddSlot() {
-
-			algoritm.setSlots(slots);
-		}
-
-		public void RemoveSlot() {
-
-			algoritm.setSlots(slots);
 		}
 
 			public UInventory(){
@@ -140,6 +114,8 @@ namespace Engine.EGUI.Inventory {
 		public void OnEditorUpdate() {
 			if (!visible) return;
 
+			degubMode = true;
+
 			if (algoritm==null)
 				Start();
 
@@ -162,6 +138,8 @@ namespace Engine.EGUI.Inventory {
 			algoritm.setSlots(slots);
 			drawService = new SlotDrawService(slots);
 
+			popupMenu = GetComponent<InventoryPopupMenu>();
+
 			onResizeWindow();
 
 			if(visible)
@@ -171,16 +149,7 @@ namespace Engine.EGUI.Inventory {
 
 		void Update () {
 
-#if !UNITY_EDITOR
-
-			eventData.cursorPosition       = Input.mousePosition;
-
-			eventData.mouseEvent.MouseDown = Input.GetMouseButtonDown(0);
-			eventData.mouseEvent.MouseUp   = Input.GetMouseButtonUp(0);
-
-#endif
-
-			if (CrossPlatformInputManager.GetButtonDown("Inventar"))
+			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTAR))
 				if (!visible)
 					show();
 				else
@@ -189,13 +158,21 @@ namespace Engine.EGUI.Inventory {
 		}
 
 
-		public void OnDrawCells() {
-
-			ItemSlot tmpItem = null;
+		private void FindSelectedSlot() {
 			RectangleSlot selected = algoritm.getSlot(eventData.cursorPosition.x - offsetX, eventData.cursorPosition.y - offsetY);
 
-			if (selectedSlot!=selected)
-				selectedSlot=selected;
+			if (selectedSlot != selected)
+				selectedSlot = selected;
+		}
+
+		public void OnDrawCells() {
+
+			if (popupMenu.isVisible()) // выходим, если пользователь работает с контекстным меню
+				return;
+
+			ItemSlot tmpItem = null;
+
+			FindSelectedSlot();
 
 			if (selectedSlot==null) return;
 
@@ -232,9 +209,7 @@ namespace Engine.EGUI.Inventory {
 				drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, selectedItem, correctCellImage);
 			else
 				drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, selectedItem, errorCellImage);
-
-			GUI.Box(new Rect(eventData.cursorPosition.x, eventData.cursorPosition.y, 240, 30), selectedItem.item.getDescription().dName + " - " + selectedItem.item.getDescription().dCaption);
-
+			
 		}
 
 		private void resetSelection() {
@@ -244,20 +219,67 @@ namespace Engine.EGUI.Inventory {
 			selectedItem = null;
 		}
 
-		public void OnEvents() {
+		private void ReadMouseEvents() {
 
-			if (Event.current.isMouse) {
-				eventData.mouseEvent.MouseDown = (Event.current.type == EventType.MouseDown);
-				eventData.mouseEvent.MouseDrag = (Event.current.type == EventType.MouseDrag);
-				eventData.mouseEvent.MouseUp   = (Event.current.type == EventType.MouseUp);
-			} else {
-				eventData.isDivMode = Event.current.shift;
+#if UNITY_EDITOR
+
+			if (degubMode) { // работаем в окне отладчика
+
+				if (Event.current.isMouse) {
+					eventData.mouseEvent.RMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button == 1);
+                    eventData.mouseEvent.LMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button==0);
+					eventData.mouseEvent.LMouseUp   = (Event.current.type == EventType.MouseUp && Event.current.button==0);
+				} else {
+					eventData.isDivMode = Event.current.shift;
+				}
+
+				eventData.cursorPosition = Event.current.mousePosition;
+
+			} else { // в режиме редактора юнити, игра на демонстрации
+
+
+				eventData.mouseEvent.RMouseDown = Input.GetMouseButtonDown(1);
+				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
+				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
+
+				eventData.cursorPosition = Input.mousePosition;
+
 			}
 
+#else // игра запущена полноценно
 
-			eventData.cursorPosition = Event.current.mousePosition;
+			eventData.mouseEvent.MouseDown = Input.GetMouseButtonDown(0);
+			eventData.mouseEvent.MouseUp   = Input.GetMouseButtonUp(0);
 
-			if (eventData.mouseEvent.MouseUp && eventData.eventType == InventarEvent.ItemMove) {
+			eventData.cursorPosition = Input.mousePosition;
+
+#endif
+
+		}
+
+		private void resetEventsSelections() {
+			selectedCell.X = -1;
+			selectedCell.Y = -1; // сбрасываем последнюю выбранную ячейку, чтобы в следующей итерации пересчитать предмет под курсором
+			eventData.selected = null; // сбрасываем перемещение предмета
+			eventData.collision = null; // сбрасываем коллизию
+			eventData.eventType = InventarEvent.None; // устанавливаем эвент по умолчанию
+			selectedItem = null;
+		}
+
+		public void OnEvents() {
+
+			ReadMouseEvents(); // читаем события мыши
+
+			if (popupMenu.isVisible()) {
+				if (!eventData.mouseEvent.RMouseDown && !eventData.mouseEvent.LMouseDown && !CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC)) {
+					return;
+				} else {
+					popupMenu.hide();
+					resetEventsSelections();
+                }
+			}
+
+			if (eventData.mouseEvent.LMouseUp && eventData.eventType == InventarEvent.ItemMove) {
 
 				if (eventData.collision==null
 					&& selectedCell.X+eventData.selected.item.getSize().getWidth()<=selectedSlot.position.CellsXCount+1 && 
@@ -265,13 +287,18 @@ namespace Engine.EGUI.Inventory {
 
 						if (eventData.isDivMode && eventData.selected.item.getCount()>1) { // можно разделить?
 
-							int count = eventData.selected.item.getCount() / 2;
-							eventData.selected.item.decCount(count);
+							if (selectedCell.X != eventData.selected.position.X ||
+							   selectedCell.Y != eventData.selected.position.Y) { // смотрим, действительно ли предмет разделелили в разные ячейки?
 
-							Item newItem = eventData.selected.item.Clone();
-							newItem.setCount(count);
+								int count = eventData.selected.item.getCount() / 2;
+								eventData.selected.item.decCount(count);
 
-							selectedSlot.Items.Add(new ItemSlot(newItem, new ItemPosition(selectedCell.X,selectedCell.Y)));
+								Item newItem = eventData.selected.item.Clone();
+								newItem.setCount(count);
+
+								selectedSlot.Items.Add(new ItemSlot(newItem, new ItemPosition(selectedCell.X, selectedCell.Y)));
+
+							}
 
 						} else { // нужно перемещать
 
@@ -297,13 +324,18 @@ namespace Engine.EGUI.Inventory {
 
 				}
 
-				eventData.selected = null; // сбрасываем перемещение предмета
-				eventData.collision = null; // сбрасываем коллизию
-				eventData.eventType = InventarEvent.None; // устанавливаем эвент по умолчанию
-				
+				resetEventsSelections();
 			}
 
-			if (eventData.mouseEvent.MouseDown && selectedItem!=null && eventData.selected==null && eventData.eventType == InventarEvent.None) {
+			if(eventData.mouseEvent.RMouseDown && selectedItem != null) { // если пользователь вызвал контекстное меню какого то предмета
+
+				eventData.mouseEvent.RMouseDown = false;
+                InventoryMenuCreatorService.getInatance().SetupPopupMenu(popupMenu, selectedItem.item); // устанавливаем пункты меню
+				popupMenu.show(eventData.cursorPosition); // отображаем меню в нужном месте
+
+			}
+
+			if (eventData.mouseEvent.LMouseDown && selectedItem!=null && eventData.selected==null && eventData.eventType == InventarEvent.None) {
 
 				eventData.eventType = InventarEvent.ItemMove;
 				eventData.selected = selectedItem;
@@ -314,24 +346,29 @@ namespace Engine.EGUI.Inventory {
 
 				drawService.getItemDrawService().DrawItem(eventData.selected, eventData.cursorPosition.x, eventData.cursorPosition.y, false);
 
-				if (selectedSlot!=null) { // если предмет перенесли в какой-то слот и он не вылазиет за рамки слота
+				if (selectedSlot!=null) { // если предмет перенесли в какую то сумку и он не вылазиет за рамки сумки
 
 					eventData.collision = algoritm.getCollisionItem(selectedSlot, eventData.selected, selectedCell.X, selectedCell.Y); // вычисляем коллизии внутри зоны перемещения
 
-					if (eventData.collision==null || (eventData.collision.item.Equals(eventData.selected.item) && !eventData.collision.item.isFullCount())) { // если нет коллизии, либо предметы однородные (можно объединить)
+					if (eventData.collision==null) { // если нет коллизии
 
 						drawService.DrawCells(selectedSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), correctCellImage);
 
 					} else {
 
-						drawService.DrawCells(selectedSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), errorCellImage); // подчёркиваем перемещаемую зону как ошибочную
-						drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, eventData.collision, errorCellImage); // подчёркиванием причину ошибки - коллизируемый итем
+						if (eventData.collision.item.Equals(eventData.selected.item) && !eventData.collision.item.isFullCount()) { // предметы однородные (можно объединить)
 
+							drawService.DrawCells(selectedSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), selectCellImage);
+
+						} else {
+
+							drawService.DrawCells(selectedSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), errorCellImage); // подчёркиваем перемещаемую зону как ошибочную
+							drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, eventData.collision, errorCellImage); // подчёркиванием причину ошибки - коллизируемый итем
+
+						}
 					}
 
 				}
-
-
 
 			}
 
@@ -342,6 +379,8 @@ namespace Engine.EGUI.Inventory {
 			if(!visible) return;
 
 			redraw();
+
+			popupMenu.redraw();
 
 		}
 
