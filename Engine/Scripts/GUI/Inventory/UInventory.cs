@@ -4,6 +4,7 @@ using UnityStandardAssets.CrossPlatformInput;
 using Engine.I18N;
 using Engine.Objects;
 using Engine.EGUI.PopupMenu;
+using Engine.EGUI.ToolTip;
 
 namespace Engine.EGUI.Inventory {
 
@@ -31,6 +32,9 @@ namespace Engine.EGUI.Inventory {
 		private InventoryAlgoritm algoritm;
 		private SlotDrawService   drawService;
 
+		public static float        toolTipDelay     = 1f;
+		private float              toolTipTimeStamp = 0f;
+		private ToolTipBase        toolTip;
 		private InventoryPopupMenu popupMenu;
 
 #if UNITY_EDITOR
@@ -181,7 +185,8 @@ namespace Engine.EGUI.Inventory {
 
 			if(cellX!=selectedCell.X || cellY!=selectedCell.Y){ // Ячейка новая
 
-				selectedCell.X = cellX;
+				toolTipTimeStamp = Time.time;
+                selectedCell.X = cellX;
 				selectedCell.Y = cellY;
 
 				if (selectedCell.X == -1 || selectedCell.Y == -1 ||
@@ -196,6 +201,12 @@ namespace Engine.EGUI.Inventory {
 					selectedItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
 				else
 					tmpItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
+
+			} else {
+
+				if (!toolTip.isVisible() && Time.time - toolTipTimeStamp > toolTipDelay)
+					toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
+
 
 			}
 
@@ -330,7 +341,7 @@ namespace Engine.EGUI.Inventory {
 			if(eventData.mouseEvent.RMouseDown && selectedItem != null) { // если пользователь вызвал контекстное меню какого то предмета
 
 				eventData.mouseEvent.RMouseDown = false;
-                InventoryMenuCreatorService.getInatance().SetupPopupMenu(popupMenu, selectedItem.item); // устанавливаем пункты меню
+                PopupMenuService.getInatance().SetupPopupMenu(popupMenu, selectedItem.item); // устанавливаем пункты меню
 				popupMenu.show(eventData.cursorPosition); // отображаем меню в нужном месте
 
 			}

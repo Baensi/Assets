@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Engine.EGUI.PopupMenu;
+using Engine.EGUI.ToolTip;
 
 namespace Engine.EGUI.Inventory {
 
 	public class InventoryPopupMenu : PopupMenuBase {
 
+		private ToolTipBase toolTip;
 		private Item selectedItem;
+
 
 		[SerializeField] public MenuItem useItem;
 		[SerializeField] public MenuItem dropItem;
@@ -14,8 +17,8 @@ namespace Engine.EGUI.Inventory {
 
 		void Start(){
 			base.MenuStart();
-
-		}
+			toolTip = new ToolTipBase();
+        }
 
 		public void setSelectedItem(Item selectedItem) {
 			this.selectedItem = selectedItem;
@@ -24,8 +27,7 @@ namespace Engine.EGUI.Inventory {
 		public void redraw() {
 			base.MenuOnGUI();
 
-			GUI.Box(new Rect(eventData.cursorPosition.x, eventData.cursorPosition.y, 240, 30), selectedItem.item.getDescription().dName + " - " + selectedItem.item.getDescription().dCaption);
-
+			
 		}
 
 		void OnGUI(){

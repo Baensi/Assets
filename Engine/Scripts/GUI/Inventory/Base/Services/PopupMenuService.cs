@@ -6,13 +6,13 @@ namespace Engine.EGUI.Inventory {
 	/// <summary>
 	/// Сервис для настройки контекстного меню инвентаря
 	/// </summary>
-	public class InventoryMenuCreatorService {
+	public class PopupMenuService {
 
-		private static InventoryMenuCreatorService instance;
+		private static PopupMenuService instance;
 
-		public static InventoryMenuCreatorService getInatance() {
+		public static PopupMenuService getInatance() {
 			if (instance == null)
-				instance = new InventoryMenuCreatorService();
+				instance = new PopupMenuService();
 			return instance;
         }
 

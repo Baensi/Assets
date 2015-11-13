@@ -5,6 +5,7 @@
 		<dictionary>
       
 			<item id="count">шт.</item>
+			<item id="instance">ед.</item>
 
 			<item id="door_state_opened">Открыто</item>
 			<item id="door_state_closed">Закрыто</item>

@@ -4,105 +4,39 @@ using Engine.EGUI.Bars;
 
 namespace Engine.Player {
 
-	[Serializable]
+	/// <summary>
+	/// Класс статов
+	/// </summary>
 	public class PlayerStates {
 
-		public float maxHealth;
-		public float health;
+		public float maxHealth = 0.0f;
+		public float health = 0.0f;
         
-		public float maxEnergy;
-		public float energy;
+		public float maxEnergy = 0.0f;
+		public float energy = 0.0f;
         
-		public float maxMana;
-		public float mana;
+		public float maxMana = 0.0f;
+		public float mana = 0.0f;
         
-		public float damageMelee;
-		public float damageRanged;
-		public float damageMagic;
+		public float damageMelee = 0.0f;
+		public float damageRanged = 0.0f;
+		public float damageMagic = 0.0f;
 		
-			public float criticalDamageMelee;
-			public float criticalDamageRanged;
-			public float criticalDamageMagic;
+			public float criticalDamageMelee = 0.0f;
+			public float criticalDamageRanged = 0.0f;
+			public float criticalDamageMagic = 0.0f;
 		
-			public float chanceCriticalDamageMelee;
-			public float chanceCriticalDamageRanged;
-			public float chanceCriticalDamageMagic;
+			public float chanceCriticalDamageMelee = 0.0f;
+			public float chanceCriticalDamageRanged = 0.0f;
+			public float chanceCriticalDamageMagic = 0.0f;
 		
-		public float protectionMelee;
-		public float protectionRanged;
-		public float protectionMagic;
-
-
+		public float protectionMelee = 0.0f;
+		public float protectionRanged = 0.0f;
+		public float protectionMagic = 0.0f;
+		
 			public PlayerStates() {
 
 			}
-
-
-		public float MaxHealth {
-
-			get { return maxHealth; }
-			set {
-				maxHealth = value;
-				UBar healthBar = null;
-				healthBar.max = maxHealth;
-			}
-
-		}
-
-		public float Health {
-
-			get { return health; }
-			set {
-				health = value;
-				UBar healthBar = null;
-				healthBar.value = health;
-			}
-
-		}
-
-		public float MaxMana {
-
-			get { return maxMana; }
-			set {
-				maxMana = value;
-				UBar manaBar = null;
-				manaBar.max = maxMana;
-			}
-
-		}
-
-		public float Mana {
-
-			get { return mana; }
-			set {
-				mana = value;
-				UBar manaBar = null;
-				manaBar.value = mana;
-			}
-
-		}
-
-		public float MaxEnergy {
-
-			get { return maxEnergy; }
-			set {
-				maxEnergy = value;
-				UBar energyBar = null;
-				energyBar.max = maxEnergy;
-			}
-
-		}
-
-		public float Energy {
-
-			get { return energy; }
-			set {
-				energy = value;
-				UBar energyBar = null;
-				energyBar.value = energy;
-			}
-
-		}
 
 		/// <summary>
 		/// Перегружаем оператор >
@@ -150,12 +84,12 @@ namespace Engine.Player {
 		/// <returns></returns>
 		public static PlayerStates operator +(PlayerStates s1, PlayerStates s2) {
 			return new PlayerStates() {
-				MaxHealth                  = s1.maxHealth                  + s2.maxHealth,
-				Health                     = s1.health                     + s2.health,
-				MaxEnergy                  = s1.maxEnergy                  + s2.maxEnergy,
-				Energy                     = s1.energy                     + s2.energy,
-				MaxMana                    = s1.maxMana                    + s2.maxMana,
-				Mana                       = s1.mana                       + s2.mana,
+				maxHealth                  = s1.maxHealth                  + s2.maxHealth,
+				health                     = s1.health                     + s2.health,
+				maxEnergy                  = s1.maxEnergy                  + s2.maxEnergy,
+				energy                     = s1.energy                     + s2.energy,
+				maxMana                    = s1.maxMana                    + s2.maxMana,
+				mana                       = s1.mana                       + s2.mana,
 				damageMelee                = s1.damageMelee                + s2.damageMelee,
 				damageRanged               = s1.damageRanged               + s2.damageRanged,
 				damageMagic                = s1.damageMagic                + s2.damageMagic,
@@ -179,12 +113,12 @@ namespace Engine.Player {
 		/// <returns></returns>
 		public static PlayerStates operator -(PlayerStates s1, PlayerStates s2) {
 			return new PlayerStates() {
-				MaxHealth                  = s1.maxHealth                  - s2.maxHealth,
-				Health                     = s1.health                     - s2.health,
-				MaxEnergy                  = s1.maxEnergy                  - s2.maxEnergy,
-				Energy                     = s1.energy                     - s2.energy,
-				MaxMana                    = s1.maxMana                    - s2.maxMana,
-				Mana                       = s1.mana                       - s2.mana,
+				maxHealth                  = s1.maxHealth                  - s2.maxHealth,
+				health                     = s1.health                     - s2.health,
+				maxEnergy                  = s1.maxEnergy                  - s2.maxEnergy,
+				energy                     = s1.energy                     - s2.energy,
+				maxMana                    = s1.maxMana                    - s2.maxMana,
+				mana                       = s1.mana                       - s2.mana,
 				damageMelee                = s1.damageMelee                - s2.damageMelee,
 				damageRanged               = s1.damageRanged               - s2.damageRanged,
 				damageMagic                = s1.damageMagic                - s2.damageMagic,

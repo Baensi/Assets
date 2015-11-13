@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Xml;
 using System.IO;
 using System.Collections.Generic;
@@ -33,9 +33,15 @@ namespace Engine.Objects {
 					XmlElement  description = (XmlElement)item.GetElementsByTagName("description")[0];
 
 					string     name = item.GetAttribute("name");
-					GameObject gameObject = Resources.Load<GameObject>(item.GetAttribute("gameObject"));
+					string path = item.GetAttribute("gameObject");
+                    GameObject gameObject = Resources.Load<GameObject>(path);
 					int        id = Convert.ToInt32(item.GetAttribute("id"));
-					
+
+#if UNITY_EDITOR
+					if (gameObject == null)
+							Debug.LogError("Не удалось найти префаб для объекта "+ name+", проверьте файл 'Assets/Resources/"+path+"'!");
+#endif
+
 					Texture2D  icon = Resources.Load<Texture2D>(description.GetAttribute("icon"));
 					List<SoundPack> soundList = null;
 

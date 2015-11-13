@@ -12,9 +12,10 @@ namespace Engine.I18N {
 		}
 		
 		public static class States {
+
 			public static string K_HEALTH = "player_states_health";
 			public static string K_ENERGY = "player_states_energy";
-			public static string K_MENA   = "player_states_mana";
+			public static string K_MANA   = "player_states_mana";
 			
 			public static string K_DAMAGE_MELEE  = "player_states_damage_melee";
 			public static string K_DAMAGE_RANGED = "player_states_damage_ranged";
