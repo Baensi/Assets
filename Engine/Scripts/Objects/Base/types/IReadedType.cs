@@ -15,4 +15,19 @@ namespace Engine.Objects.Types {
 		
 	}
 
+	/// <summary>
+	/// Расширяем интерфейс кодами для i18n словаря
+	/// </summary>
+	public static class DictionaryReadedTypeInjector {
+
+		public static string K_READED_TYPE_NAME(this IReadedType type) {
+			return "IReadedType_name";
+		}
+
+		public static string K_READED_TYPE_CAPTION(this IReadedType type) {
+			return "IReadedType_caption";
+		}
+
+	}
+
 }

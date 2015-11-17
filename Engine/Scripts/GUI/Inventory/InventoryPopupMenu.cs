@@ -10,7 +10,6 @@ namespace Engine.EGUI.Inventory {
 		private ToolTipBase toolTip;
 		private Item selectedItem;
 
-
 		[SerializeField] public MenuItem useItem;
 		[SerializeField] public MenuItem dropItem;
 		[SerializeField] public MenuItem dropAllItem;
@@ -26,45 +25,31 @@ namespace Engine.EGUI.Inventory {
 
 		public void redraw() {
 			base.MenuOnGUI();
-
-			
-		}
-
-		void OnGUI(){
-
-			
-
 		}
 
 		public override void onClick(MenuItem item) {
-
-			if (item == useItem) {
-
-				hide();
-				return;
-			}
-
-			if (item == dropItem) {
-
-
-				hide();
-				return;
-			}
-
-			if (item == dropAllItem) {
-
-
-				hide();
-				return;
-			}
-
-		}
-
-		public override void onSelect(MenuItem item){
 			
-
-
+			if (item == useItem) {
+				
+				hide();
+				return;
+			}
+			
+			if (item == dropItem) {
+				
+				hide();
+				return;
+			}
+			
+			if (item == dropAllItem) {
+				
+				hide();
+				return;
+			}
+			
 		}
+
+		public override void onSelect(MenuItem item){ }
 
 	}
 

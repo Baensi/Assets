@@ -76,10 +76,13 @@ namespace Engine.EGUI.Inventory {
 		private void checkStates(IDynamicObject dynamicObject, ref List<PropertyItem> list) {
 			PlayerStates states = dynamicObject.getStates();
 
+			if (states == null)
+				return;
+
 				// общие статы
 			if (states.maxHealth != 0f) list.Add(create(DictionaryPlayer.States.K_HEALTH,states.maxHealth,true));
-			if (states.maxEnergy != 0f) list.Add(create(DictionaryPlayer.States.K_ENERGY, states.maxEnergy, true));
-			if (states.maxMana   != 0f) list.Add(create(DictionaryPlayer.States.K_MANA, states.maxMana, true));
+			if (states.maxEnergy != 0f) list.Add(create(DictionaryPlayer.States.K_ENERGY,states.maxEnergy, true));
+			if (states.maxMana   != 0f) list.Add(create(DictionaryPlayer.States.K_MANA,  states.maxMana, true));
 
 		}
 
@@ -90,9 +93,21 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="list"></param>
 		private void checkTypes(IDynamicObject dynamicObject, ref List<PropertyItem> list) {
 
-			if (dynamicObject as IUsedType != null) {
+			IUsedType usedType = dynamicObject as IUsedType;
+            if (usedType != null)
+				list.Add(new PropertyItem(usedType.K_USED_TYPE_NAME(), usedType.K_USED_TYPE_CAPTION(),itemTypeColor));
 
-			}
+			ICookedType cookedType = dynamicObject as ICookedType;
+			if (cookedType != null)
+				list.Add(new PropertyItem(cookedType.K_COOKED_TYPE_NAME(), cookedType.K_COOKED_TYPE_CAPTION(), itemTypeColor));
+
+			IReadedType readedType = dynamicObject as IReadedType;
+			if (readedType != null)
+				list.Add(new PropertyItem(readedType.K_READED_TYPE_NAME(), readedType.K_READED_TYPE_CAPTION(), itemTypeColor));
+
+			IPickedType picketType = dynamicObject as IPickedType;
+			if (picketType != null)
+				list.Add(new PropertyItem(picketType.K_PICKED_TYPE_NAME(), picketType.K_PICKED_TYPE_CAPTION(), itemTypeColor));
 
 		}
 

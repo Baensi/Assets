@@ -9,8 +9,8 @@ namespace Engine.EGUI.Inventory {
 	public class ItemDrawService {
 		
 		private static GUIStyle labelStyle = null;
-		private static Color    labelColor = new Color(1.0f,1.0f,0.5f);
-		
+		private static Color    labelColor = new Color(0.945f, 0.768f, 0.058f);
+
 			public ItemDrawService(){
 			
 			}

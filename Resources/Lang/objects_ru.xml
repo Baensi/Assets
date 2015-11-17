@@ -2,6 +2,17 @@
 <data>
 	<lang name="ru">
 	
+    <object_types>
+      <item id="ICookedType_name">Еда</item>
+      <item id="ICookedType_caption">Готовится</item>
+      <item id="IPickedType_name">Предмет</item>
+      <item id="IPickedType_caption">Берётся</item>
+      <item id="IReadedType_name">Книга</item>
+      <item id="IReadedType_caption">Читается</item>
+      <item id="IUsedType_name">Предмет</item>
+      <item id="IUsedType_caption">Используется</item>
+    </object_types>
+    
 		<object_dictionary>
 		
 			<item id="healthpotion_id_name">Зелье здоровья</item>

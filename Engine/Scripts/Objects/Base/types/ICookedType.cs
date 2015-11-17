@@ -19,4 +19,19 @@ namespace Engine.Objects.Types {
 
 	}
 
+	/// <summary>
+	/// Расширяем интерфейс кодами для i18n словаря
+	/// </summary>
+	public static class DictionaryCookedTypeInjector {
+
+		public static string K_COOKED_TYPE_NAME(this ICookedType type) {
+			return "ICookedType_name";
+		}
+
+		public static string K_COOKED_TYPE_CAPTION(this ICookedType type) {
+			return "ICookedType_caption";
+		}
+
+	}
+
 }

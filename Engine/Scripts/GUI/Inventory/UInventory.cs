@@ -17,7 +17,10 @@ namespace Engine.EGUI.Inventory {
 
 		[SerializeField] public List<RectangleSlot> slots;
 		[SerializeField] public bool visible = false;
-		
+
+		[SerializeField] public InventoryPopupMenu popupMenu;
+		[SerializeField] public ToolTipBase toolTip;
+
 		public float     offsetX;
 		public float     offsetY;
 
@@ -34,8 +37,6 @@ namespace Engine.EGUI.Inventory {
 
 		public static float        toolTipDelay     = 1f;
 		private float              toolTipTimeStamp = 0f;
-		private ToolTipBase        toolTip;
-		private InventoryPopupMenu popupMenu;
 
 #if UNITY_EDITOR
 		private bool degubMode = false;
@@ -141,9 +142,7 @@ namespace Engine.EGUI.Inventory {
 			algoritm = new InventoryAlgoritm();
 			algoritm.setSlots(slots);
 			drawService = new SlotDrawService(slots);
-
-			popupMenu = GetComponent<InventoryPopupMenu>();
-
+			
 			onResizeWindow();
 
 			if(visible)
@@ -194,6 +193,8 @@ namespace Engine.EGUI.Inventory {
 					selectedCell.Y > selectedSlot.position.CellsYCount) {
 					selectedCell.X = 1;
 					selectedCell.Y = 1;
+
+					toolTip.hide();
 					return; // Если ничего не выбрано
 				}
 
@@ -202,11 +203,12 @@ namespace Engine.EGUI.Inventory {
 				else
 					tmpItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
 
+				toolTip.hide();
+
 			} else {
 
-				if (!toolTip.isVisible() && Time.time - toolTipTimeStamp > toolTipDelay)
+				if (selectedItem!=null && !toolTip.isVisible() && Time.time - toolTipTimeStamp > toolTipDelay)
 					toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
-
 
 			}
 

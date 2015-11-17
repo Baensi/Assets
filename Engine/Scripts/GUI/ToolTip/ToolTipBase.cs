@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Engine.I18N;
+using Engine.EGUI.Utils;
 
 namespace Engine.EGUI.ToolTip {
 
 	public class ToolTipBase : MonoBehaviour {
 
-		[SerializeField] public string titleName = "Panel/Title";
+		private static string PANEL_NAME = "Panel";
+		[SerializeField] public string titleName = "Title";
+		[SerializeField] public string valueName = "Value";
 
 			/// <summary>Префаб элемента-свойства</summary>
 		[SerializeField] public CanvasRenderer propertyItemInstance;
@@ -18,7 +22,7 @@ namespace Engine.EGUI.ToolTip {
 			/// <summary>Канвас, на котором происходит рисование</summary>
 		[SerializeField] public Canvas         canvas;
 
-		[SerializeField] public float width   = 120f;
+		[SerializeField] public float width   = 190f;
 		[SerializeField] public bool  visible = false;
 
 			/// <summary>Текущая панель подсказки</summary>
@@ -30,7 +34,9 @@ namespace Engine.EGUI.ToolTip {
 
 		private Rect               bounds;
 		private Vector2            position;
-		private List<PropertyItem> items;
+		private List<PropertyItem> items = new List<PropertyItem>();
+
+		private RectTransform test;
 
 		/// <summary>
 		/// Активность/видимость всплывающей подсказки
@@ -63,9 +69,11 @@ namespace Engine.EGUI.ToolTip {
 
 		/// <summary>Скрывает подсказку</summary>
 		public void hide() {
+			if (!visible)
+				return;
 			visible = false;
 			clear();
-        }
+		}
 
 		/// <summary>очищает свойства</summary>
 		private void clear() {
@@ -83,9 +91,10 @@ namespace Engine.EGUI.ToolTip {
 		private void CreateCanvasStruct(string description) {
 
 			background = Instantiate<CanvasRenderer>(panelInstance);
-			background.transform.parent = canvas.transform;
+			background.transform.SetParent(canvas.transform);
+			background.transform.name = PANEL_NAME;
 			backgroundRect = background.GetComponent<RectTransform>();
-			text = canvas.transform.Find(titleName).GetComponent<Text>();
+			text = canvas.transform.Find(PANEL_NAME+"/"+titleName).GetComponent<Text>();
 			text.text = description;
 
 			bounds.x = position.x;
@@ -96,22 +105,33 @@ namespace Engine.EGUI.ToolTip {
 			float panelHeight = backgroundRect.sizeDelta.y;
             float offsetY = 0;
 
-				foreach (PropertyItem item in items) { // инициализируем компоненты каждого свойства
+			foreach (PropertyItem item in items) { // инициализируем компоненты каждого свойства
 					
 					CanvasRenderer label     = Instantiate<CanvasRenderer>(propertyItemInstance);
 					RectTransform  labelRect = label.GetComponent<RectTransform>();
-					label.transform.parent = background.transform;
-					labelRect.position = new Vector3(labelRect.position.x, -panelHeight + labelRect.sizeDelta.y - 6 - offsetY);
-					item.setCanvas(label);
+					label.transform.SetParent(background.transform);
+
+					Text labelTitle = label.transform.Find(titleName).GetComponent<Text>();
+					Text labelValue = label.transform.Find(valueName).GetComponent<Text>();
+
+						labelTitle.text = CLang.getInstance().get(item.getTextTitle()) + ":";
+						labelValue.text = CLang.getInstance().get(item.getTextValue());
+						labelValue.color = item.getColorValue();
+
+
+				labelRect.setHorizontalAncorBounds(5f, panelHeight+offsetY-items.Count*6,labelRect.sizeDelta.y);
+
+				test = labelRect;
+
+                    item.setCanvas(label);
 					offsetY += labelRect.sizeDelta.y;
 					
 				}
-
+			
 			backgroundRect.position = new Vector3(position.x, position.y);
-			backgroundRect.rotation = Quaternion.Euler(0f, 20f - UnityEngine.Random.Range(5f, 35f), 20f - UnityEngine.Random.Range(5f, 35f)); // произвольно вращаем панель
-			backgroundRect.sizeDelta = new Vector2(bounds.width, bounds.height);
-
-			Debug.LogWarning("Ok!");
+			backgroundRect.rotation = Quaternion.Euler(0f, 20f - UnityEngine.Random.Range(20f, 35f), 20f - UnityEngine.Random.Range(20f, 35f)); // произвольно вращаем панель
+			bounds.height = 30 * (items.Count - 1) + 64;
+			backgroundRect.sizeDelta = new Vector2(width, bounds.height);
 
 		}
 
@@ -133,7 +153,8 @@ namespace Engine.EGUI.ToolTip {
 		/// <param name="rotation">Текущий угол</param>
 		/// <returns>Возвращает следующее промежуточное состояние вращения</returns>
 		private Quaternion onRotateIteration(Quaternion rotation) {
-			if (rotation.eulerAngles.x > 0.01f || rotation.eulerAngles.y > 0.01f || rotation.eulerAngles.z > 0.01f)
+			if (rotation.eulerAngles.x > 0.01f || rotation.eulerAngles.y > 0.01f || rotation.eulerAngles.z > 0.01f ||
+				rotation.eulerAngles.x < -0.01f || rotation.eulerAngles.y < -0.01f || rotation.eulerAngles.z < -0.01f)
 				return Quaternion.Euler(rotation.eulerAngles * 0.98f);
 			else
 				return Quaternion.Euler(Vector3.zero);
@@ -144,6 +165,7 @@ namespace Engine.EGUI.ToolTip {
 			if (!visible)
 				return;
 
+			
 			if (backgroundRect != null)
 				backgroundRect.rotation = onRotateIteration(backgroundRect.rotation); // постепенно поворачиваем панель "лицом" к пользователю
 
