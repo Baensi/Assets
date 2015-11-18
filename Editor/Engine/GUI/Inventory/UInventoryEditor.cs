@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using Engine.EGUI.Inventory;
 
-namespace Engine.EGUI.InventoryA {
+namespace EngineEditor.EGUI.Inventory {
 	
 	[CustomEditor(typeof(UInventory))]
-	public class UInventoryEditor : Editor {
+	public class UInventoryEditor : Editor, ItemSelectedListener {
 
 		private static Color lineColor  = new Color(0.7f, 0.7f, 0.8f);
 		private static Color lineShadow = new Color(0.4f, 0.4f, 0.4f);
@@ -28,12 +26,21 @@ namespace Engine.EGUI.InventoryA {
 
 			base.OnInspectorGUI();
 
-			Update();
+			if (GUILayout.Button("Добавить предмет...")) {
+				var window = (ItemListWindow)EditorWindow.GetWindow(typeof(ItemListWindow));
+				window.setListener(this);
+			}
+
+			//Update();
 			
 		}
 
+		public void OnItemSelect(Item item) {
+			inventory.addItem(item.Clone());
+		}
+
 		void OnGUI() {
-			Update();
+			//Update();
 		}
 
 		private void Update() {

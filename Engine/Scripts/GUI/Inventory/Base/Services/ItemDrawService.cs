@@ -43,10 +43,11 @@ namespace Engine.EGUI.Inventory {
 				
 				Rect cellRectangle = new Rect(offsetX+CellSettings.cellPaddingX+(item.position.X-1)*CellSettings.cellWidth,
 											  offsetY+CellSettings.cellPaddingY+(item.position.Y-1)*CellSettings.cellHeight,
-											  (float)CellSettings.cellWidth,
-											  (float)CellSettings.cellHeight);
-				//if (drawIcon)
-				//GUI.DrawTexture(cellRectangle, resource.icon);
+											  CellSettings.cellWidth,
+											  CellSettings.cellHeight);
+
+				if (drawIcon && item.item.resource!=null && item.item.resource.icon != null)
+					GUI.DrawTexture(cellRectangle, item.item.resource.icon);
 
 				if(item.item.getCount()>1){
 
@@ -63,11 +64,11 @@ namespace Engine.EGUI.Inventory {
 				
 				Rect cellRectangle = new Rect(offsetX,
 											  offsetY,
-											  (float)CellSettings.cellWidth,
-											  (float)CellSettings.cellHeight);
+											  CellSettings.cellWidth,
+											  CellSettings.cellHeight);
 
-				//if (drawIcon)
-				//GUI.DrawTexture(cellRectangle, resource.icon);
+				if (drawIcon && item.item.resource!=null && item.item.resource.icon!=null)
+					GUI.DrawTexture(cellRectangle, item.item.resource.icon);
 
 				if (item.item.getCount() > 1) {
 

@@ -20,6 +20,7 @@ namespace Engine.EGUI.Inventory {
 
 		[SerializeField] public InventoryPopupMenu popupMenu;
 		[SerializeField] public ToolTipBase toolTip;
+		[SerializeField] public float toolTipDelay = 1f;
 
 		public float     offsetX;
 		public float     offsetY;
@@ -35,7 +36,6 @@ namespace Engine.EGUI.Inventory {
 		private InventoryAlgoritm algoritm;
 		private SlotDrawService   drawService;
 
-		public static float        toolTipDelay     = 1f;
 		private float              toolTipTimeStamp = 0f;
 
 #if UNITY_EDITOR
@@ -195,7 +195,8 @@ namespace Engine.EGUI.Inventory {
 					selectedCell.Y = 1;
 
 					toolTip.hide();
-					return; // Если ничего не выбрано
+					toolTipTimeStamp = Time.time;
+                    return; // Если ничего не выбрано
 				}
 
 				if (eventData.eventType == InventarEvent.None)
@@ -203,13 +204,15 @@ namespace Engine.EGUI.Inventory {
 				else
 					tmpItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
 
+				toolTipTimeStamp = Time.time;
 				toolTip.hide();
 
 			} else {
 
-				if (selectedItem!=null && !toolTip.isVisible() && Time.time - toolTipTimeStamp > toolTipDelay)
+				if (selectedItem != null && !toolTip.isVisible() && Time.time - toolTipTimeStamp > toolTipDelay) {
 					toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
-
+					toolTipTimeStamp = Time.time;
+				}
 			}
 
 			if (tmpItem!=null)

@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using UnityEditor;
+using Engine.Objects;
 
-namespace Engine.Objects {
+namespace EngineEditor.Objects {
 
 	[CustomEditor(typeof(LightLOD))]
 	public class LightLODEditor : Editor {

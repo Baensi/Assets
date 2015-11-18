@@ -57,7 +57,9 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		private string toString(float value, bool trunc = false) {
-			return trunc ? value.ToString("0.00") : value.ToString("0.");
+			return trunc ?
+					value > 0 ? value.ToString("+0.00") : value.ToString("-0.00") 
+				  : value > 0 ? value.ToString("+0.")   : value.ToString("-0.");
 		}
 
 		private Color toColor(float value) {
@@ -80,9 +82,9 @@ namespace Engine.EGUI.Inventory {
 				return;
 
 				// общие статы
-			if (states.maxHealth != 0f) list.Add(create(DictionaryPlayer.States.K_HEALTH,states.maxHealth,true));
+			if (states.maxHealth != 0f) list.Add(create(DictionaryPlayer.States.K_HEALTH,states.maxHealth, true));
 			if (states.maxEnergy != 0f) list.Add(create(DictionaryPlayer.States.K_ENERGY,states.maxEnergy, true));
-			if (states.maxMana   != 0f) list.Add(create(DictionaryPlayer.States.K_MANA,  states.maxMana, true));
+			if (states.maxMana   != 0f) list.Add(create(DictionaryPlayer.States.K_MANA,  states.maxMana,   true));
 
 		}
 

@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
+using Engine.EGUI.Inventory;
 
-namespace Engine.EGUI.Inventory {
+namespace EngineEditor.EGUI.Inventory {
 
 	public class InventarWindow : EditorWindow {
 

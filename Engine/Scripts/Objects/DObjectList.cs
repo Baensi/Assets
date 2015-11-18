@@ -19,6 +19,23 @@ namespace Engine.Objects {
 			return instance;
 		}
 
+			public DObjectList() {
+				items=readItems(Dictionary.DictionaryObjectsFileName);
+            }
+
+		/// <summary>
+		/// Возвращает коллекцию предметов из словаря
+		/// </summary>
+		/// <returns></returns>
+		public List<Item> getItemList() {
+			return new List<Item>(items.Values);
+        }
+
+		/// <summary>
+		/// Инициализирует словарь
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 		public SortedDictionary<string, Item> readItems(string fileName) {
 			SortedDictionary<string, Item> result = new SortedDictionary<string, Item>();
 
@@ -33,24 +50,38 @@ namespace Engine.Objects {
 					XmlElement  description = (XmlElement)item.GetElementsByTagName("description")[0];
 
 					string     name = item.GetAttribute("name");
-					string path = item.GetAttribute("gameObject");
-                    GameObject gameObject = Resources.Load<GameObject>(path);
+					string     gameObjectPath = item.GetAttribute("gameObject");
+                    GameObject gameObject = Resources.Load<GameObject>(gameObjectPath);
 					int        id = Convert.ToInt32(item.GetAttribute("id"));
 
 #if UNITY_EDITOR
 					if (gameObject == null)
-							Debug.LogError("Не удалось найти префаб для объекта "+ name+", проверьте файл 'Assets/Resources/"+path+"'!");
+							Debug.LogError("Не удалось найти префаб для объекта "+ name+", проверьте файл 'Assets/Resources/"+ gameObjectPath + "'!");
 #endif
 
-					Texture2D  icon = Resources.Load<Texture2D>(description.GetAttribute("icon"));
-					List<SoundPack> soundList = null;
+					string iconPath = description.GetAttribute("icon");
+                    Texture2D  icon = Resources.Load<Texture2D>(iconPath);
 
+#if UNITY_EDITOR
+					if (icon == null)
+						Debug.LogError("Не удалось найти иконку для объекта " + name + ", проверьте файл 'Assets/Resources/" + iconPath + "'!");
+#endif
+
+					List<SoundPack> soundList = null;
 					XmlNodeList sounds = description.GetElementsByTagName("sound");
+					string soundPath = null;
 
 					if (sounds.Count > 0) {
 						soundList = new List<SoundPack>();
 						foreach (XmlElement sound in sounds) {
-							soundList.Add(new SoundPack(Resources.Load<AudioClip>(sound.GetAttribute("sound")), sound.GetAttribute("tag")));
+							soundPath = sound.GetAttribute("sound");
+
+#if UNITY_EDITOR
+							if (icon == null)
+								Debug.LogError("Не удалось найти звуковой файл для объекта " + name + ", проверьте файл 'Assets/Resources/" + soundPath + "'!");
+#endif
+
+						soundList.Add(new SoundPack(Resources.Load<AudioClip>(soundPath), sound.GetAttribute("tag")));
 						}
 					}
 
@@ -77,6 +108,11 @@ namespace Engine.Objects {
 			return result;
 		}
 
+		/// <summary>
+		/// Возвращает предмет из словаря
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
 		public Item getItem(string key) {
 
 			if (items==null)
@@ -88,6 +124,9 @@ namespace Engine.Objects {
 			return result;
 		}
 
+		/// <summary>
+		/// Пересоздаёт ресурсы у предмета (например, может пересоздать метки при смене языка)
+		/// </summary>
 		public void ReCreate() {
 			foreach (Item value in items.Values)
 				value.description.ReCreate();

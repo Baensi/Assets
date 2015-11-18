@@ -1,11 +1,10 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System;
-using Engine.Objects.Special;
-using Engine.Objects.Food;
+using Engine.Objects;
 using Engine.Objects.Types;
 
-namespace Engine.Objects {
+namespace EngineEditor.Objects {
 
 	[CustomEditor(typeof(DynamicObject),true)]
 	public class DynamicObjectEditor : Editor {

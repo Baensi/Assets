@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<data>
+	<lang name="ru">
+	
+		<level>
+			<item id="player_level_level">Уровень</item>
+			<item id="player_level_experience">Опыт</item>
+			<item id="player_level_specificationspoints">Очки характеристик</item>
+			<item id="player_level_skillspoints">Очки навыков</item>
+		</level>
+
+		<states>
+			<item id="player_states_health">Здоровье</item>
+			<item id="player_states_energy">Энергия</item>
+			<item id="player_states_mana">Мана</item>
+
+			<item id="player_states_damage_melee">Ближний урон</item>
+			<item id="player_states_damage_ranged">Дальний урон</item>
+			<item id="player_states_damage_magic">Магический урон</item>
+
+			<item id="player_states_critical_damage_melee">Крит. Ближний урон</item>
+			<item id="player_states_critical_damage_ranged">Крит. Дальний урон</item>
+			<item id="player_states_critical_damage_magic">Крит. Магический урон</item>
+
+			<item id="player_states_chance_critical_damage_melee">Шанс Крит. урона ближний</item>
+			<item id="player_states_chance_critical_damage_ranged">Шанс Крит. урона дальний</item>
+			<item id="player_states_chance_critical_damage_magic">Шанс Крит. урона магический</item>
+
+			<item id="player_states_protection_melee">Защита от ближнего урона</item>
+			<item id="player_states_protection_ranged">Защита от дальнего урона</item>
+			<item id="player_states_protection_magic">Защита от магического урона</item>
+		</states>
+		
+		<specifications>
+			<item id="player_specifications_strength">Сила</item>
+			<item id="player_specifications_stamina">Выносливость</item>
+			<item id="player_specifications_intelligence">Интеллект</item>
+			<item id="player_specifications_agility">Ловкось</item>
+		</specifications>
+		
+		<skills>
+			<item id="player_skills_fencing">Фехтование</item>
+			<item id="player_skills_shooting">Стрельба</item>
+			<item id="player_skills_magic">Магия</item>
+			<item id="player_skills_intuition">Интуиция</item>
+			<item id="player_skills_alchemy">Алхимия</item>
+			<item id="player_skills_engineering">Инженерия</item>
+		</skills>
+	
+	</lang>
+</data>

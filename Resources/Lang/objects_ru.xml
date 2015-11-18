@@ -21,29 +21,39 @@
 			<item id="manapotion_id_name">Зелье маны</item>
 			<item id="manapotion_id_caption">Мана +50</item>
 			
-			<item id="food_rawbread_name">Тесто</item>
-			<item id="food_rawbread_caption">Сырое тесто</item>
+			<food>
+				
+				<item id="rawbread_id_name">Тесто</item>
+				<item id="rawbread_id_caption">Сырое тесто</item>
 			
-			<item id="food_cookedbread_name">Хлеб</item>
-			<item id="food_cookedbread_caption">Здоровье +1</item>
+				<item id="cookedbread_id_name">Хлеб</item>
+				<item id="cookedbread_id_caption">Здоровье +1</item>
 			
-			<item id="food_rawham_name">Окорок</item>
-			<item id="food_rawham_caption">Сырой окорок</item>
+				<item id="rawham_id_name">Окорок</item>
+				<item id="rawham_id_caption">Сырой окорок</item>
 			
-			<item id="food_cookedham_name">Жареный окорок</item>
-			<item id="food_cookedham_caption">Здоровье +10</item>
+				<item id="cookedham_id_name">Жареный окорок</item>
+				<item id="cookedham_id_caption">Здоровье +10</item>
+
+				<item id="cookedfish_id_name">Жареная рыба</item>
+				<item id="cookedfish_id_caption">Здоровье +10</item>
+
+				<item id="rawfish_id_name">Рыба</item>
+				<item id="rawfish_id_caption">Сырая рыба</item>
 			
-			<item id="food_applegreen_name">Зелёное яблоко</item>
-			<item id="food_applegreen_caption">Здоровье +1</item>
+				<item id="applegreen_id_name">Зелёное яблоко</item>
+				<item id="applegreen_id_caption">Здоровье +1</item>
 			
-			<item id="food_applered_name">Красное яблоко</item>
-			<item id="food_applered_caption">Здоровье +1</item>
+				<item id="applered_id_name">Красное яблоко</item>
+				<item id="applered_id_caption">Здоровье +1</item>
 			
-			<item id="food_appleyellow_name">Жёлтое яблоко</item>
-			<item id="food_appleyellow_caption">Здоровье +1</item>
+				<item id="appleyellow_id_name">Жёлтое яблоко</item>
+				<item id="appleyellow_id_caption">Здоровье +1</item>
 			
-			<item id="food_cookedapple_name">Запечёное яблоко</item>
-			<item id="food_cookedapple_caption">Здоровье +2</item>
+				<item id="cookedapple_id_name">Запечёное яблоко</item>
+				<item id="cookedapple_id_caption">Здоровье +2</item>
+				
+			</food>
 			
 		</object_dictionary>
 	

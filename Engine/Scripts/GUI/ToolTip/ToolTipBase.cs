@@ -101,7 +101,6 @@ namespace Engine.EGUI.ToolTip {
 			bounds.y = position.y;
 			bounds.width = width;
 
-
 			float panelHeight = backgroundRect.sizeDelta.y;
             float offsetY = 0;
 
@@ -128,10 +127,11 @@ namespace Engine.EGUI.ToolTip {
 					
 				}
 			
-			backgroundRect.position = new Vector3(position.x, position.y);
+			
 			backgroundRect.rotation = Quaternion.Euler(0f, 20f - UnityEngine.Random.Range(20f, 35f), 20f - UnityEngine.Random.Range(20f, 35f)); // произвольно вращаем панель
 			bounds.height = 30 * (items.Count - 1) + 64;
 			backgroundRect.sizeDelta = new Vector2(width, bounds.height);
+			backgroundRect.position = new Vector3(position.x+(bounds.height*0.5f), position.y+(bounds.height*0.5f));
 
 		}
 

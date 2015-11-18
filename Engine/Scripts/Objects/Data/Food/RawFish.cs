@@ -56,6 +56,16 @@ namespace Engine.Objects.Food {
 
 		}
 
+		public override PlayerStates getStates() {
+			PlayerStates states = new PlayerStates();
+
+			states.protectionMagic = 0.5f;
+			states.maxMana = 2.5f;
+			states.maxEnergy = 5.5f;
+
+			return states;
+        }
+
 		void OnGUI() {
 
 		}

@@ -8,7 +8,7 @@
 				<item id="inventory_menu_useitem">Использовать</item>
 				<item id="inventory_menu_dropitem">Выкинуть</item>
 				<item id="inventory_menu_dropallitem">Выкинуть всё</item>
-			
+        
 			</popup_menu>
 		</inventory>
 	

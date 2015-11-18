@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 using System.Collections.Generic;
+using Engine;
 
-namespace Engine {
+namespace EngineEditor {
 	public class CubemapGenerator : ScriptableWizard {
 
 		[SerializeField] public Camera cameraViewPort;

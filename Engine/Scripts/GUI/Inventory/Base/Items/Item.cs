@@ -26,6 +26,9 @@ namespace Engine.EGUI.Inventory {
 				if (item.toGameObject()==null && toGameObject()==null)
 					return true;
 
+				if (item.toGameObject() == null)
+					return false;
+
 			return (item.toGameObject().Equals(toGameObject()));
 
 		}

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Engine.Objects.Doors;
 
-namespace Engine.Objects.Doors {
+namespace EngineEditor.Objects.Doors {
 
 	[CustomEditor(typeof(DefaultDoor), true)]
 	public class DefaultDoorEditor : Editor {
