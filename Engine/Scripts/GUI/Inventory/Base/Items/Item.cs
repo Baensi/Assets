@@ -11,22 +11,37 @@ namespace Engine.EGUI.Inventory {
 
 		[SerializeField] public ItemDescription description;
 		[SerializeField] public ItemSize        size;
-		[SerializeField] public ItemResource    resource;
+		[SerializeField] public ItemResource    resource = new ItemResource(null, null);
 
 		[SerializeField] public int  count;
 		[SerializeField] public int  maxCount;
 
-		private GameObject  gameObject;
+		private GameObject gameObject;
+
+		/// <summary>
+		/// Пересоздаёт ресурсы
+		/// </summary>
+		public void ReCreate() {
+
+			if (gameObject != null)
+				GameObject.Destroy(gameObject);
+
+			gameObject = Resources.Load<GameObject>(resource.files.gameObjectPath);
+
+			Debug.LogError("gameObject="+ resource.files.gameObjectPath);
+
+			resource.ReCreate();
+			description.ReCreate();
+			
+		}
 
 		public override bool Equals(object obj){
 			IItem item = obj as IItem;
 
-				if(item==null) return false;
+				if(item==null)
+					return false;
 
-				if (item.toGameObject()==null && toGameObject()==null)
-					return true;
-
-				if (item.toGameObject() == null)
+				if (item.toGameObject()==null || toGameObject()==null)
 					return false;
 
 			return (item.toGameObject().Equals(toGameObject()));

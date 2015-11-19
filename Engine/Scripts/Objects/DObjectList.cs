@@ -70,7 +70,10 @@ namespace Engine.Objects {
 					List<SoundPack> soundList = null;
 					XmlNodeList sounds = description.GetElementsByTagName("sound");
 					string soundPath = null;
+					string soundName = null;
 
+					List<string> soundsPaths = new List<string>();
+					List<string> soundsNames = new List<string>();
 					if (sounds.Count > 0) {
 						soundList = new List<SoundPack>();
 						foreach (XmlElement sound in sounds) {
@@ -80,8 +83,10 @@ namespace Engine.Objects {
 							if (icon == null)
 								Debug.LogError("Не удалось найти звуковой файл для объекта " + name + ", проверьте файл 'Assets/Resources/" + soundPath + "'!");
 #endif
-
-						soundList.Add(new SoundPack(Resources.Load<AudioClip>(soundPath), sound.GetAttribute("tag")));
+							soundName = sound.GetAttribute("tag");
+                            soundsPaths.Add(soundPath);
+							soundsNames.Add(soundName);
+                            soundList.Add(new SoundPack(Resources.Load<AudioClip>(soundPath), soundName));
 						}
 					}
 
@@ -91,6 +96,11 @@ namespace Engine.Objects {
 
 					ItemResource resource = new ItemResource(icon, soundList);
 					ItemSize     size = new ItemSize(width,height);
+
+					resource.files.gameObjectPath = gameObjectPath;
+					resource.files.iconPath       = iconPath;
+					resource.files.soundsPaths = soundsPaths;
+					resource.files.soundsNames = soundsNames;
 
 					string textName    = description.GetAttribute("textName");
 					string textCaption = description.GetAttribute("textCaption");
@@ -129,7 +139,7 @@ namespace Engine.Objects {
 		/// </summary>
 		public void ReCreate() {
 			foreach (Item value in items.Values)
-				value.description.ReCreate();
+				value.ReCreate();
 		}
 
 	}

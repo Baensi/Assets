@@ -46,7 +46,7 @@ namespace Engine.EGUI.Inventory {
 											  CellSettings.cellWidth,
 											  CellSettings.cellHeight);
 
-				if (drawIcon && item.item.resource!=null && item.item.resource.icon != null)
+				if (drawIcon)
 					GUI.DrawTexture(cellRectangle, item.item.resource.icon);
 
 				if(item.item.getCount()>1){
@@ -67,7 +67,7 @@ namespace Engine.EGUI.Inventory {
 											  CellSettings.cellWidth,
 											  CellSettings.cellHeight);
 
-				if (drawIcon && item.item.resource!=null && item.item.resource.icon!=null)
+				if (drawIcon)
 					GUI.DrawTexture(cellRectangle, item.item.resource.icon);
 
 				if (item.item.getCount() > 1) {
