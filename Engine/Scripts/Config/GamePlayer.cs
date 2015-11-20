@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace Engine {
 
-	public struct GamePlayer {
+	public static class GamePlayer {
 
-		public static PlayerLevel          level;
-		public static PlayerStates         states;
-		public static PlayerSpecifications specifications;
-		public static PlayerSkills         skills;
+		public static PlayerLevel          level          = new PlayerLevel();
+		public static PlayerStates         states         = new PlayerStates();
+		public static PlayerSpecifications specifications = new PlayerSpecifications();
+		public static PlayerSkills         skills         = new PlayerSkills();
 
-		public class Cloth {
+		public static class Cloth {
 
 			private static ICloth head;
 			private static ICloth body;

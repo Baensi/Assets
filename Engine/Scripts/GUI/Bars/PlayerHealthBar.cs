@@ -3,28 +3,26 @@ using UnityEngine;
 
 namespace Engine.EGUI.Bars {
 
+	[ExecuteInEditMode]
 	public class PlayerHealthBar : MonoBehaviour {
 		
 		[SerializeField] public Texture2D fullHealthPicture;
 		[SerializeField] public Texture2D emptyHealthPicture;
-		
-		public float barPositionX;
-		public float barPositionY;
-
 		[SerializeField] [Range(0.005f,0.500f)]public float animationSpeed = 0.005f; // диапазон скоростей анимации
+		[SerializeField] private bool visible;
 
 		private Rect fullPictureRect;
 		private Rect emptyPictureRect;
 		private Rect fullPictureTransformRect;
 		private Rect emptyPictureTransformRect;
 
-		[SerializeField] private float max;
-		[SerializeField] private float value;
-                         
-		[SerializeField] private bool visible;
+		private float barPositionX = 0f;
+		private float barPositionY = 0f;
 
-		private float currentValue; // стремится к ~value
-		private float currentMax;   // стремится к ~max
+		[SerializeField] public float scaleSize = 1.0f;
+
+		private float currentValue; // стремится к ~GamePlayer.states.health
+		private float currentMax;   // стремится к ~GamePlayer.states.maxHealth
 
 		public int getWidth() {
 			return fullHealthPicture.width;
@@ -33,64 +31,37 @@ namespace Engine.EGUI.Bars {
 		public int getHeight() {
 			return fullHealthPicture.height;
 		}
-
-		public float Value {
-			
-			get { return this.value; }
-			set {
-				
-				if(this.value<=max && this.value>=0){
-					this.value=value;
-					return;
-				}
-				
-				if(this.value>max)
-					this.value=max;
-				else
-					this.value=0;
-
-			}
-			
-		}
-		
-		public float Max {
-			
-			get { return max; }
-			set {
-				if(max>0)
-					this.max=value;
-			}
-			
-		}
 		
 		void Start(){
+
 			
-			emptyPictureRect = new Rect(barPositionX,
-										barPositionY,
-										emptyHealthPicture.width,
-										emptyHealthPicture.height);
-										
+
+            
+			
 			emptyPictureTransformRect = new Rect(0f,0f,1f,1f);
 			
 		}
 
-		void OnValidate(){
-			if(max<1f)    max = 1f;
-			if(value>max) value=max;
-			if(value<0f)  value=0f;
-		}
-
 		void OnGUI(){
 
-			if(!visible) return;
+			if(!visible)
+				return;
 
 			float percent = 1.0f/currentMax*currentValue;
+
+			barPositionX = emptyHealthPicture.width + 5;
+			barPositionY = Screen.height - emptyHealthPicture.height - 5;
+
+			emptyPictureRect = new Rect(barPositionX,
+										barPositionY,
+										emptyHealthPicture.width * scaleSize,
+										emptyHealthPicture.height * scaleSize);
 
 			fullPictureTransformRect = new Rect(0f,0f,1f,percent); // трансформатор
 			fullPictureRect          = new Rect(barPositionX,
 				                                barPositionY+(1.0f-percent-0.01f)*fullHealthPicture.height,
-				                                fullHealthPicture.width,
-				                                fullHealthPicture.height*percent);
+				                                fullHealthPicture.width*scaleSize,
+				                                fullHealthPicture.height*percent*scaleSize);
 			
 			GUI.DrawTextureWithTexCoords(emptyPictureRect, emptyHealthPicture, emptyPictureTransformRect, true);
 			
@@ -118,8 +89,8 @@ namespace Engine.EGUI.Bars {
 
 			if(!visible) return;
 
-			currentValue = doIteration(value,currentValue);
-			currentMax   = doIteration(max,currentMax);
+			currentValue = doIteration(GamePlayer.states.health,currentValue);
+			currentMax   = doIteration(GamePlayer.states.maxHealth,currentMax);
 		}
 		
 	}

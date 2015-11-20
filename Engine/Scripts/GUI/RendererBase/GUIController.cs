@@ -77,14 +77,14 @@ namespace Engine.EGUI {
 			float guiBarsCenter = Screen.width/10f; // мнимый центр прогрессбаров
 
 				// позиционируем прогрессбары
-			playerHealthBar.barPositionY = Screen.height-playerHealthBar.getHeight();
-			playerHealthBar.barPositionX = guiBarsCenter - playerHealthBar.getWidth()/2f;
+			//playerHealthBar.barPositionY = Screen.height-playerHealthBar.getHeight();
+			//playerHealthBar.barPositionX = guiBarsCenter - playerHealthBar.getWidth()/2f;
 
-			playerEnergyBar.barPositionY = Screen.height-playerEnergyBar.getHeight();
-			playerEnergyBar.barPositionX = playerHealthBar.barPositionX+playerHealthBar.getWidth()+playerEnergyBar.getWidth();
+			//playerEnergyBar.barPositionY = Screen.height-playerEnergyBar.getHeight();
+			//playerEnergyBar.barPositionX = playerHealthBar.barPositionX+playerHealthBar.getWidth()+playerEnergyBar.getWidth();
 
-			playerManaBar.barPositionY = Screen.height-playerManaBar.getHeight();
-			playerManaBar.barPositionX = playerHealthBar.barPositionX-playerManaBar.getWidth();
+			//playerManaBar.barPositionY = Screen.height-playerManaBar.getHeight();
+			//playerManaBar.barPositionX = playerHealthBar.barPositionX-playerManaBar.getWidth();
 		}
 		
 	}
