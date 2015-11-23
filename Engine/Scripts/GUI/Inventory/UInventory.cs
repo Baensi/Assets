@@ -209,9 +209,10 @@ namespace Engine.EGUI.Inventory {
 
 			} else {
 
-				if (selectedItem != null && !toolTip.isVisible() && Time.time - toolTipTimeStamp > toolTipDelay) {
+				if (selectedItem != null && !toolTip.isVisible()) { //&& Time.time - toolTipTimeStamp > toolTipDelay) {
 					toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
 					toolTipTimeStamp = Time.time;
+					Debug.LogWarning("show!");
 				}
 			}
 

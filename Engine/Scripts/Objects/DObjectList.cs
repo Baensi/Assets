@@ -97,6 +97,7 @@ namespace Engine.Objects {
 					ItemResource resource = new ItemResource(icon, soundList);
 					ItemSize     size = new ItemSize(width,height);
 
+					resource.files.itemName = name;
 					resource.files.gameObjectPath = gameObjectPath;
 					resource.files.iconPath       = iconPath;
 					resource.files.soundsPaths = soundsPaths;

@@ -18,6 +18,8 @@ namespace Engine.EGUI.Inventory {
 
 	public class Files {
 
+		public string itemName;
+
 		public string       gameObjectPath;
 		public string       iconPath;
 		public List<string> soundsNames = new List<string>();

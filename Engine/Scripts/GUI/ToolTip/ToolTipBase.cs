@@ -77,8 +77,16 @@ namespace Engine.EGUI.ToolTip {
 
 		/// <summary>очищает свойства</summary>
 		private void clear() {
-			foreach (PropertyItem item in items)
-				Destroy(item.toCanvas());
+			foreach (PropertyItem item in items) {
+
+#if UNITY_EDITOR
+				DestroyImmediate(item.toCanvas().gameObject);
+#else
+				Destroy(item.toCanvas().gameObject);
+#endif
+
+			}
+
 			items.Clear();
 			items = null;
 			text  = null;
@@ -112,11 +120,10 @@ namespace Engine.EGUI.ToolTip {
 
 					Text labelTitle = label.transform.Find(titleName).GetComponent<Text>();
 					Text labelValue = label.transform.Find(valueName).GetComponent<Text>();
-
-						labelTitle.text = CLang.getInstance().get(item.getTextTitle()) + ":";
-						labelValue.text = CLang.getInstance().get(item.getTextValue());
-						labelValue.color = item.getColorValue();
-
+				
+					labelTitle.text = item.getTextTitle() + ":";
+					labelValue.text = item.getTextValue();
+					labelValue.color = item.getColorValue();
 
 				labelRect.setHorizontalAncorBounds(5f, panelHeight+offsetY-items.Count*6,labelRect.sizeDelta.y);
 

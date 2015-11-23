@@ -49,6 +49,9 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="item">Предмет, свойства которого анализируются</param>
 		/// <returns>Возвращает список свойств</returns>
 		public List<PropertyItem> createInformationItems(Item item) {
+			if (item == null)
+				return null;
+
 			IDynamicObject dynamicObject = item.toGameObject().GetComponent<IDynamicObject>();
 			List<PropertyItem> result = new List<PropertyItem>();
 				checkStates(dynamicObject, ref result);
@@ -97,20 +100,24 @@ namespace Engine.EGUI.Inventory {
 
 			IUsedType usedType = dynamicObject as IUsedType;
             if (usedType != null)
-				list.Add(new PropertyItem(usedType.K_USED_TYPE_NAME(), usedType.K_USED_TYPE_CAPTION(),itemTypeColor));
+				create(ref list, usedType.K_USED_TYPE_NAME(), usedType.K_USED_TYPE_CAPTION());
 
 			ICookedType cookedType = dynamicObject as ICookedType;
 			if (cookedType != null)
-				list.Add(new PropertyItem(cookedType.K_COOKED_TYPE_NAME(), cookedType.K_COOKED_TYPE_CAPTION(), itemTypeColor));
+				create(ref list, cookedType.K_COOKED_TYPE_NAME(), cookedType.K_COOKED_TYPE_CAPTION());
 
 			IReadedType readedType = dynamicObject as IReadedType;
 			if (readedType != null)
-				list.Add(new PropertyItem(readedType.K_READED_TYPE_NAME(), readedType.K_READED_TYPE_CAPTION(), itemTypeColor));
+				create(ref list, readedType.K_READED_TYPE_NAME(), readedType.K_READED_TYPE_CAPTION());
 
 			IPickedType picketType = dynamicObject as IPickedType;
 			if (picketType != null)
-				list.Add(new PropertyItem(picketType.K_PICKED_TYPE_NAME(), picketType.K_PICKED_TYPE_CAPTION(), itemTypeColor));
+				create(ref list, picketType.K_PICKED_TYPE_NAME(), picketType.K_PICKED_TYPE_CAPTION());
 
+		}
+
+		private void create(ref List<PropertyItem> list, string name, string text) {
+			list.Add(new PropertyItem(CLang.getInstance().get(name), CLang.getInstance().get(text), itemTypeColor));
 		}
 
 	}
