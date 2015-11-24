@@ -199,7 +199,7 @@ namespace Engine.EGUI.Inventory {
                     return; // Если ничего не выбрано
 				}
 
-				if (eventData.eventType == InventarEvent.None)
+				if (eventData.eventType == InventoryEvent.None)
 					selectedItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
 				else
 					tmpItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
@@ -279,7 +279,7 @@ namespace Engine.EGUI.Inventory {
 			selectedCell.Y = -1; // сбрасываем последнюю выбранную ячейку, чтобы в следующей итерации пересчитать предмет под курсором
 			eventData.selected = null; // сбрасываем перемещение предмета
 			eventData.collision = null; // сбрасываем коллизию
-			eventData.eventType = InventarEvent.None; // устанавливаем эвент по умолчанию
+			eventData.eventType = InventoryEvent.None; // устанавливаем эвент по умолчанию
 			selectedItem = null;
 		}
 
@@ -296,7 +296,7 @@ namespace Engine.EGUI.Inventory {
                 }
 			}
 
-			if (eventData.mouseEvent.LMouseUp && eventData.eventType == InventarEvent.ItemMove) {
+			if (eventData.mouseEvent.LMouseUp && eventData.eventType == InventoryEvent.ItemMove) {
 
 				if (eventData.collision==null
 					&& selectedCell.X+eventData.selected.item.getSize().getWidth()<=selectedSlot.position.CellsXCount+1 && 
@@ -352,9 +352,9 @@ namespace Engine.EGUI.Inventory {
 
 			}
 
-			if (eventData.mouseEvent.LMouseDown && selectedItem!=null && eventData.selected==null && eventData.eventType == InventarEvent.None) {
+			if (eventData.mouseEvent.LMouseDown && selectedItem!=null && eventData.selected==null && eventData.eventType == InventoryEvent.None) {
 
-				eventData.eventType = InventarEvent.ItemMove;
+				eventData.eventType = InventoryEvent.ItemMove;
 				eventData.selected = selectedItem;
 				
 			}

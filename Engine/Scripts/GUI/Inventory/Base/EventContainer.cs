@@ -10,7 +10,7 @@ namespace Engine.EGUI.Inventory {
 
 		public Vector2 cursorPosition;
 		public MouseEvent mouseEvent = new MouseEvent();
-		public InventarEvent eventType = InventarEvent.None;
+		public InventoryEvent eventType = InventoryEvent.None;
 
 		public bool isDivMode = false; // Зажат шифт и предметы надо делить
 

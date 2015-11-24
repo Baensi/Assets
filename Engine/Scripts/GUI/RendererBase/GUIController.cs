@@ -13,10 +13,6 @@ namespace Engine.EGUI {
 		private DynamicObjectGUIRenderer dynamicObjectGUIRenderer = null;
 		private ReadedPageGUIRenderer    readedPageGUIRenderer = null;
 
-		[SerializeField] public PlayerEnergyBar playerEnergyBar;
-		[SerializeField] public PlayerManaBar   playerManaBar;
-		[SerializeField] public PlayerHealthBar playerHealthBar;
-
 		private bool initGUIState = false;
 
 		private int screenWidth;
@@ -74,17 +70,6 @@ namespace Engine.EGUI {
 				item.onResizeWindow();
 			}
 
-			float guiBarsCenter = Screen.width/10f; // мнимый центр прогрессбаров
-
-				// позиционируем прогрессбары
-			//playerHealthBar.barPositionY = Screen.height-playerHealthBar.getHeight();
-			//playerHealthBar.barPositionX = guiBarsCenter - playerHealthBar.getWidth()/2f;
-
-			//playerEnergyBar.barPositionY = Screen.height-playerEnergyBar.getHeight();
-			//playerEnergyBar.barPositionX = playerHealthBar.barPositionX+playerHealthBar.getWidth()+playerEnergyBar.getWidth();
-
-			//playerManaBar.barPositionY = Screen.height-playerManaBar.getHeight();
-			//playerManaBar.barPositionX = playerHealthBar.barPositionX-playerManaBar.getWidth();
 		}
 		
 	}

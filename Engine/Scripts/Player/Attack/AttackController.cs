@@ -1,7 +1,8 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using UnityEngine;
 using Engine.Player.Animations;
+using Engine.Objects.Weapon;
 
 namespace Engine.Player.Attack {
 	
@@ -12,44 +13,48 @@ namespace Engine.Player.Attack {
 
 		[SerializeField] public Actions actions;
 	
-			// Атакеры
-		private IAttacker swordAttacker; // атакер мечём
-		private IAttacker rangeAttacker; // атакер стрельбой
-		private IAttacker magicAttacker; // атакер магией
+			// РђС‚Р°РєРµСЂС‹
+		private IAttacker swordAttacker; // Р°С‚Р°РєРµСЂ РјРµС‡С‘Рј
+		private IAttacker rangeAttacker; // Р°С‚Р°РєРµСЂ СЃС‚СЂРµР»СЊР±РѕР№
+		private IAttacker magicAttacker; // Р°С‚Р°РєРµСЂ РјР°РіРёРµР№
 
-		private EAttacker currentAttackerType;
-		private IAttacker currentAttacker; // текущий атакер
+		private WeaponTypes currentAttackerType;
+		private IAttacker   currentAttacker; // С‚РµРєСѓС‰РёР№ Р°С‚Р°РєРµСЂ
 		
 		void Start(){
 			
-			swordAttacker = GetComponent<SwordAttacker>(); // Получаем компаненты аттакеров
+			swordAttacker = GetComponent<SwordAttacker>(); // РџРѕР»СѓС‡Р°РµРј РєРѕРјРїР°РЅРµРЅС‚С‹ Р°С‚С‚Р°РєРµСЂРѕРІ
 			rangeAttacker = GetComponent<RangeAttacker>();
 			magicAttacker = GetComponent<MagicAttacker>();
 			
-				swordAttacker.setActions(actions); // Передаём им контроллер над анимацией
+				swordAttacker.setActions(actions); // РџРµСЂРµРґР°С‘Рј РёРј РєРѕРЅС‚СЂРѕР»Р»РµСЂ РЅР°Рґ Р°РЅРёРјР°С†РёРµР№
 				rangeAttacker.setActions(actions);
 				magicAttacker.setActions(actions);
 			
-			currentAttacker = swordAttacker; // выбираем атакер по умолчанию
+			currentAttacker = swordAttacker; // РІС‹Р±РёСЂР°РµРј Р°С‚Р°РєРµСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 			
 		}
 		
-		public void setAttacker(EAttacker attackerType){ // Меняем атакер по умолчанию
+		/// <summary>
+		/// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С‚РµРєСѓС‰РёР№ Р°С‚Р°РєРµСЂ РїРѕ С‚РёРїСѓ РѕСЂСѓР¶РёСЏ
+		/// </summary>
+		/// <param name="attackerType"></param>
+		public void setAttacker(WeaponTypes attackerType){ // РњРµРЅСЏРµРј Р°С‚Р°РєРµСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 			currentAttackerType=attackerType;
 			switch(attackerType){
-				case EAttacker.swordAttacker:
+				case WeaponTypes.Sword:
 					currentAttacker=swordAttacker;
 					break;
-				case EAttacker.rangeAttacker:
+				case WeaponTypes.Range:
 					currentAttacker=rangeAttacker;
 					break;
-				case EAttacker.magicAttacker:
+				case WeaponTypes.Magic:
 					currentAttacker=magicAttacker;
 					break;
 			}
 		}
 
-		public EAttacker getCurrentAttackerType() {
+		public WeaponTypes getCurrentAttackerType() {
 			return currentAttackerType;
 		}
 
@@ -57,9 +62,19 @@ namespace Engine.Player.Attack {
 			return currentAttacker;
 		}
 		
-		public void startAttack(){ // посылаем команду атакеру "Атака"
-			currentAttacker.attack();
-		}
+		public void startAttack(){ // РїРѕСЃС‹Р»Р°РµРј РєРѕРјР°РЅРґСѓ Р°С‚Р°РєРµСЂСѓ "РђС‚Р°РєР°"
+
+			if (GamePlayer.Cloth.weapon == null) // РµСЃР»Рё РёРіСЂРѕРє Р±РµР·РѕСЂСѓР¶РµРЅ - РІС‹С…РѕРґРёРј
+				return;
+
+			if (GamePlayer.states > GamePlayer.Cloth.weapon.getAttackRequireStates()) { // РїСЂРѕРІРµСЂСЏРµРј, РјРѕР¶РЅРѕ Р»Рё РЅР°РЅРѕСЃРёС‚СЊ СѓРґР°СЂ
+
+				GamePlayer.states -= GamePlayer.Cloth.weapon.getAttackRequireStates(); // С‚СЂР°С‚РёРј СЃС‚Р°С‚С‹ РЅР° СѓРґР°СЂ
+				currentAttacker.attack(); // РІС‹РїРѕР»РЅСЏРµРј Р°РЅРёРјР°С†РёСЋ
+
+			}
+
+        }
 		
 	}
 	

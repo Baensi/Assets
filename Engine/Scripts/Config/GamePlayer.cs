@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Engine.Player;
+using Engine.Objects.Types;
+using Engine.Objects.Weapon;
 using UnityEngine;
 
 namespace Engine {
@@ -13,6 +15,8 @@ namespace Engine {
 		public static PlayerSkills         skills         = new PlayerSkills();
 
 		public static class Cloth {
+
+			public static IWeaponType weapon;
 
 			private static ICloth head;
 			private static ICloth body;

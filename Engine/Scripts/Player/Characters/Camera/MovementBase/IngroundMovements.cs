@@ -2,14 +2,18 @@ using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Utility;
-
+using Engine.Objects.Weapon;
 using Engine.Player.Attack;
 using Engine.Player.Animations;
 
 namespace Engine.Player.Movement.Movements {
 
 	public class IngroundMovements : MonoBehaviour, IMovement {
-		
+
+		private float energyDec = 0.05f; // снижение энергии при беге
+		private float energyInc = 0.001f; // восстановление энергии
+		private float energyTimeStamp = 0f;
+
 		private float playerStandupHeight = 2.0f;
 		private float playerSitdownHeight = 0.0f;
 
@@ -107,14 +111,14 @@ namespace Engine.Player.Movement.Movements {
 
 					} else {
 
-						attackController.setAttacker(EAttacker.swordAttacker);
+						attackController.setAttacker(WeaponTypes.Sword);
 						attackController.startAttack();
 
 					}
 				}
 
 				if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ATTACK_MAGIC)) {
-					attackController.setAttacker(EAttacker.magicAttacker);
+					attackController.setAttacker(WeaponTypes.Magic);
 					attackController.startAttack();
 				}
 
@@ -260,6 +264,7 @@ namespace Engine.Player.Movement.Movements {
 
 				mainCameraObject.transform.localPosition = headBob.DoHeadBob(characterController.velocity.magnitude +
 									  (speed * (isWalking ? m_RunstepLenghtenWalk : m_RunstepLenghtenRun)));
+
 				newCameraPosition = mainCameraObject.transform.localPosition;
 				newCameraPosition.y = mainCameraObject.transform.localPosition.y - jumpBob.Offset();
 			} else {
@@ -282,7 +287,21 @@ namespace Engine.Player.Movement.Movements {
 				attackController.startAttack();
 
 #if !MOBILE_INPUT
-			isWalking = !Input.GetKey(KeyCode.LeftShift);
+
+			isWalking = !Input.GetKey(KeyCode.LeftShift) && GamePlayer.states.energy > energyDec;
+
+			if (!isWalking) {
+
+				GamePlayer.states.energy -= energyDec;
+				energyTimeStamp = Time.time;
+
+            } else {
+
+				if(Time.time-energyTimeStamp>1.5f) // восстанавливаем энергию после простоя в 1,5 сек.
+					GamePlayer.states.energy += energyInc;
+
+			}
+
 #endif
 
 			speed = isWalking ? playerWalkSpeed : playerRunSpeed;

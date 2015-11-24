@@ -3,125 +3,40 @@ using UnityEngine;
 
 namespace Engine.EGUI.Bars {
 
-	public class PlayerManaBar : MonoBehaviour {
-		
-		[SerializeField] public Texture2D fullManaPicture;
-		[SerializeField] public Texture2D emptyManaPicture;
-		
-		public float barPositionX;
-		public float barPositionY;
+	public class PlayerManaBar : BarBase {
 
-		[SerializeField] [Range(0.005f,0.500f)]public float animationSpeed = 0.005f; // диапазон скоростей анимации
+		[SerializeField] public float maxMana = 100f;
+		[SerializeField] public float mana    = 100f;
 
-		private Rect fullPictureRect;
-		private Rect emptyPictureRect;
-		private Rect fullPictureTransformRect;
-		private Rect emptyPictureTransformRect;
+#if UNITY_EDITOR
+		void OnValidate() {
+			GamePlayer.states.maxMana = maxMana;
 
-		[SerializeField] private float max;
-		[SerializeField] private float value;
-                         
-		[SerializeField] private bool visible;
+			if (mana <= maxMana && mana >= 0)
+				GamePlayer.states.mana = mana;
 
-		private float currentValue; // стремится к ~value
-		private float currentMax;   // стремится к ~max
-
-		public int getWidth() {
-			return fullManaPicture.width;
+			if (GamePlayer.states.mana > GamePlayer.states.maxMana)
+				GamePlayer.states.mana = GamePlayer.states.maxMana;
 		}
+#endif
 
-		public int getHeight() {
-			return fullManaPicture.height;
-		}
-
-		public float Value {
-			
-			get { return this.value; }
-			set {
-				
-				if(this.value<=max && this.value>=0){
-					this.value=value;
-					return;
-				}
-				
-				if(this.value>max)
-					this.value=max;
-				else
-					this.value=0;
-
+			void Start() {
+				GamePlayer.states.maxMana = maxMana;
+				GamePlayer.states.mana = mana;
 			}
-			
-		}
-		
-		public float Max {
-			
-			get { return max; }
-			set {
-				if(max>0)
-					this.max=value;
-			}
-			
-		}
-		
-		void Start(){
-			
-			emptyPictureRect = new Rect(barPositionX,
-										barPositionY,
-										emptyManaPicture.width,
-										emptyManaPicture.height);
-										
-			emptyPictureTransformRect = new Rect(0f,0f,1f,1f);
-			
+
+		void OnGUI() {
+			OnDraw();
 		}
 
-		void OnValidate(){
-			if(max<1f)    max = 1f;
-			if(value>max) value=max;
-			if(value<0f)  value=0f;
+		public override Vector2 getBarPosition() {
+			return new Vector2(35f, Screen.height - getHeight() - 5f);
 		}
 
-		void OnGUI(){
-
-			if(!visible) return;
-
-			float percent = 1.0f/currentMax*currentValue;
-
-			fullPictureTransformRect = new Rect(0f,0f,1f,percent); // трансформатор
-			fullPictureRect          = new Rect(barPositionX,
-				                                barPositionY+(1.0f-percent-0.01f)*fullManaPicture.height,
-				                                fullManaPicture.width,
-				                                fullManaPicture.height*percent);
-			
-			GUI.DrawTextureWithTexCoords(emptyPictureRect, emptyManaPicture, emptyPictureTransformRect, true);
-			
-			if(currentValue>0)
-				GUI.DrawTextureWithTexCoords(fullPictureRect, fullManaPicture, fullPictureTransformRect,true);
-			
+		void Update() {
+			updateValues(GamePlayer.states.mana, GamePlayer.states.maxMana);
 		}
 
-		private float doIteration(float realValue, float currentValue){
-
-			if(currentValue==realValue) return realValue;
-			
-			if(Mathf.Abs(currentValue-realValue)>1f){
-				
-				if(currentValue>realValue)
-					return currentValue-(currentValue-realValue)*animationSpeed; // шаг стремления 0.2
-				else
-					return currentValue+(realValue-currentValue)*animationSpeed;
-				
-			} else return realValue;
-
-		}
-
-		void Update(){
-
-			if(!visible) return;
-
-			currentValue = doIteration(value,currentValue);
-			currentMax   = doIteration(max,currentMax);
-		}
-		
 	}
 	
 }

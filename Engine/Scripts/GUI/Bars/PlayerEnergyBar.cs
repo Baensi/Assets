@@ -3,126 +3,41 @@ using UnityEngine;
 
 namespace Engine.EGUI.Bars {
 
-	[Serializable]
-	public class PlayerEnergyBar : MonoBehaviour {
-		
-		[SerializeField] public Texture2D fullEnergyPicture;
-		[SerializeField] public Texture2D emptyEnergyPicture;
-		
-		public float barPositionX;
-		public float barPositionY;
+	[ExecuteInEditMode]
+	public class PlayerEnergyBar : BarBase {
 
-		[SerializeField] [Range(0.005f,0.500f)]public float animationSpeed = 0.005f; // диапазон скоростей анимации
+		[SerializeField] public float maxEnergy = 100f;
+		[SerializeField] public float energy = 100f;
 
-		private Rect fullPictureRect;
-		private Rect emptyPictureRect;
-		private Rect fullPictureTransformRect;
-		private Rect emptyPictureTransformRect;
+#if UNITY_EDITOR
+		void OnValidate() {
+			GamePlayer.states.maxEnergy = maxEnergy;
 
-		[SerializeField] private float max;
-		[SerializeField] private float value;
-                         
-		[SerializeField] private bool visible;
+			if (energy <= maxEnergy && energy >= 0)
+				GamePlayer.states.energy = energy;
 
-		private float currentValue; // стремится к ~value
-		private float currentMax;   // стремится к ~max
-
-		public int getWidth() {
-			return fullEnergyPicture.width;
+			if (GamePlayer.states.energy > GamePlayer.states.maxEnergy)
+				GamePlayer.states.energy = GamePlayer.states.maxEnergy;
 		}
+#endif
 
-		public int getHeight() {
-			return fullEnergyPicture.height;
-		}
-
-		public float Value {
-			
-			get { return this.value; }
-			set {
-				
-				if(this.value<=max && this.value>=0){
-					this.value=value;
-					return;
-				}
-				
-				if(this.value>max)
-					this.value=max;
-				else
-					this.value=0;
-
+			void Start() {
+				GamePlayer.states.maxEnergy = maxEnergy;
+				GamePlayer.states.energy = energy;
 			}
-			
-		}
-		
-		public float Max {
-			
-			get { return max; }
-			set {
-				if(max>0)
-					this.max=value;
-			}
-			
-		}
-		
-		void Start(){
-			
-			emptyPictureRect = new Rect(barPositionX,
-										barPositionY,
-										emptyEnergyPicture.width,
-										emptyEnergyPicture.height);
-										
-			emptyPictureTransformRect = new Rect(0f,0f,1f,1f);
-			
+
+		void OnGUI() {
+			OnDraw();
 		}
 
-		void OnValidate(){
-			if(max<1f)    max = 1f;
-			if(value>max) value=max;
-			if(value<0f)  value=0f;
+		public override Vector2 getBarPosition() {
+			return new Vector2(20f, Screen.height - getHeight() - 10f);
 		}
 
-		void OnGUI(){
-
-			if(!visible) return;
-
-			float percent = 1.0f/currentMax*currentValue;
-
-			fullPictureTransformRect = new Rect(0f,0f,1f,percent); // трансформатор
-			fullPictureRect          = new Rect(barPositionX,
-				                                barPositionY+(1.0f-percent-0.01f)*fullEnergyPicture.height,
-				                                fullEnergyPicture.width,
-				                                fullEnergyPicture.height*percent);
-			
-			GUI.DrawTextureWithTexCoords(emptyPictureRect, emptyEnergyPicture, emptyPictureTransformRect, true);
-			
-			if(currentValue>0)
-				GUI.DrawTextureWithTexCoords(fullPictureRect, fullEnergyPicture, fullPictureTransformRect,true);
-			
+		void Update() {
+			updateValues(GamePlayer.states.energy, GamePlayer.states.maxEnergy);
 		}
 
-		private float doIteration(float realValue, float currentValue){
-
-			if(currentValue==realValue) return realValue;
-			
-			if(Mathf.Abs(currentValue-realValue)>1f){
-				
-				if(currentValue>realValue)
-					return currentValue-(currentValue-realValue)*animationSpeed; // шаг стремления 0.2
-				else
-					return currentValue+(realValue-currentValue)*animationSpeed;
-				
-			} else return realValue;
-
-		}
-
-		void Update(){
-
-			if(!visible) return;
-
-			currentValue = doIteration(value,currentValue);
-			currentMax   = doIteration(max,currentMax);
-		}
-		
 	}
-	
+
 }
