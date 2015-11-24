@@ -8,7 +8,7 @@ namespace Engine.Objects.Types {
 	/// </summary>
 	public interface IUsedType {
 
-		bool onUse(); // предмет использовали, возвращает true, если предмет был удалён
+		void onUse(); // предмет использовали
 
 	}
 

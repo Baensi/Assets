@@ -8,7 +8,7 @@ namespace Engine.Objects.Types {
 	/// </summary>
 	public interface IPickedType {
 
-		void onPick(); // предмет взяли в инвентарь
+		bool onPick(); // предмет взяли в инвентарь, возвращает true, если предмет был удалён
 
 	}
 

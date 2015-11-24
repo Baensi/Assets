@@ -73,7 +73,7 @@ namespace Engine.Player {
 		/// <param name="s2"></param>
 		/// <returns>Если хотябы один из параметров правого оператора больше</returns>
 		public static bool operator <(PlayerStates s1, PlayerStates s2) {
-			return s2 > s1;
+            return s2 > s1;
 		}
 
 		/// <summary>
@@ -81,7 +81,7 @@ namespace Engine.Player {
 		/// </summary>
 		/// <param name="s1"></param>
 		/// <param name="s2"></param>
-		/// <returns></returns>
+		/// <returns>Возвращает сумму статов</returns>
 		public static PlayerStates operator +(PlayerStates s1, PlayerStates s2) {
 			return new PlayerStates() {
 				maxHealth                  = s1.maxHealth                  + s2.maxHealth,
@@ -106,11 +106,39 @@ namespace Engine.Player {
 		}
 
 		/// <summary>
+		/// Меняет знак статов
+		/// </summary>
+		/// <param name="s1"></param>
+		/// <returns>Возвращает статы с противоположным знаком</returns>
+		public static PlayerStates operator -(PlayerStates s1) {
+			return new PlayerStates() {
+				maxHealth = -s1.maxHealth,
+				health = -s1.health,
+				maxEnergy = -s1.maxEnergy,
+				energy = -s1.energy,
+				maxMana = -s1.maxMana,
+				mana = -s1.mana,
+				damageMelee = -s1.damageMelee,
+				damageRanged = -s1.damageRanged,
+				damageMagic = -s1.damageMagic,
+				criticalDamageMelee = -s1.criticalDamageMelee,
+				criticalDamageRanged = -s1.criticalDamageRanged,
+				criticalDamageMagic = -s1.criticalDamageMagic,
+				chanceCriticalDamageMelee = -s1.chanceCriticalDamageMelee,
+				chanceCriticalDamageRanged = -s1.chanceCriticalDamageRanged,
+				chanceCriticalDamageMagic = -s1.chanceCriticalDamageMagic,
+				protectionMelee = -s1.protectionMelee,
+				protectionRanged = -s1.protectionRanged,
+				protectionMagic = -s1.protectionMagic
+			};
+		}
+
+		/// <summary>
 		/// Перегружаем оператор разности
 		/// </summary>
 		/// <param name="s1"></param>
 		/// <param name="s2"></param>
-		/// <returns></returns>
+		/// <returns>Возвращает разность статов</returns>
 		public static PlayerStates operator -(PlayerStates s1, PlayerStates s2) {
 			return new PlayerStates() {
 				maxHealth                  = s1.maxHealth                  - s2.maxHealth,

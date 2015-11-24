@@ -10,7 +10,11 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class CookedFish : DynamicObject, IUsedType {
+	public class CookedFish : DynamicObject, IPickedType, IUsedType, IChangedStatesType {
+
+		private PlayerStates states = new PlayerStates() { // изменяемые статы
+			health = 5.0f,
+		};
 
 		void Start() {
 			base.OnStart();
@@ -22,7 +26,15 @@ namespace Engine.Objects.Food {
 
 		}
 
-		public bool onUse() {
+		public void onUse() {
+			GamePlayer.states += getStates();
+		}
+
+		public PlayerStates getStates() {
+			return states;
+		}
+
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;

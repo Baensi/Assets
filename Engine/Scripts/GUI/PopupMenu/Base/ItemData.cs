@@ -11,7 +11,7 @@ namespace Engine.EGUI.PopupMenu {
 
         [SerializeField] public GUIStyle labelStyle;
 		
-		[SerializeField] public Vector2 itemSize;
+		[SerializeField] public Vector2  itemSize;
 
 		public ItemData Create(GUIStyle labelStyle,
 							   Vector2 itemSize,

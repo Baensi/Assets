@@ -10,7 +10,7 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class RawBread : DynamicObject, ICookedType, IUsedType {
+	public class RawBread : DynamicObject, ICookedType, IPickedType {
 
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
@@ -60,7 +60,7 @@ namespace Engine.Objects.Food {
 
 		}
 
-		public bool onUse() {
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;
@@ -71,7 +71,6 @@ namespace Engine.Objects.Food {
 
 			if (!isCooked) return;
 
-			
 			base.Destroy(); // Добавляем текущий экземпляр в корзину
 
 			GameObject cookedObject = DObjectList.getInstance().getItem("CookedBread").toGameObject();

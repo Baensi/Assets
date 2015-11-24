@@ -7,7 +7,7 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Special {
 
-	public class HealthPotion : DynamicObject, IUsedType {
+	public class HealthPotion : DynamicObject, IPickedType {
 
 		public HealthPotion() : base() {
 			item = DObjectList.getInstance().getItem("HealthPotion");
@@ -17,7 +17,7 @@ namespace Engine.Objects.Special {
 			base.OnStart();
 		}
 
-		public bool onUse() {
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;

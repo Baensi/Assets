@@ -44,8 +44,6 @@ namespace Engine.Objects {
 
 		}
 
-		public virtual PlayerStates getStates() { return null; }
-
 		public float getCostValue(){
 			return this.item.description.costValue;
 		}

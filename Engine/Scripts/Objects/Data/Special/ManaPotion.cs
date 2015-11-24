@@ -7,7 +7,7 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Special {
 
-	public class ManaPotion : DynamicObject, IUsedType {
+	public class ManaPotion : DynamicObject, IPickedType {
 
 		public ManaPotion() : base() {
 			item = DObjectList.getInstance().getItem("ManaPotion");
@@ -17,7 +17,7 @@ namespace Engine.Objects.Special {
 			base.OnStart();
 		}
 
-		public bool onUse() {
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;

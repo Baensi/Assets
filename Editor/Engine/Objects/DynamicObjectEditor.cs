@@ -37,7 +37,7 @@ namespace EngineEditor.Objects {
 			EditorGUILayout.Separator();
 			EditorGUILayout.LabelField(properties_caption);
 
-			if (dynamicObject is IUsedType)
+			if (dynamicObject is IPickedType)
 				EditorGUILayout.LabelField("->" + usedType_caption);
 
 			if (dynamicObject is IDestroyedType)

@@ -10,7 +10,7 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class RawHam : DynamicObject, ICookedType, IUsedType {
+	public class RawHam : DynamicObject, ICookedType, IPickedType {
 
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
@@ -60,7 +60,7 @@ namespace Engine.Objects.Food {
 
 		}
 
-		public bool onUse() {
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;

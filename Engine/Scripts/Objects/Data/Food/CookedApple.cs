@@ -10,19 +10,31 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class CookedApple : DynamicObject, IUsedType {
+	public class CookedApple : DynamicObject, IPickedType, IUsedType, IChangedStatesType {
 
-		void Start() {
-			base.OnStart();
+		private PlayerStates states = new PlayerStates() { // изменяемые статы
+			health = 2.0f,
+		};
 
-			item = DObjectList.getInstance().getItem("CookedApple");
-		}
+			void Start() {
+				base.OnStart();
+
+				item = DObjectList.getInstance().getItem("CookedApple");
+			}
 
 		void OnGUI() {
 
 		}
 
-		public bool onUse() {
+		public void onUse() {
+			GamePlayer.states += getStates();
+		}
+
+		public PlayerStates getStates() {
+			return states;
+		}
+
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;

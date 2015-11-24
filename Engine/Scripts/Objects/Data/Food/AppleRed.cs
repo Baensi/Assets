@@ -10,23 +10,35 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 	
-	public class AppleRed : DynamicObject, ICookedType, IUsedType {
+	public class AppleRed : DynamicObject, ICookedType, IPickedType, IUsedType, IChangedStatesType {
 
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
 		private bool              isCooked = false;
 
+		private PlayerStates states = new PlayerStates() { // изменяемые статы
+			health = 1.0f,
+		};
+
 		void OnEnable() {
 
 		}
 
-		void Start() {
-			base.OnStart();
+			void Start() {
+				base.OnStart();
 
-			item         = DObjectList.getInstance().getItem("AppleRed");
+				item         = DObjectList.getInstance().getItem("AppleRed");
 
-			cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 5);
-			zones        = new List<CookingZone>();
+				cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 5);
+				zones        = new List<CookingZone>();
+			}
+
+		public void onUse() {
+			GamePlayer.states += getStates();
+		}
+
+		public PlayerStates getStates() {
+			return states;
 		}
 
 		public void onCook() {
@@ -60,7 +72,7 @@ namespace Engine.Objects.Food {
 
 		}
 
-		public bool onUse() {
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;

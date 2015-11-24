@@ -39,12 +39,6 @@ namespace Engine.Objects {
 		/// <returns>Возвращает стоимость предмета</returns>
 		float  getCostValue();
 
-		/// <summary>
-		/// Статы, которые изменяет предмет
-		/// </summary>
-		/// <returns>Возвращает статы, если статы не меняются - вернёт null</returns>
-		PlayerStates getStates();
-
 		void Destroy(bool presently);
 		bool isDestroy();
 

@@ -15,7 +15,6 @@ namespace Engine.Objects.Types {
 
 		void onCook();  // предмет готовится
 		void endCook(); // предмет готов
-		
 
 	}
 

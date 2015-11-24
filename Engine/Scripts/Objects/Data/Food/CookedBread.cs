@@ -10,19 +10,31 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class CookedBread : DynamicObject, IUsedType {
+	public class CookedBread : DynamicObject, IPickedType, IUsedType, IChangedStatesType {
 
-		void Start() {
-			base.OnStart();
+		private PlayerStates states = new PlayerStates() { // изменяемые статы
+			health = 3.0f,
+		};
 
-			item = DObjectList.getInstance().getItem("CookedBread");
-		}
+			void Start() {
+				base.OnStart();
+
+				item = DObjectList.getInstance().getItem("CookedBread");
+			}
 
 		void OnGUI() {
 
 		}
 
-		public bool onUse() {
+		public void onUse() {
+			GamePlayer.states += getStates();
+		}
+
+		public PlayerStates getStates() {
+			return states;
+		}
+
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;

@@ -78,12 +78,14 @@ namespace EngineEditor.EGUI.Inventory {
 		}
 
 		void OnFocus() {
-			//SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
-			//SceneView.onSceneGUIDelegate += this.OnSceneGUI;
+
 		}
 
 		void OnDestroy() {
-			//SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
+
+			foreach(RectangleSlot slot in inventory.getSlots())
+				slot.Items.Clear();
+
 		}
 
 		public void OnSceneGUI(SceneView sceneView) {

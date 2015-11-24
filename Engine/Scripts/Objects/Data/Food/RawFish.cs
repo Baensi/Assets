@@ -10,7 +10,7 @@ using Engine.EGUI.Inventory;
 
 namespace Engine.Objects.Food {
 
-	public class RawFish : DynamicObject, ICookedType, IUsedType {
+	public class RawFish : DynamicObject, ICookedType, IPickedType {
 
 		private List<CookingZone> zones;
 		private ObjectCooked      cookTemplate;
@@ -20,14 +20,15 @@ namespace Engine.Objects.Food {
 
 		}
 
-		void Start() {
-			base.OnStart();
+			void Start() {
+				base.OnStart();
 
-			item         = DObjectList.getInstance().getItem("RawFish");
+				item         = DObjectList.getInstance().getItem("RawFish");
 
-			cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 10);
-			zones        = new List<CookingZone>();
-		}
+				cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 10);
+				zones        = new List<CookingZone>();
+
+			}
 
 		public void onCook() {
 			cookTemplate.update();
@@ -56,25 +57,16 @@ namespace Engine.Objects.Food {
 
 		}
 
-		public override PlayerStates getStates() {
-			PlayerStates states = new PlayerStates();
-
-			states.protectionMagic = 0.5f;
-			states.maxMana = 2.5f;
-			states.maxEnergy = 5.5f;
-
-			return states;
-        }
-
 		void OnGUI() {
 
 		}
 
-		public bool onUse() {
+		public bool onPick() {
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
 				return true;
-			} return false;
+			}
+			return false;
 		}
 
 		void Update() {

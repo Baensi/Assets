@@ -79,7 +79,13 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="dynamicObject"></param>
 		/// <param name="list"></param>
 		private void checkStates(IDynamicObject dynamicObject, ref List<PropertyItem> list) {
-			PlayerStates states = dynamicObject.getStates();
+
+			IChangedStatesType changedStates = dynamicObject as IChangedStatesType;
+
+			if (changedStates == null)
+				return;
+
+            PlayerStates states = changedStates.getStates();
 
 			if (states == null)
 				return;
@@ -98,9 +104,9 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="list"></param>
 		private void checkTypes(IDynamicObject dynamicObject, ref List<PropertyItem> list) {
 
-			IUsedType usedType = dynamicObject as IUsedType;
-            if (usedType != null)
-				create(ref list, usedType.K_USED_TYPE_NAME(), usedType.K_USED_TYPE_CAPTION());
+			IPickedType pickedType = dynamicObject as IPickedType;
+            if (pickedType != null)
+				create(ref list, pickedType.K_PICKED_TYPE_NAME(), pickedType.K_PICKED_TYPE_CAPTION());
 
 			ICookedType cookedType = dynamicObject as ICookedType;
 			if (cookedType != null)
@@ -110,9 +116,9 @@ namespace Engine.EGUI.Inventory {
 			if (readedType != null)
 				create(ref list, readedType.K_READED_TYPE_NAME(), readedType.K_READED_TYPE_CAPTION());
 
-			IPickedType picketType = dynamicObject as IPickedType;
-			if (picketType != null)
-				create(ref list, picketType.K_PICKED_TYPE_NAME(), picketType.K_PICKED_TYPE_CAPTION());
+			IUsedType usedType = dynamicObject as IUsedType;
+			if (usedType != null)
+				create(ref list, usedType.K_USED_TYPE_NAME(), usedType.K_USED_TYPE_CAPTION());
 
 		}
 
