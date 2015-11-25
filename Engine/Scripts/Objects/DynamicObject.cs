@@ -87,7 +87,7 @@ namespace Engine.Objects {
 			objectsSelector.ResetSelected(); // сбрасываем выделение, чтобы исключить попытку доступа к удалённому объекту
 			
 			if(presently)
-				Destroy(this.gameObject);
+				GameObject.Destroy(this.gameObject);
 			else
 				Trash.getInstance().Add(this.gameObject); // добавляем этот экземпляр в корзину
 		}

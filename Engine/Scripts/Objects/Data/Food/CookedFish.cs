@@ -16,11 +16,11 @@ namespace Engine.Objects.Food {
 			health = 5.0f,
 		};
 
-		void Start() {
-			base.OnStart();
+			void Start() {
+				base.OnStart();
 
-			item = DObjectList.getInstance().getItem("CookedFish");
-		}
+				item = DObjectList.getInstance().getItem("CookedFish");
+			}
 
 		void OnGUI() {
 

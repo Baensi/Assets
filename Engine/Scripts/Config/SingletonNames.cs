@@ -22,8 +22,8 @@ namespace Engine {
 
 			public static class GUI {
 
-				public static string INVENTAR = "PlayerGUI";
-
+				public static string INVENTORY = "PlayerGUI/Inventory";
+                
 				public static string HEALTH_BAR = "PlayerGUI";
 				public static string MANA_BAR   = "PlayerGUI";
 				public static string ENERGY_BAR = "PlayerGUI";
@@ -82,6 +82,11 @@ namespace Engine {
 
 		public static GameObject getPlayer() {
 			return GameObject.Find(Constants.PLAYER_OBJECT_NAME);
+		}
+
+
+        public static GameObject getInventory(){
+			return GameObject.Find(Constants.GUI.INVENTORY);
 		}
 
 		public static GameObject getGUI(){

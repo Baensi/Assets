@@ -36,8 +36,6 @@ namespace Engine.EGUI.ToolTip {
 		private Vector2            position;
 		private List<PropertyItem> items = new List<PropertyItem>();
 
-		private RectTransform test;
-
 		/// <summary>
 		/// Активность/видимость всплывающей подсказки
 		/// </summary>
@@ -64,6 +62,7 @@ namespace Engine.EGUI.ToolTip {
 			this.items = items;
 			this.position = position;
             CreateCanvasStruct(description);
+            canvas.enabled=true;
 			visible = true;
         }
 
@@ -71,12 +70,14 @@ namespace Engine.EGUI.ToolTip {
 		public void hide() {
 			if (!visible)
 				return;
+            canvas.enabled=false;
 			visible = false;
 			clear();
 		}
 
 		/// <summary>очищает свойства</summary>
 		private void clear() {
+            
 			foreach (PropertyItem item in items) {
 
 #if UNITY_EDITOR
@@ -90,7 +91,13 @@ namespace Engine.EGUI.ToolTip {
 			items.Clear();
 			items = null;
 			text  = null;
-			Destroy(background);
+
+#if UNITY_EDITOR
+			DestroyImmediate(background.gameObject);
+#else
+            Destroy(background.gameObject);
+#endif
+
 			background     = null;
 			backgroundRect = null;
         }
@@ -125,10 +132,8 @@ namespace Engine.EGUI.ToolTip {
 					labelValue.text = item.getTextValue();
 					labelValue.color = item.getColorValue();
 
-				labelRect.setHorizontalAncorBounds(5f, panelHeight+offsetY-items.Count*6,labelRect.sizeDelta.y);
-
-				test = labelRect;
-
+					labelRect.setHorizontalAncorBounds(5f, panelHeight+offsetY-items.Count*6,labelRect.sizeDelta.y);
+				
                     item.setCanvas(label);
 					offsetY += labelRect.sizeDelta.y;
 					
@@ -167,16 +172,18 @@ namespace Engine.EGUI.ToolTip {
 				return Quaternion.Euler(Vector3.zero);
 		}
 
-		void OnGUI() {
-
+		public void redraw() {
 			if (!visible)
 				return;
 
-			
+
 			if (backgroundRect != null)
 				backgroundRect.rotation = onRotateIteration(backgroundRect.rotation); // постепенно поворачиваем панель "лицом" к пользователю
 
+		}
 
+		void OnGUI() {
+			redraw();
 		}
 
 	}

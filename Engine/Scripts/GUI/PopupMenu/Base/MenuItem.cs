@@ -26,12 +26,26 @@ namespace Engine.EGUI.PopupMenu {
 		private Color diffColor; // промежуточный цвет
 		private static float minAlpha  = 0.65f;
 		private static float stepAlpha = 0.005f;
-		private static float stepSize  = 0.01f;
+		private static float stepSize  = 0.05f;
+
         private float transferent  = 0.7f;  // прозрачность выделения
 		private float size = 0.0f;
 
 		private int textSize;
 		private Vector2 oldOffset = new Vector2(0,0);
+
+		public override int GetHashCode() {
+			return code;
+		}
+
+		public override bool Equals(object o) {
+			MenuItem item = o as MenuItem;
+
+			if (item == null)
+				return false;
+
+            return code == item.getCode();
+		}
 
 		void Start() {
 			InitTextSize();

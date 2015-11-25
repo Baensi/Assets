@@ -14,6 +14,10 @@
 			<item id="player_states_energy">Энергия</item>
 			<item id="player_states_mana">Мана</item>
 
+      <item id="player_states_health_rest">+Здоровье</item>
+      <item id="player_states_energy_rest">+Энергия</item>
+      <item id="player_states_mana_rest">+Мана</item>
+
 			<item id="player_states_damage_melee">Ближний урон</item>
 			<item id="player_states_damage_ranged">Дальний урон</item>
 			<item id="player_states_damage_magic">Магический урон</item>

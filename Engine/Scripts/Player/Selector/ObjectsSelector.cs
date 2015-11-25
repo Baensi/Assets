@@ -130,9 +130,9 @@ namespace Engine.Player {
 		private bool OnUse(IDynamicObject selectedObject) {
 
 			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.USE)) {    // использовать
-				IPickedType usedType = selectedObject as IPickedType;
-				if (usedType != null)
-					if (usedType.onPick()) {
+				IPickedType pickedType = selectedObject as IPickedType;
+				if (pickedType != null)
+					if (pickedType.onPick()) {
 						ResetSelected();
 						return true;
 					}

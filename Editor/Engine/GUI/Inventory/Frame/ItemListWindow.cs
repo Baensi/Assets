@@ -28,10 +28,22 @@ namespace EngineEditor.EGUI.Inventory {
 
 		public void draw() {
 
+			GUILayout.BeginHorizontal();
 			GUILayout.Label(item.resource.icon);
-			if (GUILayout.Button(item.description.dName + " ["+item.description.name+"]"))
-				listener.OnItemSelect(item);
-		}
+				GUILayout.BeginVertical();
+				
+					GUILayout.Label("id: "+item.description.name);
+					GUILayout.Label("Название: "+item.resource.files.itemName);
+					GUILayout.Label("Размер ячейки: "+item.size.getWidth().ToString()+"x"+item.size.getHeight().ToString());
+					GUILayout.Label("Размер группы: " + item.getMaxCount().ToString());
+					GUILayout.Label("Число звуков: " + item.resource.files.soundsNames.Count.ToString());
+				
+					if (GUILayout.Button("Добавить "+item.description.dName))
+						listener.OnItemSelect(item);
+				
+				GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+        }
 
 	}
 

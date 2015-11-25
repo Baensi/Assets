@@ -64,12 +64,12 @@ namespace Engine.Player.Attack {
 		
 		public void startAttack(){ // посылаем команду атакеру "Атака"
 
-			if (GamePlayer.Cloth.weapon == null) // если игрок безоружен - выходим
+			if (GamePlayer.cloth.weapon == null) // если игрок безоружен - выходим
 				return;
 
-			if (GamePlayer.states > GamePlayer.Cloth.weapon.getAttackRequireStates()) { // проверяем, можно ли наносить удар
+			if (GamePlayer.states > GamePlayer.cloth.weapon.getAttackRequireStates()) { // проверяем, можно ли наносить удар
 
-				GamePlayer.states -= GamePlayer.Cloth.weapon.getAttackRequireStates(); // тратим статы на удар
+				GamePlayer.states -= GamePlayer.cloth.weapon.getAttackRequireStates(); // тратим статы на удар
 				currentAttacker.attack(); // выполняем анимацию
 
 			}

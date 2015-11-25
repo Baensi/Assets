@@ -20,14 +20,14 @@ namespace Engine.Objects.Food {
 			
 		}
 
-		void Start() {
-			base.OnStart();
+			void Start() {
+				base.OnStart();
 
-			item         = DObjectList.getInstance().getItem("RawBread");
+				item         = DObjectList.getInstance().getItem("RawBread");
 
-			cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 7);
-			zones        = new List<CookingZone>();
-		}
+				cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 7);
+				zones        = new List<CookingZone>();
+			}
 
 		public void onCook() {
 			cookTemplate.update();

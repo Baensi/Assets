@@ -16,22 +16,21 @@ namespace EngineEditor.EGUI.Inventory {
 
 		void OnEnable() {
 			inventory = target as UInventory;
-
-			window = (InventarWindow)EditorWindow.GetWindow(typeof(InventarWindow));
-			window.titleContent = new GUIContent("Инвентарь");
-			window.setInventory(inventory);
 		}
 
 		public override void OnInspectorGUI() {
 
 			base.OnInspectorGUI();
 
-			if (GUILayout.Button("Добавить предмет...")) {
-				var window = (ItemListWindow)EditorWindow.GetWindow(typeof(ItemListWindow));
-				window.setListener(this);
-			}
+			if (GUILayout.Button("Инвентарь")) {
 
-			//Update();
+				if (window != null)
+					window.Close();
+
+				window = (InventarWindow)EditorWindow.GetWindow(typeof(InventarWindow));
+				window.titleContent = new GUIContent("Инвентарь");
+				window.setData(inventory,this);
+			}
 			
 		}
 

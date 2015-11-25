@@ -31,11 +31,13 @@ namespace Engine.Objects.Food {
 
 				cookTemplate = new ObjectCooked(this, item.resource.sounds["cook"], 5);
 				zones        = new List<CookingZone>();
+
+             states.health = 1.0f;
 			}
 
 		public void onUse() {
 			GamePlayer.states += getStates();
-		}
+        }
 
 		public PlayerStates getStates() {
 			return states;
@@ -73,10 +75,15 @@ namespace Engine.Objects.Food {
 		}
 		
 		public bool onPick(){
+
+            Debug.LogWarning("ok!");
+
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
+                 Debug.LogWarning("Destroy!");
 				return true;
 			} return false;
+
 		}
 
 		void Update() {

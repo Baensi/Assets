@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using Engine.EGUI.Inventory;
 
 namespace Engine.Objects {
@@ -8,15 +7,20 @@ namespace Engine.Objects {
 
 		public static bool AddInInventory(Item item) {
 
-			UInventory inventory = SingletonNames.getGUI().GetComponent<UInventory>();
+			UInventory inventory = SingletonNames.getInventory().GetComponent<UInventory>();
 
 			if (inventory!=null) {
 
-				inventory.addItem(item);
+				if(inventory.addItem(item.Clone())==0)
+                    Debug.LogWarning("Предмет в инвентаре!");
+                else
+                    Debug.LogWarning("Ошибка!");
 
 				return true;
 
 			} else {
+
+                Debug.LogError("Ссылка на инвентарь не верна! ["+SingletonNames.Constants.GUI.INVENTORY+"]");
 
 				return false;
 

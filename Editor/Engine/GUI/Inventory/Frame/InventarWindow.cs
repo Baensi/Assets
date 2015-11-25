@@ -13,12 +13,14 @@ namespace EngineEditor.EGUI.Inventory {
 		private float width;
 		private float height;
 
+		private ItemSelectedListener listener = null;
 		private UInventory inventory = null;
 
-		public void setInventory(UInventory inventory) {
+		public void setData(UInventory inventory, ItemSelectedListener listener) {
 			this.inventory=inventory;
+			this.listener = listener;
 
-			width  = this.position.width;
+            width  = this.position.width;
 			height = this.position.height;
 		}
 
@@ -42,7 +44,14 @@ namespace EngineEditor.EGUI.Inventory {
 			Handles.EndGUI();
 
 			this.Repaint();
-		}
+
+			GUILayout.BeginHorizontal();
+				if (GUILayout.Button("Добавить...")) {
+					var window = (ItemListWindow)EditorWindow.GetWindow(typeof(ItemListWindow));
+					window.setListener(listener);
+				}
+			GUILayout.EndHorizontal();
+        }
 
 		private void DrawScreen() {
 			Handles.color = screenColor;

@@ -10,8 +10,8 @@ namespace Engine.Player.Movement.Movements {
 
 	public class IngroundMovements : MonoBehaviour, IMovement {
 
-		private float energyDec = 0.05f; // снижение энергии при беге
-		private float energyInc = 0.001f; // восстановление энергии
+		private float energyDec = 0.25f; // снижение энергии при беге
+		private float energyInc = 0.08f; // восстановление энергии
 		private float energyTimeStamp = 0f;
 
 		private float playerStandupHeight = 2.0f;
@@ -297,8 +297,11 @@ namespace Engine.Player.Movement.Movements {
 
             } else {
 
-				if(Time.time-energyTimeStamp>1.5f) // восстанавливаем энергию после простоя в 1,5 сек.
-					GamePlayer.states.energy += energyInc;
+				if(Time.time-energyTimeStamp>1.5f && GamePlayer.states.energy!=GamePlayer.states.maxEnergy) // восстанавливаем энергию после простоя в 1,5 сек.
+                    if(GamePlayer.states.energy<GamePlayer.states.maxEnergy)
+                     GamePlayer.states.energy += energyInc;
+                    else
+                        GamePlayer.states.energy = GamePlayer.states.maxEnergy;
 
 			}
 

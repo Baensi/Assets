@@ -49,10 +49,17 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="item">Предмет, свойства которого анализируются</param>
 		/// <returns>Возвращает список свойств</returns>
 		public List<PropertyItem> createInformationItems(Item item) {
-			if (item == null)
+			if (item == null || item.toGameObject() == null)
 				return null;
 
-			IDynamicObject dynamicObject = item.toGameObject().GetComponent<IDynamicObject>();
+			DynamicObject dynamicObject = item.toGameObject().GetComponent<DynamicObject>();
+
+#if UNITY_EDITOR
+			if (dynamicObject == null) {
+				Debug.LogError("Предмет "+item.description.dName+" не имеет инициализированного gameObject!");
+			}
+#endif
+
 			List<PropertyItem> result = new List<PropertyItem>();
 				checkStates(dynamicObject, ref result);
 				checkTypes(dynamicObject, ref result);
@@ -80,21 +87,27 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="list"></param>
 		private void checkStates(IDynamicObject dynamicObject, ref List<PropertyItem> list) {
 
-			IChangedStatesType changedStates = dynamicObject as IChangedStatesType;
+			if (dynamicObject == null)
+				return;
+
+			IChangedStatesType changedStates = (IChangedStatesType)dynamicObject;
 
 			if (changedStates == null)
 				return;
-
+			
             PlayerStates states = changedStates.getStates();
 
 			if (states == null)
 				return;
 
-				// общие статы
+			// общие статы
 			if (states.maxHealth != 0f) list.Add(create(DictionaryPlayer.States.K_HEALTH,states.maxHealth, true));
 			if (states.maxEnergy != 0f) list.Add(create(DictionaryPlayer.States.K_ENERGY,states.maxEnergy, true));
 			if (states.maxMana   != 0f) list.Add(create(DictionaryPlayer.States.K_MANA,  states.maxMana,   true));
 
+            if (states.health != 0f) list.Add(create(DictionaryPlayer.States.K_HEALTH_REST,states.health, true));
+            if (states.mana   != 0f) list.Add(create(DictionaryPlayer.States.K_MANA_REST,states.mana, true));
+            if (states.energy != 0f) list.Add(create(DictionaryPlayer.States.K_ENERGY_REST,states.energy, true));
 		}
 
 		/// <summary>

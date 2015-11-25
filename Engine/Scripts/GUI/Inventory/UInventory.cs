@@ -121,11 +121,13 @@ namespace Engine.EGUI.Inventory {
 
 			degubMode = true;
 
-			if (algoritm==null)
-				Start();
+			    if (algoritm==null)
+				    Start();
 
 			Update();
 			OnGUI();
+
+			toolTip.redraw();
 
 		}
 
@@ -160,7 +162,6 @@ namespace Engine.EGUI.Inventory {
 
 		}
 
-
 		private void FindSelectedSlot() {
 			RectangleSlot selected = algoritm.getSlot(eventData.cursorPosition.x - offsetX, eventData.cursorPosition.y - offsetY);
 
@@ -183,8 +184,7 @@ namespace Engine.EGUI.Inventory {
 			int cellY = 1 + (int)(eventData.cursorPosition.y - offsetY - CellSettings.cellPaddingY - selectedSlot.position.OffsetY) / CellSettings.cellHeight;
 
 			if(cellX!=selectedCell.X || cellY!=selectedCell.Y){ // Ячейка новая
-
-				toolTipTimeStamp = Time.time;
+				
                 selectedCell.X = cellX;
 				selectedCell.Y = cellY;
 
@@ -209,18 +209,19 @@ namespace Engine.EGUI.Inventory {
 
 			} else {
 
-				if (selectedItem != null && !toolTip.isVisible()) { //&& Time.time - toolTipTimeStamp > toolTipDelay) {
+				if (selectedItem != null && !toolTip.isVisible() && (Time.time - toolTipTimeStamp) > toolTipDelay) {
 					toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
 					toolTipTimeStamp = Time.time;
-					Debug.LogWarning("show!");
 				}
 			}
 
 			if (tmpItem!=null)
 				drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, tmpItem, errorCellImage);
 
-			if (selectedItem==null)
-				return;
+            if (selectedItem == null) {
+				toolTip.hide();
+                return;
+            }
 
 			if ((eventData.selected==null || eventData.selected==selectedItem) && (eventData.collision==null || eventData.collision.item.Equals(eventData.selected.item)))
 				drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, selectedItem, correctCellImage);
@@ -254,21 +255,21 @@ namespace Engine.EGUI.Inventory {
 
 			} else { // в режиме редактора юнити, игра на демонстрации
 
-
 				eventData.mouseEvent.RMouseDown = Input.GetMouseButtonDown(1);
 				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
 				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
 
-				eventData.cursorPosition = Input.mousePosition;
+				eventData.cursorPosition = new Vector2(Input.mousePosition.x, -Input.mousePosition.y);
 
 			}
 
 #else // игра запущена полноценно
 
-			eventData.mouseEvent.MouseDown = Input.GetMouseButtonDown(0);
-			eventData.mouseEvent.MouseUp   = Input.GetMouseButtonUp(0);
-
-			eventData.cursorPosition = Input.mousePosition;
+				eventData.mouseEvent.RMouseDown = Input.GetMouseButtonDown(1);
+				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
+				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
+			
+				eventData.cursorPosition = new Vector2(Input.mousePosition.x, -Input.mousePosition.y);
 
 #endif
 
@@ -291,6 +292,10 @@ namespace Engine.EGUI.Inventory {
 				if (!eventData.mouseEvent.RMouseDown && !eventData.mouseEvent.LMouseDown && !CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC)) {
 					return;
 				} else {
+
+					if (popupMenu.isFocused())
+						return;
+
 					popupMenu.hide();
 					resetEventsSelections();
                 }

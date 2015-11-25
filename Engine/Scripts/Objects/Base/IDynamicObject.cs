@@ -39,6 +39,8 @@ namespace Engine.Objects {
 		/// <returns>Возвращает стоимость предмета</returns>
 		float  getCostValue();
 
+		IItem getItem();
+
 		void Destroy(bool presently);
 		bool isDestroy();
 

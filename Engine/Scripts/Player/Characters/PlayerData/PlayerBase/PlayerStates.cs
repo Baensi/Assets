@@ -83,7 +83,7 @@ namespace Engine.Player {
 		/// <param name="s2"></param>
 		/// <returns>Возвращает сумму статов</returns>
 		public static PlayerStates operator +(PlayerStates s1, PlayerStates s2) {
-			return new PlayerStates() {
+			PlayerStates result = new PlayerStates() {
 				maxHealth                  = s1.maxHealth                  + s2.maxHealth,
 				health                     = s1.health                     + s2.health,
 				maxEnergy                  = s1.maxEnergy                  + s2.maxEnergy,
@@ -103,6 +103,17 @@ namespace Engine.Player {
 				protectionRanged           = s1.protectionRanged           + s2.protectionRanged,
 				protectionMagic            = s1.protectionMagic            + s2.protectionMagic           
 			};
+
+			if (result.health > result.maxHealth)
+				result.health = result.maxHealth;
+
+			if (result.mana > result.maxMana)
+				result.mana = result.maxMana;
+
+			if (result.energy > result.maxEnergy)
+				result.energy = result.maxEnergy;
+
+			return result;
 		}
 
 		/// <summary>
@@ -111,26 +122,37 @@ namespace Engine.Player {
 		/// <param name="s1"></param>
 		/// <returns>Возвращает статы с противоположным знаком</returns>
 		public static PlayerStates operator -(PlayerStates s1) {
-			return new PlayerStates() {
-				maxHealth = -s1.maxHealth,
-				health = -s1.health,
-				maxEnergy = -s1.maxEnergy,
-				energy = -s1.energy,
-				maxMana = -s1.maxMana,
-				mana = -s1.mana,
-				damageMelee = -s1.damageMelee,
-				damageRanged = -s1.damageRanged,
-				damageMagic = -s1.damageMagic,
-				criticalDamageMelee = -s1.criticalDamageMelee,
-				criticalDamageRanged = -s1.criticalDamageRanged,
-				criticalDamageMagic = -s1.criticalDamageMagic,
-				chanceCriticalDamageMelee = -s1.chanceCriticalDamageMelee,
+			PlayerStates result = new PlayerStates() {
+				maxHealth                  = -s1.maxHealth,
+				health                     = -s1.health,
+				maxEnergy                  = -s1.maxEnergy,
+				energy                     = -s1.energy,
+				maxMana                    = -s1.maxMana,
+				mana                       = -s1.mana,
+				damageMelee                = -s1.damageMelee,
+				damageRanged               = -s1.damageRanged,
+				damageMagic                = -s1.damageMagic,
+				criticalDamageMelee        = -s1.criticalDamageMelee,
+				criticalDamageRanged       = -s1.criticalDamageRanged,
+				criticalDamageMagic        = -s1.criticalDamageMagic,
+				chanceCriticalDamageMelee  = -s1.chanceCriticalDamageMelee,
 				chanceCriticalDamageRanged = -s1.chanceCriticalDamageRanged,
-				chanceCriticalDamageMagic = -s1.chanceCriticalDamageMagic,
-				protectionMelee = -s1.protectionMelee,
-				protectionRanged = -s1.protectionRanged,
-				protectionMagic = -s1.protectionMagic
+				chanceCriticalDamageMagic  = -s1.chanceCriticalDamageMagic,
+				protectionMelee            = -s1.protectionMelee,
+				protectionRanged           = -s1.protectionRanged,
+				protectionMagic            = -s1.protectionMagic            
 			};
+
+			if (result.health > result.maxHealth)
+				result.health = result.maxHealth;
+
+			if (result.mana > result.maxMana)
+				result.mana = result.maxMana;
+
+			if (result.energy > result.maxEnergy)
+				result.energy = result.maxEnergy;
+
+			return result;
 		}
 
 		/// <summary>
@@ -140,7 +162,7 @@ namespace Engine.Player {
 		/// <param name="s2"></param>
 		/// <returns>Возвращает разность статов</returns>
 		public static PlayerStates operator -(PlayerStates s1, PlayerStates s2) {
-			return new PlayerStates() {
+			PlayerStates result = new PlayerStates() {
 				maxHealth                  = s1.maxHealth                  - s2.maxHealth,
 				health                     = s1.health                     - s2.health,
 				maxEnergy                  = s1.maxEnergy                  - s2.maxEnergy,
@@ -158,8 +180,19 @@ namespace Engine.Player {
 				chanceCriticalDamageMagic  = s1.chanceCriticalDamageMagic  - s2.chanceCriticalDamageMagic,
 				protectionMelee            = s1.protectionMelee            - s2.protectionMelee,
 				protectionRanged           = s1.protectionRanged           - s2.protectionRanged,
-				protectionMagic            = s1.protectionMagic            - s2.protectionMagic
+				protectionMagic            = s1.protectionMagic            - s2.protectionMagic           
 			};
+
+			if (result.health > result.maxHealth)
+				result.health = result.maxHealth;
+
+			if (result.mana > result.maxMana)
+				result.mana = result.maxMana;
+
+			if (result.energy > result.maxEnergy)
+				result.energy = result.maxEnergy;
+
+			return result;
 		}
 		
 	}

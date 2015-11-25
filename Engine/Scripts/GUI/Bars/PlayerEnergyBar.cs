@@ -28,6 +28,8 @@ namespace Engine.EGUI.Bars {
 
 		void OnGUI() {
 			OnDraw();
+
+            GUI.Label(new Rect(8,0,120,24), GamePlayer.states.energy.ToString());
 		}
 
 		public override Vector2 getBarPosition() {
