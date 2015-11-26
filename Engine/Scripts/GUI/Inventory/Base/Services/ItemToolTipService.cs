@@ -90,7 +90,7 @@ namespace Engine.EGUI.Inventory {
 			if (dynamicObject == null)
 				return;
 
-			IChangedStatesType changedStates = (IChangedStatesType)dynamicObject;
+			IChangedStatesType changedStates = dynamicObject as IChangedStatesType;
 
 			if (changedStates == null)
 				return;

@@ -149,14 +149,6 @@ namespace Engine.EGUI.ToolTip {
 
 		void Start() {
 
-			// TEST //
-
-			Inventory.Item item = Engine.Objects.DObjectList.getInstance().getItem("RawFish");
-
-            show(new Vector2(60, 60),
-				Engine.EGUI.Inventory.ItemToolTipService.getInstance().createDescription(item),
-				Engine.EGUI.Inventory.ItemToolTipService.getInstance().createInformationItems(item));
-
 		}
 
 		/// <summary>

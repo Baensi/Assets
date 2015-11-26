@@ -8,7 +8,6 @@ using Engine.EGUI.ToolTip;
 
 namespace Engine.EGUI.Inventory {
 
-	[RequireComponent(typeof(InventoryPopupMenu))]
 	public class UInventory : MonoBehaviour, IInventory, IRendererGUI {
 
 		[SerializeField] public Texture2D selectCellImage;
@@ -24,8 +23,7 @@ namespace Engine.EGUI.Inventory {
 
 		public float     offsetX;
 		public float     offsetY;
-
-		private RectangleSlot  selectedSlot = null;
+		
 		private ItemPosition   selectedCell = new ItemPosition(-1, -1);
 		private ItemSlot       selectedItem = null;
 		private EventContainer eventData    = new EventContainer();
@@ -36,7 +34,10 @@ namespace Engine.EGUI.Inventory {
 		private InventoryAlgoritm algoritm;
 		private SlotDrawService   drawService;
 
-		private float              toolTipTimeStamp = 0f;
+		private float width  = 0f;
+		private float height = 0f;
+
+		private float toolTipTimeStamp = 0f;
 
 #if UNITY_EDITOR
 		private bool degubMode = false;
@@ -60,6 +61,14 @@ namespace Engine.EGUI.Inventory {
 
 		public float getY(){
 			return offsetY;
+		}
+
+		public float getWidth() {
+			return width;
+		}
+
+		public float getHeight() {
+			return height;
 		}
 
 		/// <summary>
@@ -91,31 +100,38 @@ namespace Engine.EGUI.Inventory {
 			return slots;
 		}
 
-			public UInventory(){
-
-			}
-
+		/// <summary>
+		/// Метод отрисовки
+		/// </summary>
 		public void redraw(){
 
-			drawService.DrawSlots(offsetX, offsetY);
+#if !UNITY_EDITOR
+			offsetX = (Screen.width - width) * 0.5f;
+			offsetY = (Screen.height - height) * 0.5f;
+#endif
+
+				drawService.DrawSlots(offsetX, offsetY);
 
 			OnDrawCells();
 			OnEvents();
 			
 		}
 
-	// Режим редактора
+// Режим редактора
 #if UNITY_EDITOR
 
 		public void onResizeWindow(float width, float height){
 			if (algoritm==null)
 				Start();
 
-			offsetX = (width - algoritm.getInventoryWidth())   * 0.5f;
-			offsetY = (height - algoritm.getInventoryHeight()) * 0.5f;
+			offsetX = (width - this.width)   * 0.5f;
+			offsetY = (height - this.height) * 0.5f;
 
 		}
 
+		/// <summary>
+		/// Выполняет update в режиме редактора-отладчика
+		/// </summary>
 		public void OnEditorUpdate() {
 			if (!visible) return;
 
@@ -134,9 +150,8 @@ namespace Engine.EGUI.Inventory {
 #endif
 
 		public void onResizeWindow() {
-			if (algoritm!=null)
-				offsetX = (Screen.width - algoritm.getInventoryWidth())   * 0.5f;
-				offsetY = (Screen.height - algoritm.getInventoryHeight()) * 0.5f;
+			offsetX = (Screen.width - width) * 0.5f;
+			offsetY = (Screen.height - height) * 0.5f;
 		}
 
 		void Start () {
@@ -144,7 +159,10 @@ namespace Engine.EGUI.Inventory {
 			algoritm = new InventoryAlgoritm();
 			algoritm.setSlots(slots);
 			drawService = new SlotDrawService(slots);
-			
+
+				width  = algoritm.getInventoryWidth();
+				height = algoritm.getInventoryHeight();
+
 			onResizeWindow();
 
 			if(visible)
@@ -163,10 +181,10 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		private void FindSelectedSlot() {
-			RectangleSlot selected = algoritm.getSlot(eventData.cursorPosition.x - offsetX, eventData.cursorPosition.y - offsetY);
+			RectangleSlot selectedSlot = algoritm.getSlot(eventData.cursorPosition.x - offsetX, eventData.cursorPosition.y - offsetY);
 
-			if (selectedSlot != selected)
-				selectedSlot = selected;
+			if (eventData.endSlot != selectedSlot)
+				eventData.endSlot = selectedSlot;
 		}
 
 		public void OnDrawCells() {
@@ -178,10 +196,11 @@ namespace Engine.EGUI.Inventory {
 
 			FindSelectedSlot();
 
-			if (selectedSlot==null) return;
+			if (eventData.endSlot == null)
+				return;
 
-			int cellX = 1 + (int)(eventData.cursorPosition.x - offsetX - CellSettings.cellPaddingX - selectedSlot.position.OffsetX) / CellSettings.cellWidth;
-			int cellY = 1 + (int)(eventData.cursorPosition.y - offsetY - CellSettings.cellPaddingY - selectedSlot.position.OffsetY) / CellSettings.cellHeight;
+			int cellX = 1 + (int)(eventData.cursorPosition.x - offsetX - CellSettings.cellPaddingX - eventData.endSlot.position.OffsetX) / CellSettings.cellWidth;
+			int cellY = 1 + (int)(eventData.cursorPosition.y - offsetY - CellSettings.cellPaddingY - eventData.endSlot.position.OffsetY) / CellSettings.cellHeight;
 
 			if(cellX!=selectedCell.X || cellY!=selectedCell.Y){ // Ячейка новая
 				
@@ -189,8 +208,8 @@ namespace Engine.EGUI.Inventory {
 				selectedCell.Y = cellY;
 
 				if (selectedCell.X == -1 || selectedCell.Y == -1 ||
-					selectedCell.X > selectedSlot.position.CellsXCount ||
-					selectedCell.Y > selectedSlot.position.CellsYCount) {
+					selectedCell.X > eventData.endSlot.position.CellsXCount ||
+					selectedCell.Y > eventData.endSlot.position.CellsYCount) {
 					selectedCell.X = 1;
 					selectedCell.Y = 1;
 
@@ -200,23 +219,24 @@ namespace Engine.EGUI.Inventory {
 				}
 
 				if (eventData.eventType == InventoryEvent.None)
-					selectedItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
+					selectedItem = algoritm.getItem(eventData.endSlot, selectedCell.X, selectedCell.Y);
 				else
-					tmpItem = algoritm.getItem(selectedSlot, selectedCell.X, selectedCell.Y);
+					tmpItem = algoritm.getItem(eventData.endSlot, selectedCell.X, selectedCell.Y);
 
 				toolTipTimeStamp = Time.time;
 				toolTip.hide();
 
 			} else {
 
-				if (selectedItem != null && !toolTip.isVisible() && (Time.time - toolTipTimeStamp) > toolTipDelay) {
-					toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
+				if (selectedItem != null && !toolTip.isVisible() && (Time.time - toolTipTimeStamp) > toolTipDelay) { // отображаем всплывающую подсказку о предмете
+                    toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
 					toolTipTimeStamp = Time.time;
 				}
+
 			}
 
 			if (tmpItem!=null)
-				drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, tmpItem, errorCellImage);
+				drawService.DrawCellsItem(eventData.endSlot, offsetX, offsetY, tmpItem, errorCellImage);
 
             if (selectedItem == null) {
 				toolTip.hide();
@@ -224,16 +244,23 @@ namespace Engine.EGUI.Inventory {
             }
 
 			if ((eventData.selected==null || eventData.selected==selectedItem) && (eventData.collision==null || eventData.collision.item.Equals(eventData.selected.item)))
-				drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, selectedItem, correctCellImage);
+				if(eventData.startSlot!=null)
+					drawService.DrawCellsItem(eventData.startSlot, offsetX, offsetY, selectedItem, correctCellImage);
+				else
+					drawService.DrawCellsItem(eventData.endSlot, offsetX, offsetY, selectedItem, correctCellImage);
 			else
-				drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, selectedItem, errorCellImage);
-			
+				if (eventData.startSlot != null)
+					drawService.DrawCellsItem(eventData.startSlot, offsetX, offsetY, selectedItem, errorCellImage);
+				else
+					drawService.DrawCellsItem(eventData.endSlot, offsetX, offsetY, selectedItem, errorCellImage);
+
 		}
 
 		private void resetSelection() {
 			selectedCell.X = -1;
 			selectedCell.Y = -1;
-			selectedSlot = null;
+			eventData.endSlot = null;
+			eventData.startSlot = null;
 			selectedItem = null;
 		}
 
@@ -259,7 +286,7 @@ namespace Engine.EGUI.Inventory {
 				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
 				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
 
-				eventData.cursorPosition = new Vector2(Input.mousePosition.x, -Input.mousePosition.y);
+				eventData.cursorPosition = new Vector2(Input.mousePosition.x, Screen.height-Input.mousePosition.y);
 
 			}
 
@@ -269,7 +296,7 @@ namespace Engine.EGUI.Inventory {
 				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
 				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
 			
-				eventData.cursorPosition = new Vector2(Input.mousePosition.x, -Input.mousePosition.y);
+				eventData.cursorPosition = new Vector2(Input.mousePosition.x, Screen.height-Input.mousePosition.y);
 
 #endif
 
@@ -278,9 +305,11 @@ namespace Engine.EGUI.Inventory {
 		private void resetEventsSelections() {
 			selectedCell.X = -1;
 			selectedCell.Y = -1; // сбрасываем последнюю выбранную ячейку, чтобы в следующей итерации пересчитать предмет под курсором
-			eventData.selected = null; // сбрасываем перемещение предмета
+			eventData.selected  = null; // сбрасываем перемещение предмета
 			eventData.collision = null; // сбрасываем коллизию
-			eventData.eventType = InventoryEvent.None; // устанавливаем эвент по умолчанию
+			eventData.startSlot = null;
+			eventData.endSlot   = null;
+            eventData.eventType = InventoryEvent.None; // устанавливаем эвент по умолчанию
 			selectedItem = null;
 		}
 
@@ -289,7 +318,7 @@ namespace Engine.EGUI.Inventory {
 			ReadMouseEvents(); // читаем события мыши
 
 			if (popupMenu.isVisible()) {
-				if (!eventData.mouseEvent.RMouseDown && !eventData.mouseEvent.LMouseDown && !CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC)) {
+				if (!eventData.mouseEvent.LMouseDown && !CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC)) {
 					return;
 				} else {
 
@@ -304,8 +333,8 @@ namespace Engine.EGUI.Inventory {
 			if (eventData.mouseEvent.LMouseUp && eventData.eventType == InventoryEvent.ItemMove) {
 
 				if (eventData.collision==null
-					&& selectedCell.X+eventData.selected.item.getSize().getWidth()<=selectedSlot.position.CellsXCount+1 && 
-					selectedCell.Y+eventData.selected.item.getSize().getHeight()<=selectedSlot.position.CellsYCount+1) { // двигаем только в том случае, если нет коллизий, и предмет находится в "сумке"
+					&& selectedCell.X+eventData.selected.item.getSize().getWidth()<= eventData.endSlot.position.CellsXCount+1 && 
+					selectedCell.Y+eventData.selected.item.getSize().getHeight()<= eventData.endSlot.position.CellsYCount+1) { // двигаем только в том случае, если нет коллизий, и предмет находится в "сумке"
 
 						if (eventData.isDivMode && eventData.selected.item.getCount()>1) { // можно разделить?
 
@@ -318,14 +347,26 @@ namespace Engine.EGUI.Inventory {
 								Item newItem = eventData.selected.item.Clone();
 								newItem.setCount(count);
 
-								selectedSlot.Items.Add(new ItemSlot(newItem, new ItemPosition(selectedCell.X, selectedCell.Y)));
+								eventData.endSlot.Items.Add(new ItemSlot(newItem, new ItemPosition(selectedCell.X, selectedCell.Y)));
 
 							}
 
 						} else { // нужно перемещать
 
-							eventData.selected.getPosition().X=selectedCell.X; // перемещаем предмет
-							eventData.selected.getPosition().Y=selectedCell.Y;
+							if (algoritm.slotContain(eventData.endSlot, eventData.selected)){ // предмет перемещается внутри одной сумки
+
+								eventData.selected.getPosition().X = selectedCell.X; // перемещаем предмет
+								eventData.selected.getPosition().Y = selectedCell.Y;
+
+							} else { // предмет перемещается из сумки в сумку
+
+								ItemSlot item = eventData.selected;
+								eventData.startSlot.Items.Remove(item); // удаляем из старой сумки
+								eventData.endSlot.Items.Add(item); // добавляем новую сумку
+								item.getPosition().X = selectedCell.X; // перемещаем предмет
+								item.getPosition().Y = selectedCell.Y;
+
+							}
 
 						}
 
@@ -353,39 +394,40 @@ namespace Engine.EGUI.Inventory {
 
 				eventData.mouseEvent.RMouseDown = false;
                 PopupMenuService.getInatance().SetupPopupMenu(popupMenu, selectedItem.item); // устанавливаем пункты меню
-				popupMenu.show(eventData.cursorPosition); // отображаем меню в нужном месте
+                popupMenu.show(eventData.cursorPosition); // отображаем меню в нужном месте
 
 			}
 
 			if (eventData.mouseEvent.LMouseDown && selectedItem!=null && eventData.selected==null && eventData.eventType == InventoryEvent.None) {
 
-				eventData.eventType = InventoryEvent.ItemMove;
-				eventData.selected = selectedItem;
-				
+				eventData.eventType = InventoryEvent.ItemMove; // меняем событие
+				eventData.selected = selectedItem; // указываем предмет который перемносим
+				eventData.startSlot = eventData.endSlot; // указываем слот предмета который переносим
+
 			}
 
 			if (eventData.selected!=null) { // если предмет переносится
 
 				drawService.getItemDrawService().DrawItem(eventData.selected, eventData.cursorPosition.x, eventData.cursorPosition.y, false);
 
-				if (selectedSlot!=null) { // если предмет перенесли в какую то сумку и он не вылазиет за рамки сумки
+				if (eventData.endSlot != null) { // если предмет перенесли в какую то сумку и он не вылазиет за рамки сумки
 
-					eventData.collision = algoritm.getCollisionItem(selectedSlot, eventData.selected, selectedCell.X, selectedCell.Y); // вычисляем коллизии внутри зоны перемещения
+					eventData.collision = algoritm.getCollisionItem(eventData.endSlot, eventData.selected, selectedCell.X, selectedCell.Y); // вычисляем коллизии внутри зоны перемещения
 
 					if (eventData.collision==null) { // если нет коллизии
 
-						drawService.DrawCells(selectedSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), correctCellImage);
+						drawService.DrawCells(eventData.endSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), correctCellImage);
 
 					} else {
 
 						if (eventData.collision.item.Equals(eventData.selected.item) && !eventData.collision.item.isFullCount()) { // предметы однородные (можно объединить)
 
-							drawService.DrawCells(selectedSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), selectCellImage);
+							drawService.DrawCells(eventData.endSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), selectCellImage);
 
 						} else {
 
-							drawService.DrawCells(selectedSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), errorCellImage); // подчёркиваем перемещаемую зону как ошибочную
-							drawService.DrawCellsItem(selectedSlot, offsetX, offsetY, eventData.collision, errorCellImage); // подчёркиванием причину ошибки - коллизируемый итем
+							drawService.DrawCells(eventData.endSlot, offsetX, offsetY, selectedCell, eventData.selected.item.getSize(), errorCellImage); // подчёркиваем перемещаемую зону как ошибочную
+							drawService.DrawCellsItem(eventData.endSlot, offsetX, offsetY, eventData.collision, errorCellImage); // подчёркиванием причину ошибки - коллизируемый итем
 
 						}
 					}

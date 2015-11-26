@@ -22,9 +22,9 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="menu">Контекстное меню, в котором проводится установка</param>
 		/// <param name="item">Предмет, относительно которого устанавливаются настройки</param>
 		public void SetupPopupMenu(InventoryPopupMenu menu, Item item) {
+            menu.setSelectedItem(item); // устанавливаем контекстному меню ссылку на выбранный предмет
 
-			menu.dropAllItem.setEnabled(item.getMaxCount() > 1 && item.getCount() > 1);
-
+			menu.dropAllItems.setEnabled(item.getMaxCount() > 1 && item.getCount() > 1);
 		}
 
 	}

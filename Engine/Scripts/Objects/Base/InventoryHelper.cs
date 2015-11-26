@@ -11,9 +11,7 @@ namespace Engine.Objects {
 
 			if (inventory!=null) {
 
-				if(inventory.addItem(item.Clone())==0)
-                    Debug.LogWarning("Предмет в инвентаре!");
-                else
+				if(inventory.addItem(item.Clone())!=0)
                     Debug.LogWarning("Ошибка!");
 
 				return true;

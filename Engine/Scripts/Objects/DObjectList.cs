@@ -10,6 +10,7 @@ namespace Engine.Objects {
 
 	public class DObjectList {
 
+		private Camera mainCamera;
 		private static DObjectList instance;
 		private static SortedDictionary<string,Item> items = null;
 
@@ -21,7 +22,12 @@ namespace Engine.Objects {
 
 			public DObjectList() {
 				items=readItems(Dictionary.DictionaryObjectsFileName);
+				mainCamera = SingletonNames.getMainCamera();
             }
+
+        public bool isEmpty() {
+            return items==null;
+        }
 
 		/// <summary>
 		/// Возвращает коллекцию предметов из словаря
@@ -134,6 +140,26 @@ namespace Engine.Objects {
 			items.TryGetValue(key, out result);
 			return result;
 		}
+
+		/// <summary>
+		/// Создаёт экземпляр объекта впереди камеры персонажа из предмета
+		/// </summary>
+		/// <param name="item">Предмет, экземпляр объекта которого надо создать</param>
+		public void CreateNewInstance(Item item) {
+			GameObject obj = GameObject.Instantiate<GameObject>(item.toGameObject());
+
+			obj.transform.position = mainCamera.transform.position + (mainCamera.transform.forward * 1.2f);
+			obj.transform.rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
+
+			Rigidbody rigidBody = obj.GetComponent<Rigidbody>();
+
+			if (rigidBody == null)
+				return;
+
+			Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f));
+			rigidBody.AddForce(ray.direction * 5f);
+		}
+
 
 		/// <summary>
 		/// Пересоздаёт ресурсы у предмета (например, может пересоздать метки при смене языка)

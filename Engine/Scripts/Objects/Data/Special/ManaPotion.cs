@@ -9,12 +9,9 @@ namespace Engine.Objects.Special {
 
 	public class ManaPotion : DynamicObject, IPickedType {
 
-		public ManaPotion() : base() {
-			item = DObjectList.getInstance().getItem("ManaPotion");
-		}
-
 		void Start() {
 			base.OnStart();
+            item = DObjectList.getInstance().getItem("ManaPotion");
 		}
 
 		public bool onPick() {

@@ -26,22 +26,27 @@ namespace Engine.EGUI.Inventory {
 		
 		public void DrawSlots(float offsetX, float offsetY){
 
+			if (slots == null)
+				return;
+
 			foreach(RectangleSlot slot in slots){
-		
-				if (slot.background==null) return;
 
-				backgroundRect = new Rect(slot.position.OffsetX + CellSettings.cellPaddingX,
-										  slot.position.OffsetY + CellSettings.cellPaddingY,
-										  slot.position.SlotWidth,
-										  slot.position.SlotHeight);
+				if (slot.background != null) {
 
-				Rect rect = new Rect(backgroundRect.x+offsetX, backgroundRect.y+offsetY, backgroundRect.width, backgroundRect.height);
-				GUI.DrawTexture(rect, slot.background);
+					backgroundRect = new Rect(slot.position.OffsetX + CellSettings.cellPaddingX,
+											  slot.position.OffsetY + CellSettings.cellPaddingY,
+											  slot.position.SlotWidth,
+											  slot.position.SlotHeight);
 
-				if (slot.Items!=null && slot.Items.Count>0)
-						foreach(ItemSlot item in slot.Items)
-							itemDrawService.DrawItem(item,slot.position.OffsetX+offsetX,slot.position.OffsetY+offsetY);
+					Rect rect = new Rect(backgroundRect.x + offsetX, backgroundRect.y + offsetY, backgroundRect.width, backgroundRect.height);
 
+					GUI.DrawTexture(rect, slot.background);
+
+					if (slot.Items != null && slot.Items.Count > 0)
+						foreach (ItemSlot item in slot.Items)
+							itemDrawService.DrawItem(item, slot.position.OffsetX + offsetX, slot.position.OffsetY + offsetY);
+
+				}
 				
 			}
 			

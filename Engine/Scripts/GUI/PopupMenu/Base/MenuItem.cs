@@ -8,7 +8,7 @@ namespace Engine.EGUI.PopupMenu {
 	[Serializable]
 	public class MenuItem : MonoBehaviour {
 
-		[SerializeField] public PopupMenuBase  menu;
+		private PopupMenuBase  menu;
 		[SerializeField] public List<MenuItem> childs;
 		[SerializeField] public bool childVisible = false; // показывать дочерние элементы
 		[SerializeField] public string text;
@@ -25,8 +25,10 @@ namespace Engine.EGUI.PopupMenu {
 
 		private Color diffColor; // промежуточный цвет
 		private static float minAlpha  = 0.65f;
-		private static float stepAlpha = 0.005f;
-		private static float stepSize  = 0.05f;
+		private static float stepAlpha = 0.01f;
+		private static float stepSize  = 0.04f;
+
+		private bool isLoaded = false;
 
         private float transferent  = 0.7f;  // прозрачность выделения
 		private float size = 0.0f;
@@ -47,17 +49,43 @@ namespace Engine.EGUI.PopupMenu {
             return code == item.getCode();
 		}
 
-		void Start() {
+		public PopupMenuBase getMenu() {
+			return menu;
+		}
+
+		public void setPopupMenuBase(PopupMenuBase menu) {
+			this.menu = menu;
 			InitTextSize();
-        }
+
+			foreach (MenuItem item in childs)
+				item.setPopupMenuBase(menu);
+
+			isLoaded = true;
+		}
+
+			void Start() {
+				
+			}
 
 		public void InitTextSize(bool childs=false) {
+
+			if (menu == null)
+				return;
+
 			size = 0f;
 			textSize = menu.data.labelStyle.fontSize;
 
 			if (childs)
 				foreach (MenuItem item in this.childs)
 					item.InitTextSize(true);
+		}
+
+		public void setClickListener(MenuItemClickListener menuItemClickListener) {
+			this.menuItemClickListener = menuItemClickListener;
+        }
+
+		public void setSelectListener(MenuItemSelectListener menuItemSelectListener) {
+			this.menuItemSelectListener = menuItemSelectListener;
 		}
 
 		public void InitEvents(MenuItemSelectListener menuItemSelectListener, MenuItemClickListener menuItemClickListener){
@@ -149,7 +177,7 @@ namespace Engine.EGUI.PopupMenu {
 
 		void OnUpdate() {
 
-			if (!visible && size==0 || !enabled)
+			if (!visible && size==0 || !enabled || !isLoaded)
 				return;
 
 			if (visible) {
@@ -249,7 +277,7 @@ namespace Engine.EGUI.PopupMenu {
 
 		public void draw(float offsetX, float offsetY){
 
-			if (!visible || !enabled)
+			if (!visible || !enabled || !isLoaded)
 				return;
 
 			oldOffset.x = offsetX;
@@ -272,7 +300,7 @@ namespace Engine.EGUI.PopupMenu {
 
 		private void drawChilds(float offsetX, float offsetY){
 
-			if (!childVisible)
+			if (!childVisible || !isLoaded)
 				return;
 
 			float y = 0;

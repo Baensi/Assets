@@ -17,6 +17,9 @@ namespace Engine.EGUI.Inventory {
 
 		public bool isDivMode = false; // Зажат шифт и предметы надо делить
 
+		public RectangleSlot endSlot; // текущий слот
+		public RectangleSlot startSlot; // слот в котором выбрали selected предмет
+
 		public ItemSlot selected;  // выбранный предмет, который тащут
 		public ItemSlot collision; // предмет, с которым пытаются объединить выбранный предмет
 

@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using UnityEngine;
 
 namespace Engine.EGUI.Bars {
@@ -7,7 +7,7 @@ namespace Engine.EGUI.Bars {
 		horizontalLeftToRight,
 		verticalBottomToTop,
 		verticalTopToBottom
-	}; // список ориентаций прогрессбара
+	}; // СЃРїРёСЃРѕРє РѕСЂРёРµРЅС‚Р°С†РёР№ РїСЂРѕРіСЂРµСЃСЃР±Р°СЂР°
 
 	public class UBar : MonoBehaviour {
 		
@@ -19,7 +19,7 @@ namespace Engine.EGUI.Bars {
 
 		[SerializeField] public OrientationType orientation;
 
-		[SerializeField] [Range(0.005f,0.500f)]public float animationSpeed = 0.005f; // диапазон скоростей анимации
+		[SerializeField] [Range(0.005f,0.500f)]public float animationSpeed = 0.005f; // РґРёР°РїР°Р·РѕРЅ СЃРєРѕСЂРѕСЃС‚РµР№ Р°РЅРёРјР°С†РёРё
 
 		private Rect fullPictureRect;
 		private Rect emptyPictureRect;
@@ -31,8 +31,8 @@ namespace Engine.EGUI.Bars {
 
 		[SerializeField] public bool visible;
 
-		private float currentValue; // стремится к ~value
-		private float currentMax;   // стремится к ~max
+		private float currentValue; // СЃС‚СЂРµРјРёС‚СЃСЏ Рє ~value
+		private float currentMax;   // СЃС‚СЂРµРјРёС‚СЃСЏ Рє ~max
 
 			public float getValue(){
 				return value;
@@ -78,21 +78,21 @@ namespace Engine.EGUI.Bars {
 			switch(orientation){
 				case OrientationType.horizontalLeftToRight:
 				
-					fullPictureTransformRect = new Rect(0f,0f,percent,1f); // трансформатор
+					fullPictureTransformRect = new Rect(0f,0f,percent,1f); // С‚СЂР°РЅСЃС„РѕСЂРјР°С‚РѕСЂ
 					fullPictureRect          = new Rect(barPositionX,
 														barPositionY,
 					                                    fullHealthPicture.width*percent,
 					                                    fullHealthPicture.height);
 					break;
 				case OrientationType.verticalBottomToTop:
-					fullPictureTransformRect = new Rect(0f,0f,1f,percent); // трансформатор
+					fullPictureTransformRect = new Rect(0f,0f,1f,percent); // С‚СЂР°РЅСЃС„РѕСЂРјР°С‚РѕСЂ
 					fullPictureRect          = new Rect(barPositionX,
 						                                barPositionY+(1.0f-percent-0.01f)*fullHealthPicture.height,
 						                                fullHealthPicture.width,
 						                                fullHealthPicture.height*percent);
 					break;
 				case OrientationType.verticalTopToBottom:
-					fullPictureTransformRect = new Rect(0f,1f-percent,1f,percent); // трансформатор
+					fullPictureTransformRect = new Rect(0f,1f-percent,1f,percent); // С‚СЂР°РЅСЃС„РѕСЂРјР°С‚РѕСЂ
 					fullPictureRect          = new Rect(barPositionX,
 					                                    barPositionY,
 					                                    fullHealthPicture.width,
@@ -114,7 +114,7 @@ namespace Engine.EGUI.Bars {
 			if(Mathf.Abs(currentValue-realValue)>1f){
 				
 				if(currentValue>realValue)
-					return currentValue-(currentValue-realValue)*animationSpeed; // шаг стремления 0.2
+					return currentValue-(currentValue-realValue)*animationSpeed; // С€Р°Рі СЃС‚СЂРµРјР»РµРЅРёСЏ 0.2
 				else
 					return currentValue+(realValue-currentValue)*animationSpeed;
 				

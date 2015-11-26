@@ -103,6 +103,16 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		/// <summary>
+		/// Содержит ли слот slot предмет item
+		/// </summary>
+		/// <param name="slot">Слот, который проверяется</param>
+		/// <param name="item">Предмет который ищется в этом слоте</param>
+		/// <returns>Возвращает логическое значение результата</returns>
+		public bool slotContain(RectangleSlot slot, ItemSlot item) {
+			return slot.Items.Contains(item);
+		}
+
+		/// <summary>
 		/// Возвращает предмет, который занимает ячейку {cellX,cellY}
 		/// </summary>
 		/// <param name="cellX"></param>

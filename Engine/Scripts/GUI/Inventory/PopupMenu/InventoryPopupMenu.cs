@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Engine.EGUI.PopupMenu;
-using Engine.EGUI.ToolTip;
 using Engine.EGUI.Inventory.PopupMenu;
 
 namespace Engine.EGUI.Inventory {
@@ -10,63 +8,37 @@ namespace Engine.EGUI.Inventory {
 		
 		private Item selectedItem;
 
-		[SerializeField] public MenuItem useItem;
-		private InventoryUseItemListener inventoryUseItemListener;
+		[SerializeField] public MenuItem useItem; // пункт "использовать"
+		[SerializeField] public MenuItem dropItem; // пункт "выкинуть"
+		[SerializeField] public MenuItem dropAllItems; // пункт "выкинуть всё"
 
-		[SerializeField] public MenuItem dropItem;
-		private InventoryDropItemListener inventoryDropItemListener;
+			void Start(){
+				base.MenuStart();
 
-		[SerializeField] public MenuItem dropAllItem;
-		private InventoryDropAllItemsListener inventoryDropAllItemsListener;
+					// устанавливаем слушателей
+				useItem.setClickListener(new InventoryUseItemListener());
+				dropItem.setClickListener(new InventoryDropItemListener());
+				dropAllItems.setClickListener(new InventoryDropAllItemsListener());
 
+				foreach (MenuItem item in items) // даём всем элементам в меню ссылки на себя
+					item.setPopupMenuBase(this);	
 
-		void Start(){
-			base.MenuStart();
+			}
 
-			inventoryUseItemListener = new InventoryUseItemListener();
-			inventoryDropItemListener = new InventoryDropItemListener();
-			inventoryDropAllItemsListener = new InventoryDropAllItemsListener();
-        }
+		public Item getSelectedItem() {
+			return selectedItem;
+		}
 
 		public void setSelectedItem(Item selectedItem) {
 			this.selectedItem = selectedItem;
 		}
 
+		/// <summary>
+		/// Отрисовка контекстного меню
+		/// </summary>
 		public void redraw() {
 			base.MenuOnGUI();
 		}
-
-		public override void onClick(MenuItem item) {
-
-			Debug.LogWarning(item.getCode().ToString()+" - clicked!");
-
-			if (item == useItem) {
-				Debug.LogWarning("enter use");
-				inventoryUseItemListener.UseItem(selectedItem);
-				selectedItem = null;
-				hide();
-				return;
-			}
-			
-			if (item == dropItem) {
-				Debug.LogWarning("enter drop");
-				inventoryDropItemListener.DropItem(selectedItem);
-				selectedItem = null;
-				hide();
-				return;
-			}
-			
-			if (item == dropAllItem) {
-				Debug.LogWarning("enter drop all");
-				inventoryDropAllItemsListener.DropAllItem(selectedItem);
-				selectedItem = null;
-				hide();
-                return;
-			}
-			
-		}
-
-		public override void onSelect(MenuItem item){ }
 
 	}
 

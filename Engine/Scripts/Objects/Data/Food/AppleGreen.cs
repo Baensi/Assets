@@ -75,12 +75,9 @@ namespace Engine.Objects.Food {
 		}
 		
 		public bool onPick(){
-
-            Debug.LogWarning("ok!");
-
+            
 			if (InventoryHelper.AddInInventory(item)) {
 				base.Destroy(true);
-                 Debug.LogWarning("Destroy!");
 				return true;
 			} return false;
 

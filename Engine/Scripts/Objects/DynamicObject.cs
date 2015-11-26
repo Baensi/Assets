@@ -31,8 +31,11 @@ namespace Engine.Objects {
 			
 			Trash.getInstance().Clean(); // Пытаемся очистить корзину
 			
-			gameObject.AddComponent<Rigidbody>();
-			gameObject.AddComponent<BoxCollider>();
+            if(gameObject.GetComponent<Rigidbody>()==null)
+			    gameObject.AddComponent<Rigidbody>();
+
+            if(gameObject.GetComponent<Collider>()==null)
+			    gameObject.AddComponent<BoxCollider>();
 
 			objectsSelector = SingletonNames.getMainCamera().GetComponent<ObjectsSelector>();
 			
@@ -59,7 +62,7 @@ namespace Engine.Objects {
 		public void setSelection(bool selected) {
 			this.selected = selected;
 
-			if (destroy) return;
+			if (destroy || currentRenderer==null) return;
 
 			if (selected) {
 				currentRenderer.material.shader = selectedShader;

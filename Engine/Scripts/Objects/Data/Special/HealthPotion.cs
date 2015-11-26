@@ -9,12 +9,9 @@ namespace Engine.Objects.Special {
 
 	public class HealthPotion : DynamicObject, IPickedType {
 
-		public HealthPotion() : base() {
-			item = DObjectList.getInstance().getItem("HealthPotion");
-		}
-
 		void Start() {
 			base.OnStart();
+            item = DObjectList.getInstance().getItem("HealthPotion");
 		}
 
 		public bool onPick() {

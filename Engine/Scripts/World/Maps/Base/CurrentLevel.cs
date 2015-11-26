@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
+using Engine.Objects;
 
 namespace Engine.Maps {
 
 	public class CurrentLevel : MonoBehaviour {
 
-		void Start() {
+		private LevelData data = null;
 
-		}
+			void Start() {
+
+			}
 
 		void Update() {
 
@@ -19,7 +21,7 @@ namespace Engine.Maps {
 			/// <param name="level"></param>
 		void OnLevelWasLoaded(int level) {
 
-			LevelData data    = LevelData.getInstance(); // достаём данные
+			data = LevelData.getInstance(); // достаём данные
 			GameObject player = SingletonNames.getPlayer(); // ищем персонажа
 
 				// позиционируем персонажа

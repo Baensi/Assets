@@ -22,7 +22,7 @@ namespace EngineEditor.EGUI.Inventory {
 
 			base.OnInspectorGUI();
 
-			if (GUILayout.Button("Инвентарь")) {
+			if (GUILayout.Button("Проверка инвентаря")) {
 
 				if (window != null)
 					window.Close();
@@ -39,7 +39,7 @@ namespace EngineEditor.EGUI.Inventory {
 		}
 
 		void OnGUI() {
-			//Update();
+		
 		}
 
 		private void Update() {

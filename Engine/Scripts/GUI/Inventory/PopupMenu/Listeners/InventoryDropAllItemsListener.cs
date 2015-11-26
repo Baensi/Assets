@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using Engine.EGUI.Inventory;
+using Engine.EGUI.PopupMenu;
+using Engine.Objects;
 
 namespace Engine.EGUI.Inventory.PopupMenu {
 
-	public class InventoryDropAllItemsListener {
+	public class InventoryDropAllItemsListener : MenuItemClickListener {
 
 		private UInventory inventory;
 		private Camera mainCamera;
@@ -13,24 +14,26 @@ namespace Engine.EGUI.Inventory.PopupMenu {
 				mainCamera = SingletonNames.getMainCamera();
 			}
 
-		public void DropAllItem(Item selectedItem) {
+		public void onClick(MenuItem menuItem) {
+			InventoryPopupMenu menu = (InventoryPopupMenu)menuItem.getMenu();
+            Item item = menu.getSelectedItem();
 
-			for(int i = 1; i <= selectedItem.getCount(); i++)
-				createNewInstance(selectedItem.toGameObject());
-			
-			inventory.removeItem(selectedItem, false, true);
+				DropAllItem(item);
 
+			menu.hide();
+			menu.setSelectedItem(null);
 		}
 
-		private void createNewInstance(GameObject instance) {
-			Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f));
-			GameObject obj = GameObject.Instantiate<GameObject>(instance);
+		public void DropAllItem(Item selectedItem) {
 
-			obj.transform.position = mainCamera.transform.position + (mainCamera.transform.forward * 2);
-			obj.transform.rotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
+            if(selectedItem==null)
+                return;
 
-			Rigidbody pickedObjectRigidBody = obj.GetComponent<Rigidbody>();
-			pickedObjectRigidBody.AddForce(ray.direction * 5f);
+			for(int i = 1; i <= selectedItem.getCount(); i++)
+				DObjectList.getInstance().CreateNewInstance(selectedItem); // создаём объект предмета в мире
+			
+			inventory.removeItem(selectedItem, false, true); // удаляем именно этот предмет из инвентаря
+
 		}
 
 	}
