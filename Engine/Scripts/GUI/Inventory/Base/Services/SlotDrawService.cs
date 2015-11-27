@@ -39,7 +39,6 @@ namespace Engine.EGUI.Inventory {
 											  slot.position.SlotHeight);
 
 					Rect rect = new Rect(backgroundRect.x + offsetX, backgroundRect.y + offsetY, backgroundRect.width, backgroundRect.height);
-
 					GUI.DrawTexture(rect, slot.background);
 
 					if (slot.Items != null && slot.Items.Count > 0)

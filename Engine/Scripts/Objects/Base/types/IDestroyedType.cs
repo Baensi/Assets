@@ -4,7 +4,7 @@ using System.Collections;
 namespace Engine.Objects.Types {
 
 	/// <summary>
-	/// Предмет можно сломать
+	/// Интерфейс модификатор. Предмет можно сломать
 	/// </summary>
 	public interface IDestroyedType {
 

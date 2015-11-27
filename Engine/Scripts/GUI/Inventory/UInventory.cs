@@ -7,8 +7,8 @@ using Engine.EGUI.PopupMenu;
 using Engine.EGUI.ToolTip;
 
 namespace Engine.EGUI.Inventory {
-
-	public class UInventory : MonoBehaviour, IInventory, IRendererGUI {
+	
+	public class UInventory : MonoBehaviour, IInventory {
 
 		[SerializeField] public Texture2D selectCellImage;
 		[SerializeField] public Texture2D correctCellImage;
@@ -19,10 +19,11 @@ namespace Engine.EGUI.Inventory {
 
 		[SerializeField] public InventoryPopupMenu popupMenu;
 		[SerializeField] public ToolTipBase toolTip;
-		[SerializeField] public float toolTipDelay = 1f;
 
-		public float     offsetX;
-		public float     offsetY;
+		/// <summary> Положение по x окна инвентаря </summary>
+		private float     offsetX;
+		/// <summary> Положение по y окна инвентаря </summary>
+		private float     offsetY;
 		
 		private ItemPosition   selectedCell = new ItemPosition(-1, -1);
 		private ItemSlot       selectedItem = null;
@@ -34,23 +35,32 @@ namespace Engine.EGUI.Inventory {
 		private InventoryAlgoritm algoritm;
 		private SlotDrawService   drawService;
 
+		/// <summary> Ширина окна инвентаря </summary>
 		private float width  = 0f;
+		/// <summary> Высота окна инвентаря </summary>
 		private float height = 0f;
 
-		private float toolTipTimeStamp = 0f;
-
 #if UNITY_EDITOR
-		private bool degubMode = false;
+
+			// Вспомогательные переменные для отладки
+		private bool  degubMode = false;
+		/// <summary> Ширина фрейма отладочного окна </summary>
+		private float debugWindowWidth = 0f;
+		/// <summary> Высота фрейма отладочного окна </summary>
+		private float debugWindowHeight = 0f;
+
 #endif
 
 		public void show(){
 			visible = true;
 			GameConfig.GameMode = GameConfig.MODE_GUI;
 		}
+
 		public void hide(){
 			visible=false;
 			GameConfig.GameMode = GameConfig.MODE_GAME;
 		}
+
 		public bool isVisible(){
 			return visible;
 		}
@@ -105,12 +115,15 @@ namespace Engine.EGUI.Inventory {
 		/// </summary>
 		public void redraw(){
 
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
+			offsetX = (debugWindowWidth - width) * 0.5f;
+			offsetY = (debugWindowHeight - height) * 0.5f;
+#else
 			offsetX = (Screen.width - width) * 0.5f;
 			offsetY = (Screen.height - height) * 0.5f;
 #endif
 
-				drawService.DrawSlots(offsetX, offsetY);
+			drawService.DrawSlots(offsetX, offsetY);
 
 			OnDrawCells();
 			OnEvents();
@@ -120,20 +133,15 @@ namespace Engine.EGUI.Inventory {
 // Режим редактора
 #if UNITY_EDITOR
 
-		public void onResizeWindow(float width, float height){
-			if (algoritm==null)
-				Start();
-
-			offsetX = (width - this.width)   * 0.5f;
-			offsetY = (height - this.height) * 0.5f;
-
-		}
-
 		/// <summary>
 		/// Выполняет update в режиме редактора-отладчика
 		/// </summary>
-		public void OnEditorUpdate() {
-			if (!visible) return;
+		public void OnEditorUpdate(float debugWindowWidth, float debugWindowHeight) {
+			if (!visible)
+				return;
+
+			this.debugWindowWidth  = debugWindowWidth;
+            this.debugWindowHeight = debugWindowHeight;
 
 			degubMode = true;
 
@@ -143,16 +151,9 @@ namespace Engine.EGUI.Inventory {
 			Update();
 			OnGUI();
 
-			toolTip.redraw();
-
 		}
 
 #endif
-
-		public void onResizeWindow() {
-			offsetX = (Screen.width - width) * 0.5f;
-			offsetY = (Screen.height - height) * 0.5f;
-		}
 
 		void Start () {
 
@@ -162,8 +163,6 @@ namespace Engine.EGUI.Inventory {
 
 				width  = algoritm.getInventoryWidth();
 				height = algoritm.getInventoryHeight();
-
-			onResizeWindow();
 
 			if(visible)
 				redraw();
@@ -187,7 +186,7 @@ namespace Engine.EGUI.Inventory {
 				eventData.endSlot = selectedSlot;
 		}
 
-		public void OnDrawCells() {
+		private void OnDrawCells() {
 
 			if (popupMenu.isVisible()) // выходим, если пользователь работает с контекстным меню
 				return;
@@ -213,8 +212,7 @@ namespace Engine.EGUI.Inventory {
 					selectedCell.X = 1;
 					selectedCell.Y = 1;
 
-					toolTip.hide();
-					toolTipTimeStamp = Time.time;
+
                     return; // Если ничего не выбрано
 				}
 
@@ -223,25 +221,14 @@ namespace Engine.EGUI.Inventory {
 				else
 					tmpItem = algoritm.getItem(eventData.endSlot, selectedCell.X, selectedCell.Y);
 
-				toolTipTimeStamp = Time.time;
-				toolTip.hide();
-
-			} else {
-
-				if (selectedItem != null && !toolTip.isVisible() && (Time.time - toolTipTimeStamp) > toolTipDelay) { // отображаем всплывающую подсказку о предмете
-                    toolTip.show(eventData.cursorPosition, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
-					toolTipTimeStamp = Time.time;
-				}
 
 			}
 
 			if (tmpItem!=null)
 				drawService.DrawCellsItem(eventData.endSlot, offsetX, offsetY, tmpItem, errorCellImage);
 
-            if (selectedItem == null) {
-				toolTip.hide();
+            if (selectedItem == null)
                 return;
-            }
 
 			if ((eventData.selected==null || eventData.selected==selectedItem) && (eventData.collision==null || eventData.collision.item.Equals(eventData.selected.item)))
 				if(eventData.startSlot!=null)
@@ -313,7 +300,7 @@ namespace Engine.EGUI.Inventory {
 			selectedItem = null;
 		}
 
-		public void OnEvents() {
+		private void OnEvents() {
 
 			ReadMouseEvents(); // читаем события мыши
 
@@ -325,7 +312,9 @@ namespace Engine.EGUI.Inventory {
 					if (popupMenu.isFocused())
 						return;
 
+					toolTip.hide();
 					popupMenu.hide();
+
 					resetEventsSelections();
                 }
 			}
@@ -396,6 +385,9 @@ namespace Engine.EGUI.Inventory {
                 PopupMenuService.getInatance().SetupPopupMenu(popupMenu, selectedItem.item); // устанавливаем пункты меню
                 popupMenu.show(eventData.cursorPosition); // отображаем меню в нужном месте
 
+				Vector2 pos = new Vector2(eventData.cursorPosition.x, eventData.cursorPosition.y+ popupMenu.getHeight());
+                toolTip.show(pos, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
+
 			}
 
 			if (eventData.mouseEvent.LMouseDown && selectedItem!=null && eventData.selected==null && eventData.eventType == InventoryEvent.None) {
@@ -440,12 +432,12 @@ namespace Engine.EGUI.Inventory {
 
 		void OnGUI(){
 
-			if(!visible) return;
+			if(!visible)
+				return;
 
 			redraw();
-
 			popupMenu.redraw();
-
+			toolTip.redraw();
 		}
 
 

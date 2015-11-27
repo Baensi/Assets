@@ -17,8 +17,19 @@ namespace Engine.EGUI.PopupMenu {
 		[SerializeField] public Vector2 position;
 		[SerializeField] public bool    visible;
 
+		[SerializeField] public float stepSize = 0.01f;
+
+		private float width;
+		private float height;
+
+		private bool load = false;
+
 		public virtual void onClick(MenuItem item) { } // делаем пустую реализацию клика
 		public virtual void onSelect(MenuItem item) { } // делаем пустую реализацию выделения
+
+		public bool isLoad() {
+			return load;
+		}
 
 		void OnValidate() {
 			
@@ -67,11 +78,24 @@ namespace Engine.EGUI.PopupMenu {
 			setVisible(true);
 		}
 		
+		public float getHeight() {
+			return height;
+		}
+
 		public void setVisible(bool visible){
 			this.visible = visible;
 
 			foreach (MenuItem item in items)
 				item.setVisible(visible);
+
+			if (visible) {
+				float y = 0f;
+				foreach (MenuItem item in items)
+					if (item.isEnabled())
+						y += data.itemSize.y;
+
+				this.height = y;
+            }
 		}
 		
 		/// <summary>
@@ -98,6 +122,9 @@ namespace Engine.EGUI.PopupMenu {
 		/// Отрисовывает контекстное меню, в случае перегрузки данного метода, рекомендуется вызвать <b>base.MenuOnGUI()</b>
 		/// </summary>
 		public void MenuOnGUI(){
+
+			if (!load && Input.GetMouseButtonUp(1))
+				load = true;
 
 			if (!visible)
 				return;

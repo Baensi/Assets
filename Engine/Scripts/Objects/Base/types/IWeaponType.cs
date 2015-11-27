@@ -3,6 +3,9 @@ using Engine.Objects.Weapon;
 
 namespace Engine.Objects.Types {
 
+	/// <summary>
+	/// Интерфейс модификатор. Предмет может наносить урон
+	/// </summary>
 	public interface IWeaponType {
 
 		/// <summary>
@@ -30,12 +33,8 @@ namespace Engine.Objects.Types {
 	/// </summary>
 	public static class DictionaryWeaponTypeInjector {
 
-		public static string K_WEAPON_TYPE_NAME(this IReadedType type) {
-			return "IReadedType_name";
-		}
-
-		public static string K_WEAPON_TYPE_CAPTION(this IReadedType type) {
-			return "IReadedType_caption";
+		public static string K_WEAPON_TYPE_NAME(this IWeaponType type) {
+			return "IWeaponType_name";
 		}
 
 	}

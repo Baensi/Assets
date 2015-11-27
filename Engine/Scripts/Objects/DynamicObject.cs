@@ -27,25 +27,31 @@ namespace Engine.Objects {
 
 		protected ObjectsSelector objectsSelector;
 
-		public void OnStart() {
+			public void OnStart() {
 			
-			Trash.getInstance().Clean(); // Пытаемся очистить корзину
+				Trash.getInstance().Clean(); // Пытаемся очистить корзину
 			
-            if(gameObject.GetComponent<Rigidbody>()==null)
-			    gameObject.AddComponent<Rigidbody>();
+				if(gameObject.GetComponent<Rigidbody>()==null)
+					gameObject.AddComponent<Rigidbody>();
 
-            if(gameObject.GetComponent<Collider>()==null)
-			    gameObject.AddComponent<BoxCollider>();
+				if(gameObject.GetComponent<Collider>()==null)
+					gameObject.AddComponent<BoxCollider>();
 
-			objectsSelector = SingletonNames.getMainCamera().GetComponent<ObjectsSelector>();
+				objectsSelector = SingletonNames.getMainCamera().GetComponent<ObjectsSelector>();
 			
-			currentRenderer = gameObject.GetComponent<Renderer>();
-			defaultShader   = currentRenderer.material.shader;
+				currentRenderer = gameObject.GetComponent<Renderer>();
+				defaultShader   = currentRenderer.material.shader;
 			
-			if(selectedShader==null)
-				selectedShader = Shader.Find("DynamicObject/Selected");
+				if(selectedShader==null)
+					selectedShader = Shader.Find("DynamicObject/Selected");
 
-		}
+			}
+
+			public void OnUpdate() {
+				if(transform.position.y<-1000f) // предмет упал слишком низко
+					Destroy(true);
+			}
+
 
 		public float getCostValue(){
 			return this.item.description.costValue;

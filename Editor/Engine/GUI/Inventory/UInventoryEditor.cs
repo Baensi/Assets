@@ -5,7 +5,7 @@ using Engine.EGUI.Inventory;
 namespace EngineEditor.EGUI.Inventory {
 	
 	[CustomEditor(typeof(UInventory))]
-	public class UInventoryEditor : Editor, ItemSelectedListener {
+	public class UInventoryEditor : Editor, IItemSelectedListener {
 
 		private static Color lineColor  = new Color(0.7f, 0.7f, 0.8f);
 		private static Color lineShadow = new Color(0.4f, 0.4f, 0.4f);
@@ -36,14 +36,6 @@ namespace EngineEditor.EGUI.Inventory {
 
 		public void OnItemSelect(Item item) {
 			inventory.addItem(item.Clone());
-		}
-
-		void OnGUI() {
-		
-		}
-
-		private void Update() {
-
 		}
 
 		public void drawLine() {

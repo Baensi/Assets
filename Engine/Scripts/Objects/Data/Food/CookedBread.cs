@@ -40,6 +40,10 @@ namespace Engine.Objects.Food {
 				return true;
 			} return false;
 		}
+
+		void Update() {
+			base.OnUpdate();
+		}
 		
 	}
 	

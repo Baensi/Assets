@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using Engine.Objects;
+using Engine.Objects.Types;
 
 namespace Engine.EGUI.Inventory {
 	
@@ -24,6 +26,7 @@ namespace Engine.EGUI.Inventory {
 		public void SetupPopupMenu(InventoryPopupMenu menu, Item item) {
             menu.setSelectedItem(item); // устанавливаем контекстному меню ссылку на выбранный предмет
 
+			menu.useItem.setEnabled(item.toGameObject().GetComponent<DynamicObject>() as IUsedType !=null);
 			menu.dropAllItems.setEnabled(item.getMaxCount() > 1 && item.getCount() > 1);
 		}
 

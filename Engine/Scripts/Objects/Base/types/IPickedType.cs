@@ -4,7 +4,7 @@ using System.Collections;
 namespace Engine.Objects.Types {
 
 	/// <summary>
-	/// Предмет можно взять в инвентарь
+	/// Интерфейс модификатор. Предмет можно взять в инвентарь
 	/// </summary>
 	public interface IPickedType {
 

@@ -8,6 +8,8 @@ namespace Engine.EGUI.ToolTip {
 	/// </summary>
 	public class PropertyItem {
 
+		public const float SIZE = 22f;
+
 		private CanvasRenderer canvas;
 		private string textTitle;
 		private string textValue;

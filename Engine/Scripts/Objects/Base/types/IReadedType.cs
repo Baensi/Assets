@@ -4,7 +4,7 @@ using System.Collections;
 namespace Engine.Objects.Types {
 
 	/// <summary>
-	/// Предмет можно прочитать
+	/// Интерфейс модификатор. Предмет можно прочитать
 	/// </summary>
 	public interface IReadedType {
 		

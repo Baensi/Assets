@@ -13,10 +13,10 @@ namespace EngineEditor.EGUI.Inventory {
 		private float width;
 		private float height;
 
-		private ItemSelectedListener listener = null;
+		private IItemSelectedListener listener = null;
 		private UInventory inventory = null;
 
-		public void setData(UInventory inventory, ItemSelectedListener listener) {
+		public void setData(UInventory inventory, IItemSelectedListener listener) {
 			this.inventory=inventory;
 			this.listener = listener;
 
@@ -33,10 +33,9 @@ namespace EngineEditor.EGUI.Inventory {
 			if (this.position.width!=width || this.position.height!=height) {
 				width = this.position.width;
 				height = this.position.height+200;
-				inventory.onResizeWindow(width, height); // изменяем размер окна
 			}
 
-			inventory.OnEditorUpdate();
+			inventory.OnEditorUpdate(width,height);
 
 			DrawScreen();
 			DrawSlots();
@@ -68,25 +67,21 @@ namespace EngineEditor.EGUI.Inventory {
 			foreach (RectangleSlot rec in inventory.slots) {
 
 				Handles.color = linesColor;
-				Handles.DrawLine(new Vector3(rec.position.OffsetX+inventory.offsetX, rec.position.OffsetY + inventory.offsetY),
-								 new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.offsetX, rec.position.OffsetY+ inventory.offsetY));
+				Handles.DrawLine(new Vector3(rec.position.OffsetX+inventory.getX(), rec.position.OffsetY + inventory.getY()),
+								 new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.getX(), rec.position.OffsetY+ inventory.getY()));
 
-				Handles.DrawLine(new Vector3(rec.position.OffsetX+inventory.offsetX, rec.position.OffsetY+ inventory.offsetY),
-								 new Vector3(rec.position.OffsetX+inventory.offsetX, rec.position.OffsetY+rec.position.SlotHeight+ inventory.offsetY));
+				Handles.DrawLine(new Vector3(rec.position.OffsetX+inventory.getX(), rec.position.OffsetY+ inventory.getY()),
+								 new Vector3(rec.position.OffsetX+inventory.getX(), rec.position.OffsetY+rec.position.SlotHeight+ inventory.getY()));
 
-				Handles.DrawLine(new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.offsetX, rec.position.OffsetY+ inventory.offsetY),
-								 new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.offsetX, rec.position.OffsetY+rec.position.SlotHeight+ inventory.offsetY));
+				Handles.DrawLine(new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.getX(), rec.position.OffsetY+ inventory.getY()),
+								 new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.getX(), rec.position.OffsetY+rec.position.SlotHeight+ inventory.getY()));
 
-				Handles.DrawLine(new Vector3(rec.position.OffsetX+inventory.offsetX, rec.position.OffsetY+rec.position.SlotHeight+ inventory.offsetY),
-								 new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.offsetX, rec.position.OffsetY+rec.position.SlotHeight+ inventory.offsetY));
+				Handles.DrawLine(new Vector3(rec.position.OffsetX+inventory.getX(), rec.position.OffsetY+rec.position.SlotHeight+ inventory.getY()),
+								 new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.getX(), rec.position.OffsetY+rec.position.SlotHeight+ inventory.getY()));
 
-				Handles.Label(new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.offsetX, rec.position.OffsetY+rec.position.SlotHeight+ inventory.offsetY), new GUIContent("слот"+(index++).ToString()));
+				Handles.Label(new Vector3(rec.position.OffsetX+rec.position.SlotWidth+inventory.getX(), rec.position.OffsetY+rec.position.SlotHeight+ inventory.getY()), new GUIContent("слот"+(index++).ToString()));
 
 			}
-
-		}
-
-		void OnFocus() {
 
 		}
 
@@ -94,11 +89,6 @@ namespace EngineEditor.EGUI.Inventory {
 
 			foreach(RectangleSlot slot in inventory.getSlots())
 				slot.Items.Clear();
-
-		}
-
-		public void OnSceneGUI(SceneView sceneView) {
-
 
 		}
 

@@ -13,30 +13,21 @@ namespace EngineEditor.Objects.Doors {
 		private DoorPushLever lever;
 
 		void OnEnable() {
-			
-		}
-
-		void OnDestroy() {
-
+			lever = target as DoorPushLever;
 		}
 
 		public override void OnInspectorGUI() {
 
 			base.OnInspectorGUI();
 
-			lever = target as DoorPushLever;
+			previewMode = EditorGUILayout.Toggle(new GUIContent("Предпросмотр"), previewMode);
 
-			#if UNITY_EDITOR
-				previewMode = EditorGUILayout.Toggle(new GUIContent("Предпросмотр"), previewMode);
+			if(!previewMode) return;
 
-				if(!previewMode) return;
+			lever.OnUpdate();
 
-				lever.OnUpdate();
-
-				if (lever.door!=null)
-					lever.door.OnUpdate();
-
-			#endif
+			if (lever.door!=null)
+				lever.door.OnUpdate();
 
 		}
 

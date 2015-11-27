@@ -4,7 +4,7 @@ using System.Collections;
 namespace Engine.Objects.Types {
 
 	/// <summary>
-	/// Предмет можно использовать
+	/// Интерфейс модификатор. Предмет можно использовать
 	/// </summary>
 	public interface IUsedType {
 

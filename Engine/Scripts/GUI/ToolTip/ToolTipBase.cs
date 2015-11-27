@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Engine.I18N;
 using Engine.EGUI.Utils;
 
 namespace Engine.EGUI.ToolTip {
@@ -10,31 +8,39 @@ namespace Engine.EGUI.ToolTip {
 	public class ToolTipBase : MonoBehaviour {
 
 		private static string PANEL_NAME = "Panel";
-		[SerializeField] public string titleName = "Title";
-		[SerializeField] public string valueName = "Value";
 
-			/// <summary>Префаб элемента-свойства</summary>
-		[SerializeField] public CanvasRenderer propertyItemInstance;
+		private float width   = 205f;
+		private float height  = 190f;
 
-			/// <summary>Префаб панели подсказки</summary>
-		[SerializeField] public CanvasRenderer panelInstance;
+		[SerializeField] public GUIStyle style;
+		[SerializeField] public GUIStyle itemTitleStyle;
+		[SerializeField] public GUIStyle itemValueStyle;
 		
-			/// <summary>Канвас, на котором происходит рисование</summary>
-		[SerializeField] public Canvas         canvas;
+		[SerializeField] public bool     visible = false;
 
-		[SerializeField] public float width   = 190f;
-		[SerializeField] public bool  visible = false;
-
-			/// <summary>Текущая панель подсказки</summary>
-		private CanvasRenderer background    = null;
-			/// <summary>Размеры панели подсказки</summary>
-		private RectTransform backgroundRect = null;
-			/// <summary>Заголовок подсказки</summary>
-		private Text               text;
+		private GUIStyle currentStyle;
+		private GUIStyle currentItemTitleStyle;
+		private GUIStyle currentItemValueStyle;
 
 		private Rect               bounds;
-		private Vector2            position;
 		private List<PropertyItem> items = new List<PropertyItem>();
+
+		[SerializeField] public float sizeStep = 0.01f;
+		private float size = 0f;
+
+		private string title;
+
+			void Start() {
+				currentStyle          = new GUIStyle(style);
+				currentItemTitleStyle = new GUIStyle(itemTitleStyle);
+				currentItemValueStyle = new GUIStyle(itemValueStyle);
+            }
+
+		void OnValidate() {
+			currentStyle = new GUIStyle(style);
+			currentItemTitleStyle = new GUIStyle(itemTitleStyle);
+			currentItemValueStyle = new GUIStyle(itemValueStyle);
+		}
 
 		/// <summary>
 		/// Активность/видимость всплывающей подсказки
@@ -52,6 +58,14 @@ namespace Engine.EGUI.ToolTip {
 			return bounds;
 		}
 
+		public float getWidth() {
+			return bounds.width;
+		}
+
+		public float getHeight() {
+			return bounds.height;
+		}
+
 		/// <summary>
 		/// Вызывает всплывающую подсказку в указанном месте
 		/// </summary>
@@ -59,10 +73,10 @@ namespace Engine.EGUI.ToolTip {
 		/// <param name="description">описание, посещается в заголовок</param>
 		/// <param name="items">свойства, помещаются снизу</param>
 		public void show(Vector2 position, string description, List<PropertyItem> items) {
+			size = 0f;
 			this.items = items;
-			this.position = position;
-            CreateCanvasStruct(description);
-            canvas.enabled=true;
+			title = description;
+            CreateCanvasStruct(position);
 			visible = true;
         }
 
@@ -70,85 +84,23 @@ namespace Engine.EGUI.ToolTip {
 		public void hide() {
 			if (!visible)
 				return;
-            canvas.enabled=false;
 			visible = false;
 			clear();
 		}
 
 		/// <summary>очищает свойства</summary>
 		private void clear() {
-            
-			foreach (PropertyItem item in items) {
-
-#if UNITY_EDITOR
-				DestroyImmediate(item.toCanvas().gameObject);
-#else
-				Destroy(item.toCanvas().gameObject);
-#endif
-
-			}
-
 			items.Clear();
 			items = null;
-			text  = null;
-
-#if UNITY_EDITOR
-			DestroyImmediate(background.gameObject);
-#else
-            Destroy(background.gameObject);
-#endif
-
-			background     = null;
-			backgroundRect = null;
+			title = null;
         }
 
 		/// <summary>Пересоздаёт структуру надписей внутри контекста</summary>
-		private void CreateCanvasStruct(string description) {
-
-			background = Instantiate<CanvasRenderer>(panelInstance);
-			background.transform.SetParent(canvas.transform);
-			background.transform.name = PANEL_NAME;
-			backgroundRect = background.GetComponent<RectTransform>();
-			text = canvas.transform.Find(PANEL_NAME+"/"+titleName).GetComponent<Text>();
-			text.text = description;
-
+		private void CreateCanvasStruct(Vector2 position) {
 			bounds.x = position.x;
 			bounds.y = position.y;
-			bounds.width = width;
-
-			float panelHeight = backgroundRect.sizeDelta.y;
-            float offsetY = 0;
-
-			foreach (PropertyItem item in items) { // инициализируем компоненты каждого свойства
-					
-					CanvasRenderer label     = Instantiate<CanvasRenderer>(propertyItemInstance);
-					RectTransform  labelRect = label.GetComponent<RectTransform>();
-					label.transform.SetParent(background.transform);
-
-					Text labelTitle = label.transform.Find(titleName).GetComponent<Text>();
-					Text labelValue = label.transform.Find(valueName).GetComponent<Text>();
-				
-					labelTitle.text = item.getTextTitle() + ":";
-					labelValue.text = item.getTextValue();
-					labelValue.color = item.getColorValue();
-
-					labelRect.setHorizontalAncorBounds(5f, panelHeight+offsetY-items.Count*6,labelRect.sizeDelta.y);
-				
-                    item.setCanvas(label);
-					offsetY += labelRect.sizeDelta.y;
-					
-				}
-			
-			
-			backgroundRect.rotation = Quaternion.Euler(0f, 20f - UnityEngine.Random.Range(20f, 35f), 20f - UnityEngine.Random.Range(20f, 35f)); // произвольно вращаем панель
-			bounds.height = 30 * (items.Count - 1) + 64;
-			backgroundRect.sizeDelta = new Vector2(width, bounds.height);
-			backgroundRect.position = new Vector3(position.x+(bounds.height*0.5f), position.y+(bounds.height*0.5f));
-
-		}
-
-		void Start() {
-
+			bounds.width  = width;
+			bounds.height = (PropertyItem.SIZE+6) * items.Count + 64f;
 		}
 
 		/// <summary>
@@ -165,12 +117,46 @@ namespace Engine.EGUI.ToolTip {
 		}
 
 		public void redraw() {
+
 			if (!visible)
 				return;
 
+			if (size < 1f) {
+				size += sizeStep;
 
-			if (backgroundRect != null)
-				backgroundRect.rotation = onRotateIteration(backgroundRect.rotation); // постепенно поворачиваем панель "лицом" к пользователю
+				GUI.color = new Color(1, 1, 1, size);
+
+				if (size > 1f)
+					size = 1f;
+			}
+
+			currentStyle.fontSize = (int)(style.fontSize * size);
+			currentStyle.normal.textColor = style.normal.textColor * size;
+
+			GUI.Box(bounds, title, currentStyle);
+
+			float x = bounds.x;
+			float y = bounds.y+64f;
+
+			foreach (PropertyItem item in items) {
+				
+				drawItem(item, x, y);
+				y += PropertyItem.SIZE + 6;
+            }
+			
+		}
+
+		private void drawItem(PropertyItem item, float offsetX, float offsetY) {
+
+			Rect rectTitle = new Rect(offsetX + 5, offsetY, bounds.width * 0.5f, PropertyItem.SIZE);
+			Rect rectValue = new Rect(offsetX - 10 + bounds.width * 0.5f, offsetY, bounds.width * 0.5f, PropertyItem.SIZE);
+
+			currentItemValueStyle.fontSize = (int)(itemValueStyle.fontSize* size);
+			currentItemValueStyle.normal.textColor = item.getColorValue() * size;
+			currentItemTitleStyle.fontSize = (int)(itemTitleStyle.fontSize * size);
+
+			GUI.Box(rectTitle, item.getTextTitle()+":", currentItemTitleStyle);
+			GUI.Box(rectValue, item.getTextValue(), currentItemValueStyle);
 
 		}
 

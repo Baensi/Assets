@@ -7,12 +7,6 @@ namespace Engine.EGUI.Inventory.PopupMenu {
 
 	public class InventoryUseItemListener : MenuItemClickListener {
 
-		private UInventory inventory;
-
-			public InventoryUseItemListener() {
-				inventory = SingletonNames.getInventory().GetComponent<UInventory>();
-			}
-
 		public void onClick(MenuItem menuItem) {
 			InventoryPopupMenu menu = (InventoryPopupMenu)menuItem.getMenu();
 			Item item = menu.getSelectedItem();
@@ -28,6 +22,7 @@ namespace Engine.EGUI.Inventory.PopupMenu {
             if(selectedItem==null)
                 return;
 
+			UInventory     inventory     = SingletonNames.getInventory().GetComponent<UInventory>();
 			IDynamicObject dynamicObject = selectedItem.toGameObject().GetComponent<DynamicObject>(); // получаем класс динамического объекта
 			IUsedType      usedType      = dynamicObject as IUsedType; // достаём из класса "Тип Используемого предмета"
 

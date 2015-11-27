@@ -17,6 +17,8 @@ namespace Engine.EGUI.PopupMenu {
 		[SerializeField] public bool visible;
 		[SerializeField] public new bool enabled = true;
 
+		private GUIStyle style;
+
 		private MenuItemSelectListener menuItemSelectListener = null;
 		private MenuItemClickListener  menuItemClickListener = null;
 
@@ -26,7 +28,6 @@ namespace Engine.EGUI.PopupMenu {
 		private Color diffColor; // промежуточный цвет
 		private static float minAlpha  = 0.65f;
 		private static float stepAlpha = 0.01f;
-		private static float stepSize  = 0.04f;
 
 		private bool isLoaded = false;
 
@@ -57,9 +58,9 @@ namespace Engine.EGUI.PopupMenu {
 			this.menu = menu;
 			InitTextSize();
 
-			foreach (MenuItem item in childs)
-				item.setPopupMenuBase(menu);
-
+				foreach (MenuItem item in childs)
+					item.setPopupMenuBase(menu);
+			
 			isLoaded = true;
 		}
 
@@ -73,6 +74,7 @@ namespace Engine.EGUI.PopupMenu {
 				return;
 
 			size = 0f;
+			style = new GUIStyle(menu.data.labelStyle);
 			textSize = menu.data.labelStyle.fontSize;
 
 			if (childs)
@@ -114,9 +116,9 @@ namespace Engine.EGUI.PopupMenu {
 
 			diffColor = new Color(r,g,b);
 
-			menu.data.labelStyle.normal.textColor = diffColor;
-			menu.data.labelStyle.fontSize = (int)(textSize * size);
-            return menu.data.labelStyle;
+			style.normal.textColor = diffColor;
+			style.fontSize = (int)(textSize * size);
+            return style;
         }
 
 		private void OnMenuItemSelectListener(){
@@ -182,12 +184,12 @@ namespace Engine.EGUI.PopupMenu {
 
 			if (visible) {
 				if (size < 1.0f)
-					size += stepSize;
+					size += menu.stepSize;
 				else
 					size = 1.0f;
 			} else {
 				if (size > 0.0f)
-					size -= stepSize;
+					size -= menu.stepSize;
 				else
 					size = 0.0f;
 			}
@@ -200,7 +202,7 @@ namespace Engine.EGUI.PopupMenu {
 				if (selected == false)
 					OnMenuItemSelectListener();
 
-				if (Event.current.isMouse && Event.current.type == EventType.MouseDown)
+				if (Event.current.isMouse && Event.current.type == EventType.MouseDown && menu.isLoad())
 					OnMenuItemClickListener();
 
 				selected = true;

@@ -7,26 +7,24 @@ namespace Engine {
 
 		public static class Constants {
 
-			public static string PLAYER_OBJECT_NAME = "Player";
-			public static string PLAYER_CAMERA_NAME = "PlayerCamera";
-
-			public static string PLAYER_HEAD_NAME     = "Head";
-			public static string PLAYER_BODY_NAME     = "Body";
-			public static string PLAYER_HANDS_NAME    = "Hands";
-			public static string PLAYER_FOOTS_NAME    = "Foots";
-			public static string PLAYER_LEGGENS_NAME  = "Leggens";
-
-			public static string PLAYER_ATTACK_NAME = "PlayerAttack";
-			public static string PLAYER_STATE_NAME  = "PlayerState";
-			public static string PLAYER_GUI_NAME    = "PlayerGUI";
+			public const string PLAYER_OBJECT_NAME = "Player";
+			public const string PLAYER_CAMERA_NAME = "PlayerCamera";
+			
+			public const string PLAYER_HEAD_NAME     = "Head";
+			public const string PLAYER_BODY_NAME     = "Body";
+			public const string PLAYER_HANDS_NAME    = "Hands";
+			public const string PLAYER_FOOTS_NAME    = "Foots";
+			public const string PLAYER_LEGGENS_NAME  = "Leggens";
+			
+			public const string PLAYER_ATTACK_NAME = "PlayerAttack";
+			public const string PLAYER_STATE_NAME  = "PlayerState";
+			public const string PLAYER_GUI_NAME    = "PlayerGUI";
 
 			public static class GUI {
 
-				public static string INVENTORY = "PlayerGUI/Inventory";
-                
-				public static string HEALTH_BAR = "PlayerGUI";
-				public static string MANA_BAR   = "PlayerGUI";
-				public static string ENERGY_BAR = "PlayerGUI";
+				public const string INVENTORY = "PlayerGUI/Inventory";
+				
+				public const string UI = "PlayerUI";
 
 			}
 
@@ -58,25 +56,25 @@ namespace Engine {
 
 		public static class Input {
 
-			public static string ESC          = "Cancel";
-
-			public static string USE          = "Use";
-			public static string ATTACK1      = "Attack1";
-			public static string ATTACK_MAGIC = "AttackMagic";
-			public static string PICKUP       = "PickUp";
-			public static string SITDOWN      = "Sitdown";
-			public static string JUMP         = "Jump";
-
-			public static string INVENTAR     = "Inventar";
-
-			public static string NEXTPAGE     = "NextPage";
-			public static string BACKPAGE     = "BackPage";
+			public const string ESC          = "Cancel";
 			
-			public static string MOUSE_X      = "Mouse X";
-			public static string MOUSE_Y      = "Mouse Y";
-
-			public static string HORIZONTAL   = "Horizontal";
-			public static string VERTICAL     = "Vertical";
+			public const string USE          = "Use";
+			public const string ATTACK1      = "Attack1";
+			public const string ATTACK_MAGIC = "AttackMagic";
+			public const string PICKUP       = "PickUp";
+			public const string SITDOWN      = "Sitdown";
+			public const string JUMP         = "Jump";
+			
+			public const string INVENTAR     = "Inventar";
+			
+			public const string NEXTPAGE     = "NextPage";
+			public const string BACKPAGE     = "BackPage";
+			
+			public const string MOUSE_X      = "Mouse X";
+			public const string MOUSE_Y      = "Mouse Y";
+			
+			public const string HORIZONTAL   = "Horizontal";
+			public const string VERTICAL     = "Vertical";
 
 		}
 
@@ -89,6 +87,18 @@ namespace Engine {
 			return GameObject.Find(Constants.GUI.INVENTORY);
 		}
 
+		/// <summary>
+		/// Возвращает графический игровой интерфейс с панелями и барами жизни, энергии, маны и пр.
+		/// </summary>
+		/// <returns></returns>
+		public static GameObject getUI() {
+			return GameObject.Find(Constants.GUI.UI);
+		}
+
+		/// <summary>
+		/// Возвращает графический интерфес управления - инвентарь, журнал заданий, книги и пр.
+		/// </summary>
+		/// <returns></returns>
 		public static GameObject getGUI(){
 			return GameObject.Find(Constants.PLAYER_GUI_NAME);
 		}

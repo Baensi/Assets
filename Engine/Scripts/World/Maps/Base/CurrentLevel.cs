@@ -28,6 +28,8 @@ namespace Engine.Maps {
 			player.gameObject.transform.position = data.playerStartPosition;
 			player.gameObject.transform.rotation = Quaternion.Euler(data.playerStartRotation);
 
+			GameConfig.GameMode = GameConfig.MODE_GAME; // устанавливаем режим "игровой"
+
 		}
 
 	}

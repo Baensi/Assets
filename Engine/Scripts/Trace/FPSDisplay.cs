@@ -13,13 +13,12 @@ namespace Engine {
 
 		}
 
-		void Update()
-		{
+		void Update() {
 			deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
 		}
 		
-		void OnGUI()
-		{
+		void OnGUI() {
+
 			int w = Screen.width, h = Screen.height;
 			
 			GUIStyle style = new GUIStyle();

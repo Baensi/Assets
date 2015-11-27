@@ -5,7 +5,7 @@ using Engine.Skills;
 namespace Engine.Objects.Types {
 
 	/// <summary>
-	/// Предмет можно приготовить
+	/// Интерфейс модификатор. Предмет можно приготовить
 	/// </summary>
 	public interface ICookedType {
 

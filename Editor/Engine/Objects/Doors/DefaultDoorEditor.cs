@@ -13,36 +13,20 @@ namespace EngineEditor.Objects.Doors {
 		private DefaultDoor door;
 
 		void OnEnable() {
-			
-		}
-
-		void OnDestroy() {
-
+			door = target as DefaultDoor;door = target as DefaultDoor;
 		}
 
 		public override void OnInspectorGUI() {
 
 			base.OnInspectorGUI();
 
-			door = target as DefaultDoor;
+			previewMode = EditorGUILayout.Toggle(new GUIContent("Предпросмотр"), previewMode);
 
-			//if (GUI.changed) {
-			//	door.OnStart();
-			//	door.OnUpdate();
-			//}
+			if(!previewMode) return;
 
-
-			#if UNITY_EDITOR
-				previewMode = EditorGUILayout.Toggle(new GUIContent("Предпросмотр"), previewMode);
-
-				if(!previewMode) return;
-
-				door.OnUpdate();
-
-			#endif
+			door.OnUpdate();
 
 		}
-
 
 	}
 

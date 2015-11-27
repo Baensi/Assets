@@ -37,7 +37,7 @@ namespace Engine {
 
 
 							switch (parameter[0]) {
-								case "lang":
+								case GameConfig.CONFIG_CURRENT_LANGUAGE:
 									GameConfig.Localization = parameter[1];
 									break;
 							}
@@ -73,7 +73,7 @@ namespace Engine {
 
 				writer.WriteLine("[Configurations]\n");
 
-					writer.WriteLine("\tlang=ru");
+					writer.WriteLine("\t"+GameConfig.CONFIG_CURRENT_LANGUAGE+"=ru");
 
 				writer.WriteLine("[End]\n");
 

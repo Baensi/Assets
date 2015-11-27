@@ -6,14 +6,6 @@ namespace Engine.EGUI.Inventory.PopupMenu {
 
 	public class InventoryDropItemListener : MenuItemClickListener {
 
-		private UInventory inventory;
-		private Camera mainCamera;
-
-			public InventoryDropItemListener() {
-				inventory = SingletonNames.getInventory().GetComponent<UInventory>();
-				mainCamera = SingletonNames.getMainCamera();
-			}
-
 		public void onClick(MenuItem menuItem) {
 			InventoryPopupMenu menu = (InventoryPopupMenu)menuItem.getMenu();
 			Item item = menu.getSelectedItem();
@@ -29,6 +21,7 @@ namespace Engine.EGUI.Inventory.PopupMenu {
             if(selectedItem==null)
                 return;
 
+			UInventory inventory = SingletonNames.getInventory().GetComponent<UInventory>();
 			DObjectList.getInstance().CreateNewInstance(selectedItem); // создаём объект предмета в мире
 
 			if (selectedItem.getCount() > 1) {

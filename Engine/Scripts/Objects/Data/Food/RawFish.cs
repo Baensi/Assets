@@ -70,6 +70,7 @@ namespace Engine.Objects.Food {
 		}
 
 		void Update() {
+			base.OnUpdate();
 
 			if (!isCooked) return;
 

@@ -21,6 +21,10 @@ namespace Engine.Objects.Special {
 			} return false;
 		}
 
+		void Update() {
+			base.OnUpdate();
+		}
+
 		
 	}
 	
