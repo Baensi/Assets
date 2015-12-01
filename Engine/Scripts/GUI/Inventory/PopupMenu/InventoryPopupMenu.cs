@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using Engine.EGUI.PopupMenu;
 using Engine.EGUI.Inventory.PopupMenu;
+using Engine.EGUI.ToolTip;
 
 namespace Engine.EGUI.Inventory {
 
+	/// <summary>
+	/// Класс контекстного меню инвентаря
+	/// Содержит пункты действий над предметами внутри инвентаря
+	/// </summary>
 	public class InventoryPopupMenu : PopupMenuBase {
 		
-		private Item selectedItem;
+		private Item selectedItem; // выбранный в инвентаре предмет, по которому строится popupMenu
 
 		[SerializeField] public MenuItem useItem; // пункт "использовать"
 		[SerializeField] public MenuItem dropItem; // пункт "выкинуть"
@@ -15,15 +20,6 @@ namespace Engine.EGUI.Inventory {
 #if UNITY_EDITOR
 
 		void OnValidate() {
-
-			if(useItem!=null)
-				useItem.setClickListener(new InventoryUseItemListener());
-
-			if (dropItem != null)
-				dropItem.setClickListener(new InventoryDropItemListener());
-
-			if (dropAllItems != null)
-				dropAllItems.setClickListener(new InventoryDropAllItemsListener());
 
 			if (items!=null && items.Count>0)
 				foreach (MenuItem item in items) // даём всем элементам в меню ссылки на себя
@@ -37,13 +33,18 @@ namespace Engine.EGUI.Inventory {
 
 				foreach (MenuItem item in items) // даём всем элементам в меню ссылки на себя
 					item.setPopupMenuBase(this);
-
-					// устанавливаем слушателей
-				useItem.setClickListener(new InventoryUseItemListener());
-				dropItem.setClickListener(new InventoryDropItemListener());
-				dropAllItems.setClickListener(new InventoryDropAllItemsListener());
 				
 			}
+
+		/// <summary>
+		/// Установка слушателей пуктов меню
+		/// </summary>
+		/// <param name="toolTip"></param>
+		public void SetupListeners(ToolTipBase toolTip) {
+			useItem.setClickListener(new InventoryUseItemListener(toolTip));
+			dropItem.setClickListener(new InventoryDropItemListener(toolTip));
+			dropAllItems.setClickListener(new InventoryDropAllItemsListener(toolTip));
+		}
 
 		public Item getSelectedItem() {
 			return selectedItem;

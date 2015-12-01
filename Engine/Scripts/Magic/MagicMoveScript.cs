@@ -32,7 +32,7 @@ namespace Engine.Scripts.Magic {
 
 				currentDistance += mooveSpeed;
 				if (currentDistance >= maxDistance) {
-					destroy();
+					Destroy(magicObject);
 					return;
 				}
 
@@ -42,7 +42,7 @@ namespace Engine.Scripts.Magic {
 			} else {
 
 				if (Time.time - timeStamp >= destroyDelay)
-					destroy();
+					Destroy(magicObject);
 
 			}
 
@@ -54,16 +54,16 @@ namespace Engine.Scripts.Magic {
 				obj.addDamage(20.0f);
 			}
 
-			stop();
+			Stop();
 		}
 
 		void onCollisionEnter(Collision other) {
 
-			stop();
+			Stop();
 
 		}
 
-		private void stop() {
+		private void Stop() {
 			timeStamp = Time.time;
 			notMove = true;
 
@@ -73,10 +73,6 @@ namespace Engine.Scripts.Magic {
 			SphereCollider collider = GetComponent<SphereCollider>();
 			collider.radius += 50f;
 
-		}
-
-		private void destroy() {
-			Destroy(magicObject);
 		}
 
 	}

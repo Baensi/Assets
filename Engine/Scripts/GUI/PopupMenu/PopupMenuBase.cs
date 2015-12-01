@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Engine.EGUI.PopupMenu {
 
+	/// <summary>
+	/// Класс-шина контекстное меню
+	/// </summary>
 	public class PopupMenuBase : MonoBehaviour,
 									  MenuOnGUIListener,
 									  MenuUpdatetListener,
@@ -27,6 +30,10 @@ namespace Engine.EGUI.PopupMenu {
 		public virtual void onClick(MenuItem item) { } // делаем пустую реализацию клика
 		public virtual void onSelect(MenuItem item) { } // делаем пустую реализацию выделения
 
+		/// <summary>
+		/// Показывае, загружены ли стили GUI
+		/// </summary>
+		/// <returns></returns>
 		public bool isLoad() {
 			return load;
 		}
@@ -37,16 +44,30 @@ namespace Engine.EGUI.PopupMenu {
 				item.InitTextSize(true);
 		}
 
+		/// <summary>
+		/// Устанавливает события всем пунктам меню на виртуальные
+		/// </summary>
 		public void MenuStart() {
 			initEvents(this, this);
 		}
 		public void MenuUpdate(){ }
 
+		/// <summary>
+		/// Устанавливает события всем пунктам меню на указанные
+		/// </summary>
+		/// <param name="menuItemSelectListener"></param>
+		/// <param name="menuItemClickListener"></param>
 		public void initEvents(MenuItemSelectListener menuItemSelectListener, MenuItemClickListener menuItemClickListener){
 			foreach (MenuItem item in items)
 				item.InitEvents(menuItemSelectListener, menuItemClickListener);
 		}
 
+
+		/// <summary>
+		/// Находит пункт меню в popupMenu по идентификатору
+		/// </summary>
+		/// <param name="code">Идентификатор пункта меню</param>
+		/// <returns>Возвращает ссылку на класс пункта меню</returns>
 		public MenuItem findItem(int code){
 			foreach (MenuItem item in items)
 				if (item.getCode () == code)
@@ -54,6 +75,10 @@ namespace Engine.EGUI.PopupMenu {
 			return null;
 		}
 
+		/// <summary>
+		/// Устанавливает позицию высплывающего меню
+		/// </summary>
+		/// <param name="position"></param>
 		public void setPosition(Vector2 position){
 			this.position = position;
 		}
@@ -78,6 +103,10 @@ namespace Engine.EGUI.PopupMenu {
 			setVisible(true);
 		}
 		
+		/// <summary>
+		/// Возвращает вычисленную высоту графической части всплывающего меню
+		/// </summary>
+		/// <returns></returns>
 		public float getHeight() {
 			return height;
 		}

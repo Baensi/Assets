@@ -30,12 +30,12 @@ namespace Engine.EGUI.Inventory {
 	public class ItemResource {
 
 		public Files     files = new Files();
-		public Texture   icon;
+		public Texture2D icon;
 		public SortedDictionary<string,AudioClip> sounds;
 
 		public void ReCreate() {
 
-			icon = Resources.Load<Texture>(files.iconPath);
+			icon = Resources.Load<Texture2D>(files.iconPath);
 
 			if (sounds != null) {
 				sounds.Clear();
@@ -47,7 +47,7 @@ namespace Engine.EGUI.Inventory {
 
 		}
 
-		public ItemResource(Texture icon, List<SoundPack> sounds) {
+		public ItemResource(Texture2D icon, List<SoundPack> sounds) {
 			this.icon=icon;
 
 			this.sounds = new SortedDictionary<string, AudioClip>();

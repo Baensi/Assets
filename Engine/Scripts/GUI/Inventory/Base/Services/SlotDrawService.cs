@@ -15,9 +15,9 @@ namespace Engine.EGUI.Inventory {
 		private List<RectangleSlot> slots;
 		private Rect backgroundRect;
 		
-		public SlotDrawService(List<RectangleSlot> slots){
+		public SlotDrawService(List<RectangleSlot> slots, GUIStyle iconStyle){
 			this.slots=slots;
-			itemDrawService = new ItemDrawService();
+			itemDrawService = new ItemDrawService(iconStyle);
 		}
 
 		public ItemDrawService getItemDrawService() {
@@ -38,7 +38,9 @@ namespace Engine.EGUI.Inventory {
 											  slot.position.SlotWidth,
 											  slot.position.SlotHeight);
 
+
 					Rect rect = new Rect(backgroundRect.x + offsetX, backgroundRect.y + offsetY, backgroundRect.width, backgroundRect.height);
+					GUI.color = Color.white;
 					GUI.DrawTexture(rect, slot.background);
 
 					if (slot.Items != null && slot.Items.Count > 0)
@@ -58,6 +60,8 @@ namespace Engine.EGUI.Inventory {
 			cellRect.y = offsetY + (item.getPosition().Y-1) * CellSettings.cellHeight + CellSettings.cellPaddingY + slot.position.OffsetY;
 			cellRect.width  = CellSettings.cellWidth * item.item.getSize().getWidth();
 			cellRect.height = CellSettings.cellHeight * item.item.getSize().getHeight();
+
+			GUI.color = Color.white;
 			GUI.DrawTextureWithTexCoords(cellRect, image, textCoords);
 		}
 
@@ -67,6 +71,8 @@ namespace Engine.EGUI.Inventory {
 			cellRect.y = offsetY+(position.Y-1) * CellSettings.cellHeight + CellSettings.cellPaddingY + slot.position.OffsetY;
 			cellRect.width  = CellSettings.cellWidth * size.getWidth();
 			cellRect.height = CellSettings.cellHeight * size.getHeight();
+
+			GUI.color = Color.white;
 			GUI.DrawTextureWithTexCoords(cellRect, image, textCoords);
 		}
 		

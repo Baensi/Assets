@@ -10,6 +10,8 @@ namespace Engine.EGUI.Inventory {
 	
 	public class UInventory : MonoBehaviour, IInventory {
 
+		[SerializeField] public GUIStyle  iconStyle;
+
 		[SerializeField] public Texture2D selectCellImage;
 		[SerializeField] public Texture2D correctCellImage;
 		[SerializeField] public Texture2D errorCellImage;
@@ -43,7 +45,7 @@ namespace Engine.EGUI.Inventory {
 #if UNITY_EDITOR
 
 			// Вспомогательные переменные для отладки
-		private bool  degubMode = false;
+		private bool  debugMode = false;
 		/// <summary> Ширина фрейма отладочного окна </summary>
 		private float debugWindowWidth = 0f;
 		/// <summary> Высота фрейма отладочного окна </summary>
@@ -59,6 +61,12 @@ namespace Engine.EGUI.Inventory {
 		public void hide(){
 			visible=false;
 			GameConfig.GameMode = GameConfig.MODE_GAME;
+
+			if(toolTip.isVisible()) // ломаем и прятаем вспомогательные меню и подсказки
+				toolTip.hide();
+
+			if(popupMenu.isVisible())
+				popupMenu.hide();
 		}
 
 		public bool isVisible(){
@@ -113,11 +121,18 @@ namespace Engine.EGUI.Inventory {
 		/// <summary>
 		/// Метод отрисовки
 		/// </summary>
-		public void redraw(){
+		public void redraw() {
 
 #if UNITY_EDITOR
-			offsetX = (debugWindowWidth - width) * 0.5f;
-			offsetY = (debugWindowHeight - height) * 0.5f;
+
+			if (debugMode) { 
+				offsetX = (debugWindowWidth - width) * 0.5f;
+				offsetY = (debugWindowHeight - height) * 0.5f;
+			} else {
+				offsetX = (Screen.width - width) * 0.5f;
+				offsetY = (Screen.height - height) * 0.5f;
+			}
+
 #else
 			offsetX = (Screen.width - width) * 0.5f;
 			offsetY = (Screen.height - height) * 0.5f;
@@ -143,7 +158,7 @@ namespace Engine.EGUI.Inventory {
 			this.debugWindowWidth  = debugWindowWidth;
             this.debugWindowHeight = debugWindowHeight;
 
-			degubMode = true;
+			debugMode = true;
 
 			    if (algoritm==null)
 				    Start();
@@ -159,10 +174,16 @@ namespace Engine.EGUI.Inventory {
 
 			algoritm = new InventoryAlgoritm();
 			algoritm.setSlots(slots);
-			drawService = new SlotDrawService(slots);
+			drawService = new SlotDrawService(slots, iconStyle);
 
 				width  = algoritm.getInventoryWidth();
 				height = algoritm.getInventoryHeight();
+
+			popupMenu.SetupListeners(toolTip);
+
+#if UNITY_EDITOR
+				debugMode = false;
+#endif
 
 			if(visible)
 				redraw();
@@ -255,10 +276,11 @@ namespace Engine.EGUI.Inventory {
 
 #if UNITY_EDITOR
 
-			if (degubMode) { // работаем в окне отладчика
+			if (debugMode) { // работаем в окне отладчика
 
 				if (Event.current.isMouse) {
 					eventData.mouseEvent.RMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button == 1);
+					eventData.mouseEvent.RMouseUp = (Event.current.type == EventType.MouseUp && Event.current.button == 1);
                     eventData.mouseEvent.LMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button==0);
 					eventData.mouseEvent.LMouseUp   = (Event.current.type == EventType.MouseUp && Event.current.button==0);
 				} else {
@@ -270,6 +292,7 @@ namespace Engine.EGUI.Inventory {
 			} else { // в режиме редактора юнити, игра на демонстрации
 
 				eventData.mouseEvent.RMouseDown = Input.GetMouseButtonDown(1);
+				eventData.mouseEvent.RMouseUp = Input.GetMouseButtonUp(1);
 				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
 				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
 
@@ -280,6 +303,7 @@ namespace Engine.EGUI.Inventory {
 #else // игра запущена полноценно
 
 				eventData.mouseEvent.RMouseDown = Input.GetMouseButtonDown(1);
+				eventData.mouseEvent.RMouseUp = Input.GetMouseButtonUp(1);
 				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
 				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
 			
@@ -305,6 +329,15 @@ namespace Engine.EGUI.Inventory {
 			ReadMouseEvents(); // читаем события мыши
 
 			if (popupMenu.isVisible()) {
+				
+				if(eventData.isPopupShow && eventData.mouseEvent.RMouseUp)
+					eventData.isPopupShow = false;
+
+				if (!eventData.isPopupShow && eventData.mouseEvent.RMouseDown) {
+					toolTip.hide();
+					popupMenu.hide();
+				}
+
 				if (!eventData.mouseEvent.LMouseDown && !CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC)) {
 					return;
 				} else {
@@ -317,6 +350,7 @@ namespace Engine.EGUI.Inventory {
 
 					resetEventsSelections();
                 }
+
 			}
 
 			if (eventData.mouseEvent.LMouseUp && eventData.eventType == InventoryEvent.ItemMove) {
@@ -388,6 +422,7 @@ namespace Engine.EGUI.Inventory {
 				Vector2 pos = new Vector2(eventData.cursorPosition.x, eventData.cursorPosition.y+ popupMenu.getHeight());
                 toolTip.show(pos, ItemToolTipService.getInstance().createDescription(selectedItem.item), ItemToolTipService.getInstance().createInformationItems(selectedItem.item));
 
+				eventData.isPopupShow = true;
 			}
 
 			if (eventData.mouseEvent.LMouseDown && selectedItem!=null && eventData.selected==null && eventData.eventType == InventoryEvent.None) {

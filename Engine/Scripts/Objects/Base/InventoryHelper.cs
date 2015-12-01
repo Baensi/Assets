@@ -12,7 +12,7 @@ namespace Engine.Objects {
 			if (inventory!=null) {
 
 				if(inventory.addItem(item.Clone())!=0)
-                    Debug.LogWarning("Ошибка!");
+                    return false;
 
 				return true;
 

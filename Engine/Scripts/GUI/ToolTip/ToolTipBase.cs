@@ -131,6 +131,8 @@ namespace Engine.EGUI.ToolTip {
 			}
 
 			currentStyle.fontSize = (int)(style.fontSize * size);
+			if(currentStyle.fontSize==0)
+				currentStyle.fontSize=1;
 			currentStyle.normal.textColor = style.normal.textColor * size;
 
 			GUI.Box(bounds, title, currentStyle);
@@ -152,9 +154,12 @@ namespace Engine.EGUI.ToolTip {
 			Rect rectValue = new Rect(offsetX - 10 + bounds.width * 0.5f, offsetY, bounds.width * 0.5f, PropertyItem.SIZE);
 
 			currentItemValueStyle.fontSize = (int)(itemValueStyle.fontSize* size);
+			if(currentItemValueStyle.fontSize==0)
+				currentItemValueStyle.fontSize=1;
 			currentItemValueStyle.normal.textColor = item.getColorValue() * size;
 			currentItemTitleStyle.fontSize = (int)(itemTitleStyle.fontSize * size);
-
+			if(currentItemTitleStyle.fontSize==0)
+				currentItemTitleStyle.fontSize=1;
 			GUI.Box(rectTitle, item.getTextTitle()+":", currentItemTitleStyle);
 			GUI.Box(rectValue, item.getTextValue(), currentItemValueStyle);
 

@@ -2,18 +2,30 @@
 using Engine.Objects;
 using Engine.Objects.Types;
 using Engine.EGUI.PopupMenu;
+using Engine.EGUI.ToolTip;
 
 namespace Engine.EGUI.Inventory.PopupMenu {
 
 	public class InventoryUseItemListener : MenuItemClickListener {
 
+		private ToolTipBase toolTip;
+
+			public InventoryUseItemListener(ToolTipBase toolTip) {
+				this.toolTip=toolTip;
+			}
+
 		public void onClick(MenuItem menuItem) {
+
+			if(menuItem==null)
+				return;
+
 			InventoryPopupMenu menu = (InventoryPopupMenu)menuItem.getMenu();
 			Item item = menu.getSelectedItem();
 
 				UseItem(item);
 
 			menu.hide();
+			toolTip.hide();
 			menu.setSelectedItem(null);
 		}
 

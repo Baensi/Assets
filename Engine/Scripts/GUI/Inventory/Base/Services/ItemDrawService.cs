@@ -8,26 +8,12 @@ namespace Engine.EGUI.Inventory {
 	
 	public class ItemDrawService {
 		
-		private static GUIStyle labelStyle = null;
-		private static Color    labelColor = new Color(0.945f, 0.768f, 0.058f);
+		private GUIStyle labelStyle = null;
+		//private Color    labelColor = new Color(0.945f, 0.768f, 0.058f);
 
-			public ItemDrawService(){
-			
+			public ItemDrawService(GUIStyle labelStyle){
+				this.labelStyle=labelStyle;
 			}
-		
-		private static GUIStyle getLabelStyle() {
-
-			if (labelStyle==null) {
-				labelStyle = new GUIStyle(GUI.skin.label);
-				labelStyle.alignment = TextAnchor.MiddleRight;
-				labelStyle.normal.textColor = labelColor;
-				labelStyle.fontSize = 15;
-				labelStyle.fontStyle = FontStyle.Bold;
-			}
-
-			return labelStyle;
-
-		}
 		
 		/// <summary>
 		/// Отрисовка предмета в инвентаре
@@ -39,49 +25,31 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="drawIcon">при drawIcon=false, предмет рисуется без иконки</param>
 		public void DrawItem(ItemSlot item, float offsetX, float offsetY, bool fixWebPosition = true, bool drawIcon = true){
 			
-			if(fixWebPosition) {
-				
-				Rect cellRectangle = new Rect(offsetX+CellSettings.cellPaddingX+(item.position.X-1)*CellSettings.cellWidth,
-											  offsetY+CellSettings.cellPaddingY+(item.position.Y-1)*CellSettings.cellHeight,
-											  CellSettings.cellWidth,
-											  CellSettings.cellHeight);
+			Rect cellRectangle;
 
-				if (drawIcon)
-					GUI.DrawTexture(cellRectangle, item.item.resource.icon);
+			if (fixWebPosition) {
 
-				if(item.item.getCount()>1){
+				cellRectangle = new Rect(offsetX + CellSettings.cellPaddingX + (item.position.X - 1) * CellSettings.cellWidth,
+										 offsetY + CellSettings.cellPaddingY + (item.position.Y - 1) * CellSettings.cellHeight,
+										 CellSettings.cellWidth,
+										 CellSettings.cellHeight);
 
-					Rect labelRectangle = new Rect(cellRectangle.x+4,
-												   cellRectangle.y+cellRectangle.height*item.item.getSize().getHeight()-22.0f,
-												   cellRectangle.width*item.item.getSize().getWidth()-8,
-												   20.0f);
-
-					GUI.Label(labelRectangle, item.item.getCount().ToString()+CLang.getInstance().get(Dictionary.K_COUNT), getLabelStyle());
-
-				}
-				
 			} else {
-				
-				Rect cellRectangle = new Rect(offsetX,
-											  offsetY,
-											  CellSettings.cellWidth,
-											  CellSettings.cellHeight);
 
-				if (drawIcon)
-					GUI.DrawTexture(cellRectangle, item.item.resource.icon);
+				cellRectangle = new Rect(offsetX,
+										 offsetY,
+										 CellSettings.cellWidth,
+										 CellSettings.cellHeight);
 
-				if (item.item.getCount() > 1) {
-
-					Rect labelRectangle = new Rect(cellRectangle.x+4,
-												   cellRectangle.y+cellRectangle.height*item.item.getSize().getHeight()-22.0f,
-												   cellRectangle.width*item.item.getSize().getWidth()-8,
-												   20.0f);
-
-					GUI.Label(labelRectangle, item.item.getCount().ToString() + CLang.getInstance().get(Dictionary.K_COUNT), getLabelStyle());
-
-				}
-				
 			}
+
+			if (drawIcon)
+				labelStyle.normal.background = item.item.resource.icon;
+
+			string description = item.item.getCount()>1? item.item.getCount().ToString()+CLang.getInstance().get(Dictionary.K_COUNT) : "";
+
+			GUI.color = new Color(1f,1f,1f,1f);
+			GUI.Box(cellRectangle, description, labelStyle);
 			
 		}
 		

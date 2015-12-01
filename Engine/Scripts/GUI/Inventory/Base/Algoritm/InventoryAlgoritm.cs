@@ -149,7 +149,7 @@ namespace Engine.EGUI.Inventory {
 			foreach (RectangleSlot slot in slots) { // перебираем все сумки
 
 				foreach (ItemSlot i in slot.Items) { // пытаемс€ найти идентичные предметы и попробовать объединить их
-					if (i.Equals(item) && !i.item.isFullCount()) { // если предмет идентичен, и он не полностью укомплектован
+					if (i.item.Equals(item) && !i.item.isFullCount()) { // если предмет идентичен, и он не полностью укомплектован
 
 						if (item.getCount()!=0) // пока у нас есть остаток экземпл€ров, которые надо раскидать
 							item.setCount(i.item.incCount(item.getCount()));

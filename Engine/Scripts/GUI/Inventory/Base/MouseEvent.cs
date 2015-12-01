@@ -7,6 +7,7 @@ namespace Engine.EGUI.Inventory {
 	public class MouseEvent {
 
 		public bool RMouseDown = false;
+		public bool RMouseUp = false;
 		public bool LMouseDown = false;
 		public bool LMouseUp   = false;
 

@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
 using Engine.EGUI.PopupMenu;
+using Engine.EGUI.ToolTip;
 using Engine.Objects;
 
 namespace Engine.EGUI.Inventory.PopupMenu {
 
 	public class InventoryDropAllItemsListener : MenuItemClickListener {
+
+		private ToolTipBase toolTip;
+
+			public InventoryDropAllItemsListener(ToolTipBase toolTip) {
+				this.toolTip=toolTip;
+			}
 
 		public void onClick(MenuItem menuItem) {
 			InventoryPopupMenu menu = (InventoryPopupMenu)menuItem.getMenu();
@@ -13,6 +20,7 @@ namespace Engine.EGUI.Inventory.PopupMenu {
 				DropAllItem(item);
 
 			menu.hide();
+			toolTip.hide();
 			menu.setSelectedItem(null);
 		}
 

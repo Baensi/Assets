@@ -22,7 +22,7 @@ namespace Engine.Player.Movement {
 		[SerializeField] public CurveControlledBob headBob = new CurveControlledBob();
 		[SerializeField] public LerpControlledBob  jumpBob = new LerpControlledBob();
 
-		private Actions       actions;
+        private Actions      actions;
 		
 		private EMovementType movementType;       // тип текущего перемещения
 
@@ -71,7 +71,7 @@ namespace Engine.Player.Movement {
 		void Start(){
 			
 			actions = playerHands.GetComponent<Actions>();
-			
+
 			movementType = EMovementType.inground;
 			
 					// инициализируем контроллеры движения

@@ -118,6 +118,9 @@ namespace Engine.EGUI.PopupMenu {
 
 			style.normal.textColor = diffColor;
 			style.fontSize = (int)(textSize * size);
+			if(style.fontSize==0)
+				style.fontSize=1;
+
             return style;
         }
 
@@ -181,18 +184,6 @@ namespace Engine.EGUI.PopupMenu {
 
 			if (!visible && size==0 || !enabled || !isLoaded)
 				return;
-
-			if (visible) {
-				if (size < 1.0f)
-					size += menu.stepSize;
-				else
-					size = 1.0f;
-			} else {
-				if (size > 0.0f)
-					size -= menu.stepSize;
-				else
-					size = 0.0f;
-			}
 
 			Vector2 mouse = Event.current.mousePosition;
 
@@ -281,6 +272,18 @@ namespace Engine.EGUI.PopupMenu {
 
 			if (!visible || !enabled || !isLoaded)
 				return;
+
+			if (visible) {
+				if (size < 1.0f)
+					size += menu.stepSize;
+				else
+					size = 1.0f;
+			} else {
+				if (size > 0.0f)
+					size -= menu.stepSize;
+				else
+					size = 0.0f;
+			}
 
 			oldOffset.x = offsetX;
 			oldOffset.y = offsetY;
