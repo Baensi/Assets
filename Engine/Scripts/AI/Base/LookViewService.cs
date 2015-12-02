@@ -29,7 +29,7 @@ namespace Engine.AI {
 		/// <param name="gameObject">Объект который AI пытается увидеть</param>
 		/// <returns>Возвращает логический результат - виден объект gameObject или нет</returns>
 		public bool isSee(Vector3 point, GameObject gameObject, float maxDistance) {
-
+			
 			Vector3 heading   = gameObject.transform.position - point;
 			Vector3 direction = heading / heading.magnitude;
 

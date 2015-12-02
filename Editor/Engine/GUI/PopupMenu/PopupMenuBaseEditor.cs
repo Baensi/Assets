@@ -2,7 +2,7 @@
 using UnityEngine;
 using Engine.EGUI.PopupMenu;
 
-namespace EngineEditor.GUI.PopupMenu {
+namespace EngineEditor.EGUI.PopupMenu {
 	
 	[CustomEditor(typeof(PopupMenuBase),true)]
 	public class PopupMenuBaseEditor : Editor {
