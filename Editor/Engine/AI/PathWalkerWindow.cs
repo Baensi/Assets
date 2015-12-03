@@ -8,10 +8,14 @@ namespace EngineEditor.AI {
 
 	public class PathWalkerWindow : EditorWindow {
 
+		public const string id = "PathWalkerWindow";
+
 		private static float cursorSize = 0.5f;
 
 		private NavMeshAgent agent;
-		private PathWalker walker;
+
+		private PathWalker walker = null;
+		private SeeAI      see = null;
 
 		private NavMeshPath path = new NavMeshPath();
         private bool showTrace = true;
@@ -23,13 +27,16 @@ namespace EngineEditor.AI {
 			walker = agent.GetComponent<PathWalker>();
         }
 
-		void OnEnable() {
+		public void setSee(SeeAI see) {
+			this.see = see;
+		}
 
+		void OnEnable() {
+			Data.EditorFactory.getInstance().RegWindow(id, this);
 		}
 
 		void OnGUI() {
 			showTrace = EditorGUILayout.Toggle("Показывать траекторию", showTrace);
-			//this.Repaint();
 		}
 
 		void OnFocus() {
@@ -46,14 +53,34 @@ namespace EngineEditor.AI {
 
 		public void OnSceneGUI(SceneView sceneView) {
 
-			CheckMouse(sceneView);
+			if (walker != null) {
+				CheckMouse(sceneView);
 
-			if (showTrace)
-				DrawPath();
+				if (showTrace)
+					DrawPath();
 
-			DrawEndPoint();
+				DrawEndPoint();
+			}
+
+			if (see != null) {
+
+				DrawSeeAngles();
+
+			}
 
         }
+
+		private void DrawSeeAngles() {
+
+			Vector3 angleR = new Vector3(0f,see.seeAngle, 0f);
+			Vector3 angleL = new Vector3(0f,-see.seeAngle, 0f);
+
+			Vector3 position    = see.transform.position;
+			Vector3 positionEnd = see.transform.position + see.transform.forward*3f;
+
+			Handles.color = new Color(1f,0f,0f,0.5f);
+            Handles.DrawLine(position, positionEnd);
+		}
 
 		private void CheckMouse(SceneView sceneView) {
 

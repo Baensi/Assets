@@ -6,9 +6,10 @@ namespace Engine.AI {
 
 		[SerializeField] public float   minMove = 0.1f;
 		[SerializeField] public Vector3 point;
+
 		private NavMeshAgent agent;
 
-		private float timeStamp;
+		private float   timeStamp;
 		private Vector3 oldPoint;
 
 		public void setPoint(Vector3 point) {
