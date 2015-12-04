@@ -77,7 +77,7 @@ namespace EngineEditor.AI {
             Quaternion angleR = Quaternion.Euler(0, rotation.y- walker.seeAngle * 0.5f - 90f, 0);
 			Vector3 positionR = angleR * new Vector3(walker.seeDistance,0f,0f)+ walker.transform.forward;
 
-			switch (walker.state) {
+			switch (walker.State) {
 				case AgressionStateAI.Normal:
 					Handles.color = new Color(0.05f, 0.9f, 0f, 0.2f);
 				break;
@@ -98,7 +98,7 @@ namespace EngineEditor.AI {
 			if (!Event.current.control) {
 
 				if (showEndPointMove)
-					walker.setPoint(Handles.DoPositionHandle(walker.point, walker.transform.rotation));
+					walker.setPoint(Handles.DoPositionHandle(walker.getPoint(), walker.transform.rotation));
 				
 				return;
 			}
@@ -112,27 +112,30 @@ namespace EngineEditor.AI {
 		}
 
 		private void DrawEndPoint() {
-			Handles.color = new Color(0f, 1f, 0f);
-			Handles.DotCap(0, walker.point, Quaternion.Euler(0, 0, 0), 0.2f);
+
+			Vector3 point = walker.getPoint();
+
+            Handles.color = new Color(0f, 1f, 0f);
+			Handles.DotCap(0, point, Quaternion.Euler(0, 0, 0), 0.2f);
 
 			Quaternion startRot = Quaternion.Euler(90f,0,0);
 
 			Handles.color = new Color(1f, 0f, 0f);
-			Handles.DrawLine(walker.point, walker.point + (startRot * new Vector3(-cursorSize, 0, 0)));
-			Handles.DrawLine(walker.point, walker.point + (startRot * new Vector3(cursorSize, 0, 0)));
-			Handles.DrawLine(walker.point, walker.point + (startRot * new Vector3(0, cursorSize, 0)));
-			Handles.DrawLine(walker.point, walker.point + (startRot * new Vector3(0, -cursorSize, 0)));
+			Handles.DrawLine(point, point + (startRot * new Vector3(-cursorSize, 0, 0)));
+			Handles.DrawLine(point, point + (startRot * new Vector3(cursorSize, 0, 0)));
+			Handles.DrawLine(point, point + (startRot * new Vector3(0, cursorSize, 0)));
+			Handles.DrawLine(point, point + (startRot * new Vector3(0, -cursorSize, 0)));
 
 			if (Time.time - timeStamp >= 0.5f) {
 				timeStamp = Time.time;
-				NavMesh.CalculatePath(agent.transform.position, walker.point, NavMesh.AllAreas, path);
+				NavMesh.CalculatePath(agent.transform.position, point, NavMesh.AllAreas, path);
 			}
 
 		}
 
 		private void DrawPath() {
 			Vector3 startPosition = agent.transform.position;
-			Vector3 endPosition   = walker.point;
+			Vector3 endPosition   = walker.getPoint();
 
             foreach (Vector3 pos in path.corners) {
 

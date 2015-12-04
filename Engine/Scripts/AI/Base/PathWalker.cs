@@ -8,6 +8,14 @@ namespace Engine.AI {
 	[RequireComponent(typeof(NavMeshAgent))]
 	public class PathWalker : MonoBehaviour {
 
+		[SerializeField] public float normalSpeed  = 1f;
+		[SerializeField] public float warningSpeed = 2f;
+		[SerializeField] public float enemySpeed   = 0.8f;
+
+		[SerializeField] public float normalAngularSpeed  = 140f;
+		[SerializeField] public float warningAngularSpeed = 300f;
+		[SerializeField] public float enemyAngularSpeed   = 380f;
+
 		/// <summary>Объект, за которым наблюдает ходок</summary>
 		[SerializeField] public Transform target = null;
 
@@ -18,12 +26,48 @@ namespace Engine.AI {
 		[SerializeField] public float     seeAngle;
 
 		/// <summary>Точка, к которой стремится ходок</summary>
-		[SerializeField] public Vector3   point;
+		[SerializeField] private Vector3   point;
 
-		/// <summary>Статус ходока</summary>
-		[SerializeField] public AgressionStateAI state = AgressionStateAI.Normal;
+		private AgressionStateAI state = AgressionStateAI.Normal;
 
 		private NavMeshAgent agent;
+
+		/// <summary>Статус ходока</summary>
+		public AgressionStateAI State {
+			get { return state; }
+			set {
+
+				state = value;
+
+				switch (state) {
+					case AgressionStateAI.Normal:
+						agent.speed = normalSpeed;
+						agent.angularSpeed = normalAngularSpeed;
+						break;
+					case AgressionStateAI.Warning:
+						agent.speed = warningSpeed;
+						agent.angularSpeed = warningAngularSpeed;
+						break;
+					case AgressionStateAI.Enemy:
+						agent.speed = enemySpeed;
+						agent.angularSpeed = enemyAngularSpeed;
+						break;
+
+				}
+			}
+		}
+
+		public void setMoveSpeed(float speed) {
+			agent.speed = speed;
+		}
+
+		public void setAngularSpeed(float angularSpeed) {
+			agent.angularSpeed = angularSpeed;
+		}
+
+		public NavMeshAgent getAgent() {
+			return agent;
+		}
 
 		/// <summary>
 		/// Устанавливает точку, к которой ходоку надо идти
@@ -31,6 +75,10 @@ namespace Engine.AI {
 		/// <param name="point"></param>
 		public void setPoint(Vector3 point) {
 			this.point = point;
+		}
+
+		public Vector3 getPoint() {
+			return point;
 		}
 
 		/// <summary>

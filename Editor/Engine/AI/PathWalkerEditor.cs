@@ -6,7 +6,7 @@ using Engine.AI;
 
 namespace EngineEditor.AI {
 
-	[CustomEditor(typeof(PathWalker),true)]
+	[CustomEditor(typeof(RangedAI),true)]
 	public class PathWalkerEditor : Editor {
 
 		private PathWalkerWindow window;
