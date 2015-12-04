@@ -6,7 +6,7 @@ using Engine.AI;
 
 namespace EngineEditor.AI {
 
-	[CustomEditor(typeof(PathWalker))]
+	[CustomEditor(typeof(PathWalker),true)]
 	public class PathWalkerEditor : Editor {
 
 		private PathWalkerWindow window;
@@ -30,7 +30,6 @@ namespace EngineEditor.AI {
                 window.titleContent.text = "AI";
 			}
 		}
-
 		
 
 	}

@@ -15,10 +15,11 @@ namespace EngineEditor.AI {
 		private NavMeshAgent agent;
 
 		private PathWalker walker = null;
-		private SeeAI      see = null;
 
 		private NavMeshPath path = new NavMeshPath();
-        private bool showTrace = true;
+
+        private bool showTrace        = true;
+		private bool showEndPointMove = false;
 
 		private float timeStamp = 0;
 
@@ -27,17 +28,14 @@ namespace EngineEditor.AI {
 			walker = agent.GetComponent<PathWalker>();
         }
 
-		public void setSee(SeeAI see) {
-			this.see = see;
-		}
-
 		void OnEnable() {
 			Data.EditorFactory.getInstance().RegWindow(id, this);
 		}
 
 		void OnGUI() {
 			showTrace = EditorGUILayout.Toggle("Показывать траекторию", showTrace);
-		}
+			showEndPointMove = EditorGUILayout.Toggle("Перемещать конечную точку вручную", showEndPointMove);
+        }
 
 		void OnFocus() {
 			try { 
@@ -60,10 +58,6 @@ namespace EngineEditor.AI {
 					DrawPath();
 
 				DrawEndPoint();
-			}
-
-			if (see != null) {
-
 				DrawSeeAngles();
 
 			}
@@ -72,31 +66,48 @@ namespace EngineEditor.AI {
 
 		private void DrawSeeAngles() {
 
-			Vector3 angleR = new Vector3(0f,see.seeAngle, 0f);
-			Vector3 angleL = new Vector3(0f,-see.seeAngle, 0f);
-
-			Vector3 position    = see.transform.position;
-			Vector3 positionEnd = see.transform.position + see.transform.forward*3f;
+			Vector3 position    = walker.transform.position;
+			Vector3 positionEnd = walker.transform.position + walker.transform.forward*(walker.seeDistance*1.05f);
 
 			Handles.color = new Color(1f,0f,0f,0.5f);
             Handles.DrawLine(position, positionEnd);
+			Handles.ConeCap(0, positionEnd, walker.transform.rotation, 0.2f);
+
+			Vector3 rotation = walker.transform.rotation.eulerAngles;
+            Quaternion angleR = Quaternion.Euler(0, rotation.y- walker.seeAngle * 0.5f - 90f, 0);
+			Vector3 positionR = angleR * new Vector3(walker.seeDistance,0f,0f)+ walker.transform.forward;
+
+			switch (walker.state) {
+				case AgressionStateAI.Normal:
+					Handles.color = new Color(0.05f, 0.9f, 0f, 0.2f);
+				break;
+				case AgressionStateAI.Warning:
+					Handles.color = new Color(1f, 0.9f, 0f, 0.3f);
+					break;
+				case AgressionStateAI.Enemy:
+					Handles.color = new Color(1f, 0f, 0f, 0.4f);
+					break;
+			}
+
+			Handles.DrawSolidArc(position, walker.transform.up, positionR, walker.seeAngle, walker.seeDistance);
+
 		}
 
 		private void CheckMouse(SceneView sceneView) {
 
-			if (!Event.current.control)
+			if (!Event.current.control) {
+
+				if (showEndPointMove)
+					walker.setPoint(Handles.DoPositionHandle(walker.point, walker.transform.rotation));
+				
 				return;
-
-			Vector3 mousePosition = new Vector3(Event.current.mousePosition.x, sceneView.camera.pixelHeight - Event.current.mousePosition.y, 0);
-
+			}
+			
+			Vector3    mousePosition = new Vector3(Event.current.mousePosition.x, sceneView.camera.pixelHeight - Event.current.mousePosition.y, 0);
 			RaycastHit hitInfo = new RaycastHit();
 
-			if (Physics.Raycast(sceneView.camera.ScreenPointToRay(mousePosition), out hitInfo)) {
+			if (Physics.Raycast(sceneView.camera.ScreenPointToRay(mousePosition), out hitInfo))
 				walker.setPoint(hitInfo.point);
-				NavMesh.CalculatePath(agent.transform.position, walker.point, NavMesh.AllAreas, path);
-			}
-
-			DrawPath();
 
 		}
 
@@ -111,17 +122,17 @@ namespace EngineEditor.AI {
 			Handles.DrawLine(walker.point, walker.point + (startRot * new Vector3(cursorSize, 0, 0)));
 			Handles.DrawLine(walker.point, walker.point + (startRot * new Vector3(0, cursorSize, 0)));
 			Handles.DrawLine(walker.point, walker.point + (startRot * new Vector3(0, -cursorSize, 0)));
+
+			if (Time.time - timeStamp >= 0.5f) {
+				timeStamp = Time.time;
+				NavMesh.CalculatePath(agent.transform.position, walker.point, NavMesh.AllAreas, path);
+			}
+
 		}
 
 		private void DrawPath() {
 			Vector3 startPosition = agent.transform.position;
 			Vector3 endPosition   = walker.point;
-
-
-			if (Time.time-timeStamp >= 0.5f) {
-				timeStamp = Time.time;
-                NavMesh.CalculatePath(startPosition, endPosition, NavMesh.AllAreas, path);
-			}
 
             foreach (Vector3 pos in path.corners) {
 
