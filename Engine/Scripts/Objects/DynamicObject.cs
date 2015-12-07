@@ -53,6 +53,7 @@ namespace Engine.Objects {
 			}
 
 
+
 		public float getCostValue(){
 			return this.item.description.costValue;
 		}

@@ -19,6 +19,8 @@ namespace EngineEditor.Terrain {
 		public float brushSize      = 1.23f;
 		public int brushSensitivity = 3;
 
+		public bool positionCenter = true;
+
 		// Группы изменений для генерации
 		public bool generateRandomPosition = true;
 		public bool generateRandomRotation = true;
@@ -62,6 +64,8 @@ namespace EngineEditor.Terrain {
 
 				brushSize        = EditorGUILayout.Slider("Размер", brushSize, 0.05f, 10f);
 				brushSensitivity = EditorGUILayout.IntSlider("Число объектов", brushSensitivity, 1, 50);
+
+				positionCenter = EditorGUILayout.Toggle("Позиция в центре объекта",positionCenter);
 
 			EditorGUILayout.Separator();
 

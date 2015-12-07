@@ -88,10 +88,7 @@ namespace Engine.EGUI.PopupMenu {
 		/// </summary>
 		public void hide(){
 			setVisible(false);
-		}
-		
-		public void show(){
-			setVisible(true);
+			load=false;
 		}
 		
 		/// <summary>
@@ -152,11 +149,11 @@ namespace Engine.EGUI.PopupMenu {
 		/// </summary>
 		public void MenuOnGUI(){
 
-			if (!load && Input.GetMouseButtonUp(1))
-				load = true;
-
 			if (!visible)
 				return;
+
+			if (!load &&  Event.current.isMouse && Event.current.button==1 && Event.current.type == EventType.MouseUp)
+				load = true;
 
 			float y = 0;
 

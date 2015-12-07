@@ -274,42 +274,16 @@ namespace Engine.EGUI.Inventory {
 
 		private void ReadMouseEvents() {
 
-#if UNITY_EDITOR
-
-			if (debugMode) { // работаем в окне отладчика
-
-				if (Event.current.isMouse) {
-					eventData.mouseEvent.RMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button == 1);
-					eventData.mouseEvent.RMouseUp = (Event.current.type == EventType.MouseUp && Event.current.button == 1);
-                    eventData.mouseEvent.LMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button==0);
-					eventData.mouseEvent.LMouseUp   = (Event.current.type == EventType.MouseUp && Event.current.button==0);
-				} else {
-					eventData.isDivMode = Event.current.shift;
-				}
-
-				eventData.cursorPosition = Event.current.mousePosition;
-
-			} else { // в режиме редактора юнити, игра на демонстрации
-
-				eventData.mouseEvent.RMouseDown = Input.GetMouseButtonDown(1);
-				eventData.mouseEvent.RMouseUp = Input.GetMouseButtonUp(1);
-				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
-				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
-
-				eventData.cursorPosition = new Vector2(Input.mousePosition.x, Screen.height-Input.mousePosition.y);
-
+			if (Event.current.isMouse) {
+				eventData.mouseEvent.RMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button == 1);
+				eventData.mouseEvent.RMouseUp   = (Event.current.type == EventType.MouseUp && Event.current.button == 1);
+                eventData.mouseEvent.LMouseDown = (Event.current.type == EventType.MouseDown && Event.current.button==0);
+				eventData.mouseEvent.LMouseUp   = (Event.current.type == EventType.MouseUp && Event.current.button==0);
+			} else {
+				eventData.isDivMode = Event.current.shift;
 			}
 
-#else // игра запущена полноценно
-
-				eventData.mouseEvent.RMouseDown = Input.GetMouseButtonDown(1);
-				eventData.mouseEvent.RMouseUp = Input.GetMouseButtonUp(1);
-				eventData.mouseEvent.LMouseDown = Input.GetMouseButtonDown(0);
-				eventData.mouseEvent.LMouseUp   = Input.GetMouseButtonUp(0);
-			
-				eventData.cursorPosition = new Vector2(Input.mousePosition.x, Screen.height-Input.mousePosition.y);
-
-#endif
+			eventData.cursorPosition = Event.current.mousePosition;
 
 		}
 
@@ -328,7 +302,7 @@ namespace Engine.EGUI.Inventory {
 
 			ReadMouseEvents(); // читаем события мыши
 
-			if (popupMenu.isVisible()) {
+			if (popupMenu.isVisible() || toolTip.isVisible()) {
 				
 				if(eventData.isPopupShow && eventData.mouseEvent.RMouseUp)
 					eventData.isPopupShow = false;
@@ -338,9 +312,7 @@ namespace Engine.EGUI.Inventory {
 					popupMenu.hide();
 				}
 
-				if (!eventData.mouseEvent.LMouseDown && !CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC)) {
-					return;
-				} else {
+				if (eventData.mouseEvent.LMouseDown || CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC)) {
 
 					if (popupMenu.isFocused())
 						return;
@@ -349,7 +321,10 @@ namespace Engine.EGUI.Inventory {
 					popupMenu.hide();
 
 					resetEventsSelections();
-                }
+
+                } else {
+					return;
+				}
 
 			}
 
@@ -413,7 +388,7 @@ namespace Engine.EGUI.Inventory {
 				resetEventsSelections();
 			}
 
-			if(eventData.mouseEvent.RMouseDown && selectedItem != null) { // если пользователь вызвал контекстное меню какого то предмета
+			if(eventData.mouseEvent.RMouseDown && selectedItem != null && eventData.eventType==InventoryEvent.None) { // если пользователь вызвал контекстное меню какого то предмета
 
 				eventData.mouseEvent.RMouseDown = false;
                 PopupMenuService.getInatance().SetupPopupMenu(popupMenu, selectedItem.item); // устанавливаем пункты меню

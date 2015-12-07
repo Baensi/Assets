@@ -43,6 +43,10 @@ namespace EngineEditor.Data {
 			windows[name] = window;
 		}
 
+		public void UnReg(string name) {
+			windows.Remove(name);
+		}
+
 	}
 
 }

@@ -77,6 +77,9 @@ namespace Engine.EGUI.PopupMenu {
 			style = new GUIStyle(menu.data.labelStyle);
 			textSize = menu.data.labelStyle.fontSize;
 
+			selected = false;
+			selFlag  = false;
+
 			if (childs)
 				foreach (MenuItem item in this.childs)
 					item.InitTextSize(true);
@@ -137,7 +140,7 @@ namespace Engine.EGUI.PopupMenu {
 		public void setVisible(bool visible){
 			this.visible = visible;
 
-			if (!visible)
+			if (!visible) 
 				InitTextSize();
 
 			foreach (MenuItem item in childs)
@@ -190,7 +193,7 @@ namespace Engine.EGUI.PopupMenu {
 			if (mouse.x >= oldOffset.x && mouse.x <= oldOffset.x + menu.data.itemSize.x &&
 			   mouse.y >= oldOffset.y && mouse.y <= oldOffset.y + menu.data.itemSize.y) {
 
-				if (selected == false)
+				if (!selected)
 					OnMenuItemSelectListener();
 
 				if (Event.current.isMouse && Event.current.type == EventType.MouseDown && menu.isLoad())

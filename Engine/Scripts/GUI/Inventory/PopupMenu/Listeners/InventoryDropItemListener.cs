@@ -18,7 +18,7 @@ namespace Engine.EGUI.Inventory.PopupMenu {
 			Item item = menu.getSelectedItem();
 
 				DropItem(item);
-
+			
 			menu.hide();
 			toolTip.hide();
 			menu.setSelectedItem(null);

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Engine.AI;
+using EngineEditor.Data;
 
 namespace EngineEditor.AI {
 
 	[CustomEditor(typeof(RangedAI),true)]
 	public class PathWalkerEditor : Editor {
 
-		private PathWalkerWindow window;
+		private AIWindow window;
         private NavMeshAgent agent;
 
 		void OnEnable() {
@@ -18,16 +19,25 @@ namespace EngineEditor.AI {
             agent = walker.GetComponent<NavMeshAgent>();
         }
 
+		void OnDestroy() {
+			window.setAgent(null);
+        }
+
 		public override void OnInspectorGUI() {
 
 			base.OnInspectorGUI();
 
 			if (GUILayout.Button("Траектория")) {
-				if (window != null)
-					window.Close();
-				window = (PathWalkerWindow)EditorWindow.GetWindow(typeof(PathWalkerWindow));
+
+				window = (AIWindow)EditorFactory.getInstance().FindWindow(AIWindow.id);
+
+					if (window == null) {
+						window = (AIWindow)EditorWindow.GetWindow(typeof(AIWindow));
+						window.titleContent.text = "AI";
+					}
+
 				window.setAgent(agent);
-                window.titleContent.text = "AI";
+                
 			}
 		}
 		
