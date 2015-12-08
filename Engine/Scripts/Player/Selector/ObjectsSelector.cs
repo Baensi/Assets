@@ -33,20 +33,15 @@ namespace Engine.Player {
 		private GUIController guiController;
 		public AudioSource    audioSource;
 
-		void OnEnable() {
+			void OnEnable() {
 
-		}
+			}
 
 		void Start () {
 
 			playerCamera = SingletonNames.getMainCamera();
 			this.audioSource = gameObject.AddComponent<AudioSource>();
 
-				// центр экрана
-			cursorPosition = new Vector3(Screen.width/2.0f,
-			                             Screen.height/2.0f,
-			                             0.0f);
-			
 			doorController = new DoorPhysXController();
 
 			guiController = SingletonNames.getGUI().GetComponent<GUIController>();
@@ -54,6 +49,9 @@ namespace Engine.Player {
 		}
 
 		void Update () {
+
+			// центр экрана
+			cursorPosition = GameConfig.CenterScreen;
 
 			RaycastHit hitInfo = new RaycastHit();
 			ray = Camera.main.ScreenPointToRay(cursorPosition);
@@ -64,13 +62,11 @@ namespace Engine.Player {
 
 				MonoBehaviour obj = hitInfo.transform.GetComponent<MonoBehaviour>();
 
-				if (selected.prevousObject != null)
-					selected.prevousObject.setSelection(false);
-
-				if (selected.selectType == SelectedType.IsDynamic)
-					selected.prevousObject = selected.selectedObject;
-
 				var dynamic = obj as IDynamicObject;
+
+				if (selected.selectedObject != null && dynamic != null && selected.selectedObject != dynamic) {
+					selected.selectedObject.setSelection(false);
+				}
 
 				if (dynamic != null) { // объект типа IDynamicObject
 					selected.selectedObject = dynamic;
@@ -112,18 +108,16 @@ namespace Engine.Player {
 
 		public void ResetSelected() {
 			
-			if (selected.prevousObject != null)
-				selected.prevousObject.setSelection(false);
+			if (selected.selectedObject != null)
+				selected.selectedObject.setSelection(false);
 
 			selected.selectedLever=null;
 			selected.selectedDoor=null;
-			selected.selectedObject=null;
 			
-			if (selected.prevousObject != null && selected.selectType==SelectedType.IsDynamic)
-				selected.prevousObject.setSelection(false);
+			if (selected.selectedObject != null && selected.selectType==SelectedType.IsDynamic)
+				selected.selectedObject.setSelection(false);
 			
-			selected.prevousObject=null;
-
+			selected.selectedObject = null;
 			selected.selectType = SelectedType.None;
 		}
 

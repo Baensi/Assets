@@ -13,6 +13,12 @@ namespace Engine.AI.Behavior {
 		/// <returns></returns>
 		IAudioBehavior getAudioBehavior();
 
+		/// <summary>
+		/// Возвращает анимационные поведения
+		/// </summary>
+		/// <returns></returns>
+		IAnimationBehavior getAnimationBehavior();
+
 	}
 
 }

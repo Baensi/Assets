@@ -42,8 +42,6 @@ namespace EngineEditor.AI {
 				pathBehavior.setPatrol(new AIPatrol(new List<AIPath>()));
 
 			AIPatrolEditor.getInstance().OnInspectorGUI(patrol);
-			
-
 
 		}
 

@@ -192,7 +192,7 @@ namespace Engine.EGUI.Inventory {
 
 		void Update () {
 
-			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTAR))
+			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTORY))
 				if (!visible)
 					show();
 				else

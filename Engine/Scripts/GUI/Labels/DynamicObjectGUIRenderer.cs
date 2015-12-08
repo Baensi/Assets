@@ -29,13 +29,13 @@ namespace Engine.EGUI {
 
 			offsetY = Screen.height / 9f;
 
-			objectTitleRectangle = new Rect(Screen.width/2.0f - 120.0f,
-											Screen.height / 2.0f - 30.0f + offsetY,
+			objectTitleRectangle = new Rect(GameConfig.CenterScreen.x - 120.0f,
+											GameConfig.CenterScreen.y - 30.0f + offsetY,
 		                                    240.0f,
 		                                    75.0f);
 											
-			objectCaptionRectangle = new Rect(Screen.width/2.0f - 120.0f,
-											  Screen.height / 2.0f - 10.0f + offsetY,
+			objectCaptionRectangle = new Rect(GameConfig.CenterScreen.x - 120.0f,
+											  GameConfig.CenterScreen.y - 10.0f + offsetY,
 		                                      240.0f,
 		                                      60.0f);
 			

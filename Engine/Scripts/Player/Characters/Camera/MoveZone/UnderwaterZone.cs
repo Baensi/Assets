@@ -13,12 +13,6 @@ namespace Engine.Player.Movement {
 		private PlayerMovementController       playerController;
 		private CharacterController            characterController;
 
-		private EMovementType movementType;
-
-		//private BoxCollider water;
-
-		//private Vector3 impulse = Vector3.zero;
-
 		[SerializeField] public Color fogColor = new Color(0f,0.4f,0.7f,0.6f);
 		[SerializeField] public float fogDistance = 0.6f;
 
@@ -35,12 +29,13 @@ namespace Engine.Player.Movement {
 		}
 
 		void Start() {
-
-			//water               = GetComponent<BoxCollider>();
+			
 			playerController    = SingletonNames.getPlayer().GetComponent<PlayerMovementController>();
 			scriptBlur          = SingletonNames.getMainCamera().GetComponent<VignetteAndChromaticAberration>();
 			characterController = playerController.GetComponent<CharacterController>();
 			
+			gameObject.layer = SingletonNames.Layers.IGNORE_RAYCAST; // коллидер подводной зоны не должен мешать рейкасту
+
 			scriptBlur.enabled = false;
 			RenderSettings.fog = false;
 
@@ -74,9 +69,7 @@ namespace Engine.Player.Movement {
 		}
 
 		void OnTriggerStay(Collider other) {
-
-			//Rigidbody rigid = other.gameObject.GetComponent<Rigidbody>();
-
+			
 			Vector3 impulse;
 
 			if (getPlayerTopYPoint() > getWaterTopYPoint()) {
@@ -99,8 +92,6 @@ namespace Engine.Player.Movement {
 					setUnderwater();
 				playerController.getCurrentMovement().addImpulse(impulse);
 
-					
-
 			}
 
 		}
@@ -114,9 +105,7 @@ namespace Engine.Player.Movement {
 
 		void OnGUI() {
 
-			GUI.Label(new Rect(20f, 20f, 120f, 20f), "camera: " + getPlayerTopYPoint().ToString());
-			GUI.Label(new Rect(20f, 40f, 120f, 20f), "water: " + getWaterTopYPoint().ToString());
-
+			
 		}
 
 		private void setInground() {

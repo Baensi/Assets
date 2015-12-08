@@ -4,25 +4,20 @@ using UnityEngine;
 
 namespace Engine.AI.Behavior {
 
-	/// <summary>
-	/// Модель поведения AI
-	/// </summary>
-	public class SoldierBehaviorAI : IModelBehaviorAI {
+	
+	public class SoldierBehaviorAI : EnemyBehaviorAI {
 
-		private IAudioBehavior audioBehavior;
+		void Start() {
+			base.OnStart();
 
-			public SoldierBehaviorAI() {
-				audioBehavior = new AudioBehavior();
-            }
-
-		public IAudioBehavior getAudioBehavior() {
-			return audioBehavior;
 		}
 
+		void Update() {
+			base.OnUpdate();
 
+
+		}
 
 	}
-
-
 
 }

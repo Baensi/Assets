@@ -7,10 +7,7 @@ namespace Engine.EGUI.ToolTip {
 
 	public class ToolTipBase : MonoBehaviour {
 
-		private static string PANEL_NAME = "Panel";
-
 		private float width   = 205f;
-		private float height  = 190f;
 
 		[SerializeField] public GUIStyle style;
 		[SerializeField] public GUIStyle itemTitleStyle;

@@ -26,14 +26,14 @@ namespace Engine.Player.Movement.Movements {
 		private bool previouslyGrounded;
 
 		private Actions actions;
-		private MovementAudioData audioData;
+		//private MovementAudioData audioData;
 		private MouseLook mouseLook;
 		private Camera mainCameraObject;
 		private CurveControlledBob headBob;
 		private LerpControlledBob jumpBob;
 		private CharacterController characterController;
 		private AttackController attackController;
-		private AudioSource audioSource;
+		//private AudioSource audioSource;
 
 		private Vector2 input;
 
@@ -55,8 +55,8 @@ namespace Engine.Player.Movement.Movements {
 
 				this.mainCameraObject    = SingletonNames.getMainCamera();
 				this.playerObject        = SingletonNames.getPlayer();
-				this.audioSource         = playerObject.gameObject.AddComponent<AudioSource>();
-				this.audioData           = playerObject.GetComponent<MovementAudioData>();
+				//this.audioSource         = playerObject.gameObject.AddComponent<AudioSource>();
+				//this.audioData           = playerObject.GetComponent<MovementAudioData>();
 				this.characterController = playerObject.GetComponent<CharacterController>();
 
 				originalCameraPosition = mainCameraObject.transform.localPosition;

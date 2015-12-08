@@ -102,7 +102,6 @@ namespace EngineEditor.AI {
 				if (points != null && points.Count > 0) {
 
 					Vector3 startPosition = points[0].getData();
-					Vector3 endPosition = points[points.Count - 1].getData();
 
 					foreach (AIPoint pos in points) {
 
@@ -111,7 +110,8 @@ namespace EngineEditor.AI {
 						Handles.color = new Color(1f, 0.98f, 0f);
 						Handles.DotCap(0, pos.getData(), Quaternion.Euler(0, 0, 0), 0.2f);
 
-							pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0, 0, 0)));
+							if(patrolEditMode)
+								pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0, 0, 0)));
 
 						startPosition = pos.getData();
 
@@ -193,7 +193,6 @@ namespace EngineEditor.AI {
 
 		private void DrawPath() {
 			Vector3 startPosition = agent.transform.position;
-			Vector3 endPosition   = walker.getPoint();
 
             foreach (Vector3 pos in path.corners) {
 

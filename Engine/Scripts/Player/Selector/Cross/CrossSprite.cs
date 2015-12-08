@@ -8,35 +8,27 @@ namespace Engine.Player.Cross {
 		[SerializeField] public Texture2D crossImage;
 
 		private Rect     crossRectangle;
-		private int      resolutionWidth;
-		private int      resolutionHeight;
 
 		private float posX;
 		private float posY;
 
-		private void evalCenter(){
-			posX = (Screen.width  - crossImage.width)  * 0.5f;
-			posY = (Screen.height - crossImage.height) * 0.5f;
-			crossRectangle = new Rect(posX, posY, crossImage.width, crossImage.height);
-			resolutionWidth  = Screen.width;
-			resolutionHeight = Screen.height;
+			void Start () {
 
-		}
-
-		void Start () {
-			evalCenter();
-		}
+			}
 		
-		void OnGUI(){
-			
-			GUI.DrawTexture(crossRectangle, crossImage);
+		void OnGUI() {
+
+			GUI.DrawTexture(new Rect(posX, posY, crossImage.width, crossImage.height), crossImage);
 			
 		}
 		
 		void Update () {
 
-			if(Screen.width!=resolutionWidth || Screen.height!=resolutionHeight)
-				evalCenter();
+			GameConfig.setCenterScreen(Screen.width  * 0.5f,
+									   Screen.height * 0.5f);
+
+			posX = GameConfig.CenterScreen.x - crossImage.width  * 0.5f;
+			posY = GameConfig.CenterScreen.y - crossImage.height * 0.5f;
 
 		}
 

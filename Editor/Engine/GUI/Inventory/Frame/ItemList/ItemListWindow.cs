@@ -7,13 +7,11 @@ using Engine.Objects;
 namespace EngineEditor.EGUI.Inventory {
 	
 	public class ItemListWindow : EditorWindow {
-
-		private IItemSelectedListener listener;
+		
 		private List<ItemContainer>  items = new List<ItemContainer>();
 		private Vector2 scroll;
 
 		public void setListener(IItemSelectedListener listener) {
-			this.listener = listener;
 
 			foreach (Item item in DObjectList.getInstance().getItemList())
 				items.Add(new ItemContainer(item, listener));

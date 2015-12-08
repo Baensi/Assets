@@ -20,6 +20,18 @@ namespace Engine {
 		public static string Localization = "ru";
 		private static int   gameMode     = MODE_GAME;
 
+		private static Vector3 centerScreen = Vector3.zero;
+
+		public static Vector3 CenterScreen {
+			get { return centerScreen; }
+			private set { }
+		}
+
+		public static void setCenterScreen(float x, float y) {
+			centerScreen.x = x;
+			centerScreen.y = y;
+		}
+
 			/// <summary>Устанавливает текущий режим</summary>
 		public static int GameMode {
 

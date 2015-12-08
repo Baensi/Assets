@@ -35,14 +35,14 @@ namespace Engine.Player.Torch.Burn {
 		
 			if(burnList.Count>0){
 
-				IBurn burn = (IBurn)burnList[0];
+				IBurn burn = burnList[0];
 
 				if(burn.getEnergy()>0f && burnList.Count==1) return false;
 
 				burnList.Remove(burn);
 
 				if(burnList.Count>0){
-					burnRender.setBurn((IBurn)burnList[0]);
+					burnRender.setBurn(burnList[0]);
 					return true;
 				} else {
 					burnRender.setBurn(null);

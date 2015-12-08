@@ -19,6 +19,8 @@ namespace Engine.Skills {
 			foods      = new List<ICookedType>(); // инициализируем коллекции
 			removeList = new List<ICookedType>(); // инициализируем коллекции
 
+			gameObject.layer = SingletonNames.Layers.IGNORE_RAYCAST; // коллидер зоны готовки не должен мешать рейкасту
+
 		}
 
 		/// <summary>

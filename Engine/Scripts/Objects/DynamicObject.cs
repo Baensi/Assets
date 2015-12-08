@@ -52,8 +52,6 @@ namespace Engine.Objects {
 					Destroy(true);
 			}
 
-
-
 		public float getCostValue(){
 			return this.item.description.costValue;
 		}

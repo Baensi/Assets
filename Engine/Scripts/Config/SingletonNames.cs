@@ -24,7 +24,7 @@ namespace Engine {
 
 				public const string INVENTORY = "PlayerGUI/Inventory";
 				
-				public const string UI = "PlayerUI";
+				public const string UI        = "PlayerUI";
 
 			}
 
@@ -54,6 +54,20 @@ namespace Engine {
 
 		}
 
+		public static class Layers {
+
+						  //|    Название   |Сдвиг|Индекс|Смещение|
+						  //|      слоя     |  2  | слоя | индекса|
+			public const int DEFAULT        =       0x00;
+			public const int TRANSPARENT_FX =       0x01;
+			public const int IGNORE_RAYCAST = 2 << (0x02 - 1);
+			public const int WATER          = 2 << (0x03 - 1);
+			public const int UI             = 2 << (0x04 - 1);
+			
+			public const int PLAYER         = 2 << (0x09 - 1);
+
+		}
+
 		public static class Input {
 
 			public const string ESC          = "Cancel";
@@ -65,7 +79,7 @@ namespace Engine {
 			public const string SITDOWN      = "Sitdown";
 			public const string JUMP         = "Jump";
 			
-			public const string INVENTAR     = "Inventar";
+			public const string INVENTORY    = "Inventory";
 			
 			public const string NEXTPAGE     = "NextPage";
 			public const string BACKPAGE     = "BackPage";

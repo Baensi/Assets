@@ -20,6 +20,11 @@ namespace EngineEditor.AI {
 
 		public void OnInspectorGUI(AIPatrol patrol) {
 
+			List<AIPath> paths = patrol.getPaths();
+
+			if (paths == null || paths.Count == 0)
+				return;
+
 			foreach (AIPath path in patrol.getPaths()) {
 				if (!path.markDeleted)
 					AIPathEditor.getInstance().OnInspectorGUI(patrol, path);
