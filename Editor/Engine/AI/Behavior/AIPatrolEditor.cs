@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Engine.AI.Behavior;
+using EngineEditor.Data;
 
 namespace EngineEditor.AI {
 
@@ -19,18 +20,20 @@ namespace EngineEditor.AI {
         }
 
 		public void OnInspectorGUI(AIPatrol patrol) {
+			
+			if (patrol == null)
+				return;
 
 			List<AIPath> paths = patrol.getPaths();
 
-			if (paths == null || paths.Count == 0)
-				return;
+			if (paths == null) {
+				paths = new List<AIPath>();
+                patrol.setPaths(paths);
+			}
 
-			foreach (AIPath path in patrol.getPaths()) {
-				if (!path.markDeleted)
-					AIPathEditor.getInstance().OnInspectorGUI(patrol, path);
-				else
-					trashcan.Add(path);
-            }
+			DrawPaths(ref paths, patrol);
+
+			GUILayout.Label("Всего "+paths.Count.ToString() + " путей", EditorStyles.boldLabel);
 
 			EditorGUILayout.Separator();
 
@@ -40,14 +43,23 @@ namespace EngineEditor.AI {
 					patrol.getPaths().Add(new AIPath(new List<AIPoint>()));
 
 			EditorGUILayout.EndHorizontal();
-			
+
+		}
+
+		private void DrawPaths(ref List<AIPath> paths, AIPatrol patrol) {
+			if (paths.Count > 0)
+				foreach (AIPath path in paths) {
+					if (!path.markDeleted)
+						AIPathEditor.getInstance().OnInspectorGUI(patrol, path);
+					else
+						trashcan.Add(path);
+				}
 
 			if (trashcan.Count > 0) {
 				foreach (AIPath path in trashcan)
-					patrol.getPaths().Remove(path);
+					paths.Remove(path);
 				trashcan.Clear();
 			}
-
 		}
 
 	}

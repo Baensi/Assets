@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Engine.AI;
 using Engine.AI.Behavior;
+using EngineEditor.EUtils;
 
 namespace EngineEditor.AI {
 
@@ -26,13 +27,19 @@ namespace EngineEditor.AI {
 
 		private float timeStamp = 0;
 
+		private SceneView oldSceneView;
+
 		public void setPatrol(AIPatrol patrol) {
 			this.patrol = patrol;
         }
 
 		public void setAgent(NavMeshAgent agent) {
 			this.agent = agent;
-			walker = agent.GetComponent<PathWalker>();
+
+			if (agent != null)
+				walker = agent.GetComponent<PathWalker>();
+			else
+				walker = null;
         }
 
 		void OnEnable() {
@@ -55,10 +62,11 @@ namespace EngineEditor.AI {
 				GUILayout.Label("Патрулирование:", EditorStyles.boldLabel);
 				patrolEditMode = EditorGUILayout.Toggle("Редактировать все точки",patrolEditMode);
 				EditorGUILayout.Separator();
-
 				
+            }
 
-			}
+			if (oldSceneView != null)
+				oldSceneView.Repaint();
 
 		}
 
@@ -76,8 +84,9 @@ namespace EngineEditor.AI {
 		}
 
 		public void OnSceneGUI(SceneView sceneView) {
+			oldSceneView = sceneView;
 
-			if (walker != null) {
+            if (walker != null) {
 				CheckMouse(sceneView);
 
 				if (showTrace)
@@ -107,11 +116,24 @@ namespace EngineEditor.AI {
 
 						Handles.color = path.color;
 						Handles.DrawLine(startPosition, pos.getData());
-						Handles.color = new Color(1f, 0.98f, 0f);
-						Handles.DotCap(0, pos.getData(), Quaternion.Euler(0, 0, 0), 0.2f);
 
-							if(patrolEditMode)
-								pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0, 0, 0)));
+						Handles.color = new Color(1f, 0.98f, 0f);
+
+						if (patrolEditMode) {
+							pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0,0,0)));
+						} else {
+							DragHandleResult dhResult;
+							float size = Vector3.Distance(SceneView.currentDrawingSceneView.camera.transform.position, pos.getData()) * 0.07f;
+							Vector3 newPosition = UHandles.DragHandle(pos.getData(), size, Handles.CubeCap, Color.red, out dhResult);
+
+							switch (dhResult) {
+								case DragHandleResult.LeftMouseButtonDrag:
+									pos.setData(newPosition);
+									Handles.color = new Color(1f, 0, 0);
+									Handles.Label(newPosition, newPosition.ToString());
+									break;
+							}
+						}
 
 						startPosition = pos.getData();
 

@@ -26,8 +26,11 @@ namespace Engine.AI.Behavior {
             }
 
 		private AudioClip getCollectionItem(ref int oldIndex, ref List<AudioClip> collection) {
-			if (collection == null)
+			if (collection == null || collection.Count==0)
 				return null;
+
+			if (collection.Count==1)
+				return collection[0];
 
 			int index = -1;
 

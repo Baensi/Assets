@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
+using Engine.AI.Behavior;
 
 namespace Engine.AI {
 
 	/// <summary>
 	/// Объект-"Ходок", перемещается по карте
 	/// </summary>
+	[RequireComponent(typeof(Animator))]
 	[RequireComponent(typeof(NavMeshAgent))]
-	public class PathWalker : MonoBehaviour {
+	public class PathWalker : EnemyBehaviorAI {
 
 		[SerializeField] public float normalSpeed  = 1f;
 		[SerializeField] public float warningSpeed = 2f;
@@ -31,6 +33,7 @@ namespace Engine.AI {
 		private AgressionStateAI state = AgressionStateAI.Normal;
 
 		private NavMeshAgent agent;
+		private Animator animator;
 
 		/// <summary>Статус ходока</summary>
 		public AgressionStateAI State {
@@ -89,12 +92,16 @@ namespace Engine.AI {
 			return target == null ? Vector3.Distance(transform.position, point) : Vector3.Distance(transform.position, target.position);
 		}
 
-			public void WalkerStart() {
-				agent = gameObject.GetComponent<NavMeshAgent>();
-			}
+		public void OnStart() {
+			agent = gameObject.GetComponent<NavMeshAgent>();
+			animator = GetComponent<Animator>();
+			base.OnStart(animator);
+		}
 
 
-		public void WalkerUpdate() {
+		public new void OnUpdate() {
+			base.OnUpdate();
+
 			agent.SetDestination(point);
 
 			if (target == null)

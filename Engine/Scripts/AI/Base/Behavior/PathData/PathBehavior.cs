@@ -12,8 +12,6 @@ namespace Engine.AI.Behavior {
 		/// <summary> Набор патрулей </summary>
 		private AIPatrol patrol;
 
-			void Start() { }
-
 		/// <summary>
 		/// Возвращает все возможные патрули
 		/// </summary>

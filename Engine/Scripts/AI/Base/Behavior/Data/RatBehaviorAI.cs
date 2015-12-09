@@ -4,11 +4,14 @@ using UnityEngine;
 
 namespace Engine.AI.Behavior {
 
-	
-	public class SoldierBehaviorAI : EnemyBehaviorAI {
+	/// <summary>
+	/// ИИ боевой крысы
+	/// </summary>
+	public class RatBehaviorAI : NearAI {
 
 		void Start() {
 			base.OnStart();
+
 
 		}
 
