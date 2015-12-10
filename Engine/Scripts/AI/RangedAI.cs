@@ -4,13 +4,12 @@ using UnityEngine;
 namespace Engine.AI {
 	public class RangedAI : PathWalker {
 		
-
 			void Start() {
-				base.WalkerStart();
+				base.OnStart();
 			}
 
 		void Update() {
-			base.WalkerUpdate();
+			base.OnUpdate();
 		}
 
 	}

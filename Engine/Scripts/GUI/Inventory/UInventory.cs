@@ -22,6 +22,9 @@ namespace Engine.EGUI.Inventory {
 		[SerializeField] public InventoryPopupMenu popupMenu;
 		[SerializeField] public ToolTipBase toolTip;
 
+		[SerializeField] public float movXPos = 0f; // смещение положения
+		[SerializeField] public float movYPos = 0f;
+
 		/// <summary> Положение по x окна инвентаря </summary>
 		private float     offsetX;
 		/// <summary> Положение по y окна инвентаря </summary>
@@ -126,16 +129,16 @@ namespace Engine.EGUI.Inventory {
 #if UNITY_EDITOR
 
 			if (debugMode) { 
-				offsetX = (debugWindowWidth - width) * 0.5f;
-				offsetY = (debugWindowHeight - height) * 0.5f;
+				offsetX = (debugWindowWidth - width) * 0.5f + movXPos;
+				offsetY = (debugWindowHeight - height) * 0.5f + movYPos;
 			} else {
-				offsetX = (Screen.width - width) * 0.5f;
-				offsetY = (Screen.height - height) * 0.5f;
+				offsetX = (Screen.width - width) * 0.5f + movXPos;
+				offsetY = (Screen.height - height) * 0.5f + movYPos;
 			}
 
 #else
-			offsetX = (Screen.width - width) * 0.5f;
-			offsetY = (Screen.height - height) * 0.5f;
+			offsetX = (Screen.width - width) * 0.5f + movXPos;
+			offsetY = (Screen.height - height) * 0.5f + movYPos;
 #endif
 
 			drawService.DrawSlots(offsetX, offsetY);

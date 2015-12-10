@@ -10,6 +10,9 @@ namespace Engine.AI {
 	[RequireComponent(typeof(NavMeshAgent))]
 	public class PathWalker : EnemyBehaviorAI {
 
+		/// <summary> дистанция на которую NPC может покинуть текущую точку </summary>
+		[SerializeField] public float maxOutDistance = 45f;
+
 		[SerializeField] public float normalSpeed  = 1f;
 		[SerializeField] public float warningSpeed = 2f;
 		[SerializeField] public float enemySpeed   = 0.8f;
