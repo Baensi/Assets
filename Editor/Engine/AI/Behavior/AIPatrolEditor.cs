@@ -19,10 +19,10 @@ namespace EngineEditor.AI {
 			return instance;
         }
 
-		public void OnInspectorGUI(AIPatrol patrol) {
+		public bool OnInspectorGUI(AIPatrol patrol) {
 			
 			if (patrol == null)
-				return;
+				return true;
 
 			List<AIPath> paths = patrol.getPaths();
 
@@ -31,28 +31,32 @@ namespace EngineEditor.AI {
                 patrol.setPaths(paths);
 			}
 
-			DrawPaths(ref paths, patrol);
+			if (DrawPaths(ref paths, patrol)) {
 
-			GUILayout.Label("Всего "+paths.Count.ToString() + " путей", EditorStyles.boldLabel);
+				GUILayout.Label("Всего " + paths.Count.ToString() + " путей", EditorStyles.boldLabel);
 
-			EditorGUILayout.Separator();
+				EditorGUILayout.Separator();
 
-			EditorGUILayout.BeginHorizontal();
+				EditorGUILayout.BeginHorizontal();
 
 				if (GUILayout.Button("Добавить путь"))
 					patrol.getPaths().Add(new AIPath(new List<AIPoint>()));
 
-			EditorGUILayout.EndHorizontal();
+				EditorGUILayout.EndHorizontal();
 
-		}
+			}
 
-		private void DrawPaths(ref List<AIPath> paths, AIPatrol patrol) {
+			return true;
+        }
+
+		private bool DrawPaths(ref List<AIPath> paths, AIPatrol patrol) {
 			if (paths.Count > 0)
 				foreach (AIPath path in paths) {
 					if (!path.markDeleted)
-						AIPathEditor.getInstance().OnInspectorGUI(patrol, path);
-					else
-						trashcan.Add(path);
+						if (!AIPathEditor.getInstance().OnInspectorGUI(patrol, path))
+							return false;
+						else
+							trashcan.Add(path);
 				}
 
 			if (trashcan.Count > 0) {
@@ -60,6 +64,8 @@ namespace EngineEditor.AI {
 					paths.Remove(path);
 				trashcan.Clear();
 			}
+
+			return true;
 		}
 
 	}

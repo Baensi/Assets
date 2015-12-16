@@ -26,14 +26,14 @@ namespace Engine.AI.Behavior {
 			return states;
 		}
 
-			void Start() {
-				base.OnStart();
+		void Start() {
+			OnStart();
 
 
-			} 
+		} 
 
 		void Update() {
-			base.OnUpdate();
+			OnUpdate();
 
 
 		}

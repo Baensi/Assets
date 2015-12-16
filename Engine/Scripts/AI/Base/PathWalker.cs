@@ -13,6 +13,15 @@ namespace Engine.AI {
 		/// <summary> дистанция на которую NPC может покинуть текущую точку </summary>
 		[SerializeField] public float maxOutDistance = 45f;
 
+		/// <summary> Дальность атаки </summary>
+		[SerializeField] public float minAttackDistance = 2f;
+
+		/// <summary> дистанция до конечной точки которой можно принебречь (считать что AI достиг цели) </summary>
+		[SerializeField] public float minMovDistance = 0.2f;
+
+		/// <summary> Время которое игрока не должны видеть чтобы уйти от погони </summary>
+		[SerializeField] public float enemyMemory = 10f;
+
 		[SerializeField] public float normalSpeed  = 1f;
 		[SerializeField] public float warningSpeed = 2f;
 		[SerializeField] public float enemySpeed   = 0.8f;
@@ -34,6 +43,10 @@ namespace Engine.AI {
 		[SerializeField] private Vector3   point;
 
 		private AgressionStateAI state = AgressionStateAI.Normal;
+
+		private Transform player;
+		private float timeStamp;
+
 
 		private NavMeshAgent agent;
 		private Animator animator;
@@ -95,22 +108,75 @@ namespace Engine.AI {
 			return target == null ? Vector3.Distance(transform.position, point) : Vector3.Distance(transform.position, target.position);
 		}
 
-		public void OnStart() {
+		public void OnStartWalker() {
+
 			agent = gameObject.GetComponent<NavMeshAgent>();
 			animator = GetComponent<Animator>();
-			base.OnStart(animator);
-		}
+			base.OnStartEnemyBehaviorAI(animator);
+
+			player = SingletonNames.getPlayer().transform;
+			State = AgressionStateAI.Normal;
+			
+        }
 
 
-		public new void OnUpdate() {
-			base.OnUpdate();
+		public void OnUpdateWalker() {
+			base.OnUpdateEnemyBehaviorAI();
 
-			agent.SetDestination(point);
+			float distanceToPoint = Vector3.Distance(transform.position, point);
 
-			if (target == null)
-				return;
+			if (distanceToPoint <= minMovDistance || (distanceToPoint <= minAttackDistance && target!=null)) {
 
-			transform.LookAt(target);
+				switch (State) {
+					case AgressionStateAI.Normal:
+						getAnimationBehavior().setIdle();
+						break;
+					case AgressionStateAI.Enemy:
+						getAnimationBehavior().setAttack();
+						break;
+				}
+
+				Debug.LogWarning("STAND");
+
+			} else {
+
+				agent.SetDestination(point);
+
+				switch (State) {
+					case AgressionStateAI.Enemy:
+						getAnimationBehavior().setRun();
+						break;
+					case AgressionStateAI.Normal:
+						getAnimationBehavior().setWalk();
+						break;
+					case AgressionStateAI.Warning:
+						getAnimationBehavior().setSneak();
+						break;
+				}
+
+            }
+
+			if (Vector3.Distance(player.position, transform.position) <= seeDistance) {
+
+				if(LookViewService.getInstance().isSee(transform.position, player.gameObject, seeDistance)) {
+					State = AgressionStateAI.Enemy;
+					target = player;
+					timeStamp = Time.time;
+                }
+
+			} else {
+
+				if (Time.time - timeStamp >= enemyMemory) {
+
+					State = AgressionStateAI.Normal;
+					target = null;
+
+				}
+
+			}
+
+			if (target != null)
+				transform.LookAt(target);
 		}
 
 	}

@@ -25,13 +25,15 @@ namespace Engine.AI.Behavior {
 		/// <returns></returns>
 		public virtual PlayerStates         getStates() { return null; }
 
-			public void OnStart(Animator animator) {
+			public void OnStartEnemyBehaviorAI(Animator animator) {
 				pathBehavior = GetComponent<PathBehavior>();
 				audioBehavior = new AudioBehavior();
 				animationBehavior = new AnimationBehavior(animator);
 			}
 
-			public void OnUpdate() {
+			public void OnUpdateEnemyBehaviorAI() {
+
+
 
 			}
 

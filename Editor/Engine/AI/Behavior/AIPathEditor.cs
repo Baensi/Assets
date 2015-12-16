@@ -15,7 +15,7 @@ namespace EngineEditor.AI {
 			return instance;
         }
 
-		public void OnInspectorGUI(AIPatrol patrol, AIPath path) {
+		public bool OnInspectorGUI(AIPatrol patrol, AIPath path) {
 
 			path.color = EditorGUILayout.ColorField("Цвет:", path.color);
 
@@ -33,6 +33,8 @@ namespace EngineEditor.AI {
 			if (GUILayout.Button("Удалить путь"))
 				if (EditorUtility.DisplayDialog("Удаление пути", "Вы действительно хотите удалить путь?", "Да", "Нет"))
 					path.markDeleted = true;
+
+			return true;
 
 		}
 
