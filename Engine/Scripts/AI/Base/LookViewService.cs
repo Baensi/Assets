@@ -17,7 +17,7 @@ namespace Engine.AI {
 
 			public LookViewService() {
 
-			}
+		}
 
 
 
@@ -27,8 +27,10 @@ namespace Engine.AI {
 		/// </summary>
 		/// <param name="point">точка откуда направлен взгляд AI</param>
 		/// <param name="gameObject">Объект который AI пытается увидеть</param>
-		/// <returns>Возвращает логический результат - виден объект gameObject или нет</returns>
-		public bool isSee(Vector3 point, GameObject gameObject, float maxDistance) {
+		/// <param name="maxAngle">Угол зрения</param>
+		/// <param name="maxDistance">Дальность зрения</param>
+		/// <returns>Возвращает логический результат - ВИДЕН ЛИ объект gameObject? из указанной точки point или нет</returns>
+		public bool isSee(Vector3 point, GameObject gameObject, float maxAngle, float maxDistance) {
 			
 			Vector3 heading   = gameObject.transform.position - point;
 			Vector3 direction = heading / heading.magnitude;

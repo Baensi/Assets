@@ -120,54 +120,100 @@ namespace Engine.AI {
         }
 
 
+		public override void OnMoveIteration() {
+
+			switch (State) {
+				case AgressionStateAI.Enemy:
+
+						if(target!=null)
+							agent.SetDestination(target.position);
+
+					getAnimationBehavior().setRun();
+					break;
+				case AgressionStateAI.Normal:
+
+						agent.SetDestination(point);
+
+					getAnimationBehavior().setWalk();
+					break;
+				case AgressionStateAI.Warning:
+
+						agent.SetDestination(point);
+
+					getAnimationBehavior().setSneak();
+					break;
+			}
+
+		}
+
+		public override void OnIdleIteration() {
+
+			if(State == AgressionStateAI.Normal)
+				getAnimationBehavior().setIdle();
+
+		}
+
+		public override void OnAttackIteration() {
+
+			if (State == AgressionStateAI.Enemy)
+				getAnimationBehavior().setAttack();
+
+        }
+
+		public override bool isMinIdleDistance(Vector3 point1, Vector3 point2, float minMovDistance) {
+			return Vector3.Distance(point1,point2) <= minMovDistance;
+        }
+
+		public override bool isMinAttackDistance(Transform point1, Transform point2, float minAttackDistance, Transform target) {
+			if (point1 == null || point2 == null)
+				return false;
+			return Vector3.Distance(point1.position,point2.position) <= minAttackDistance && target != null;
+        }
+
+		public override bool isSeeDistanceGameObject(Transform targetObject, Transform seeObject) {
+			return Vector3.Distance(targetObject.position, seeObject.position) <= seeDistance;
+		}
+
+		public override bool isSeeGameObject(Transform targetObject, Transform seeObject, float seeAngle, float seeDistance) {
+			return LookViewService.getInstance().isSee(seeObject.position, targetObject.gameObject, seeAngle, seeDistance);
+        }
+
 		public void OnUpdateWalker() {
 			base.OnUpdateEnemyBehaviorAI();
 
-			float distanceToPoint = Vector3.Distance(transform.position, point);
+			bool moveFlag = true;
 
-			if (distanceToPoint <= minMovDistance || (distanceToPoint <= minAttackDistance && target!=null)) {
+			if (isMinIdleDistance(transform.position, point, minMovDistance)) {
+				OnIdleIteration();
+				moveFlag = false;
+			}
 
-				switch (State) {
-					case AgressionStateAI.Normal:
-						getAnimationBehavior().setIdle();
-						break;
-					case AgressionStateAI.Enemy:
-						getAnimationBehavior().setAttack();
-						break;
-				}
+			if(isMinAttackDistance(transform, target, minAttackDistance, target)) {
+				OnAttackIteration();
+				moveFlag = false;
+			}
 
-				Debug.LogWarning("STAND");
+			if(moveFlag)
+				OnMoveIteration();
 
-			} else {
+			if (isSeeDistanceGameObject(player,transform)) {
 
-				agent.SetDestination(point);
+				if(isSeeGameObject(player,transform,seeAngle,seeDistance)) {
 
-				switch (State) {
-					case AgressionStateAI.Enemy:
-						getAnimationBehavior().setRun();
-						break;
-					case AgressionStateAI.Normal:
-						getAnimationBehavior().setWalk();
-						break;
-					case AgressionStateAI.Warning:
-						getAnimationBehavior().setSneak();
-						break;
-				}
-
-            }
-
-			if (Vector3.Distance(player.position, transform.position) <= seeDistance) {
-
-				if(LookViewService.getInstance().isSee(transform.position, player.gameObject, seeDistance)) {
 					State = AgressionStateAI.Enemy;
 					target = player;
 					timeStamp = Time.time;
+
                 }
+
+				if (target != null)
+					transform.LookAt(target);
 
 			} else {
 
-				if (Time.time - timeStamp >= enemyMemory) {
-
+				if (Time.time - timeStamp >= enemyMemory) { // смотрим, как долго персонаж пропадает из вида
+														    // если время больше "памяти" AI, забываем цель
+				
 					State = AgressionStateAI.Normal;
 					target = null;
 
@@ -175,8 +221,6 @@ namespace Engine.AI {
 
 			}
 
-			if (target != null)
-				transform.LookAt(target);
 		}
 
 	}

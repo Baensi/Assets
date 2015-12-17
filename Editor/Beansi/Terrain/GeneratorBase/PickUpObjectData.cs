@@ -1,30 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Engine;
 
 namespace EngineEditor.Terrain {
-
-	/// <summary>
-	/// Список коллидеров
-	/// </summary>
-	public enum EColliderType : int {
-
-		None            = -0x00,
-
-		BoxCollider     =  0x00,
-		SphereCollider  =  0x01,
-		CapsuleCollider =  0x02,
-		WheelCollider   =  0x03,
-		MeshCollider    =  0x04
-
-	};
 
 	/// <summary>
 	/// Класс отображатель объекта для рейкаста
 	/// </summary>
 	public class PickObjectData {
-
-		private static int SHOW_RAYCAST = 0;
 
 		private EColliderType collider = EColliderType.None;
 		private GameObject    gameObject;
@@ -65,7 +49,7 @@ namespace EngineEditor.Terrain {
 		/// Ставит объект на слой доступный для рейкаста
 		/// </summary>
 		public void doShowRaycast() {
-			gameObject.layer = SHOW_RAYCAST;
+			gameObject.layer = SingletonNames.Layers.DEFAULT;
 		}
 
 		public GameObject toGameObject() {

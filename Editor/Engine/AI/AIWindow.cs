@@ -214,6 +214,9 @@ namespace EngineEditor.AI {
 		}
 
 		private void DrawPath() {
+
+			NavMesh.CalculatePath(agent.transform.position, walker.getPoint(), NavMesh.AllAreas, path);
+
 			Vector3 startPosition = agent.transform.position;
 
             foreach (Vector3 pos in path.corners) {

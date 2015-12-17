@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Engine;
 
 namespace EngineEditor.Terrain {
 
@@ -9,25 +10,22 @@ namespace EngineEditor.Terrain {
 	/// Класс скрыватель объекта от лучей добра
 	/// </summary>
 	public class HideObjectData {
-
-		private static int SHOW_RAYCAST = 0;
-		private static int HIDE_RAYCAST = 2;
-
-		//private int        defaultLayer;
+		
 		private GameObject gameObject;
 
 		public HideObjectData(GameObject gameObject) {
 			this.gameObject = gameObject;
-
-			//defaultLayer = gameObject.layer; 
-			gameObject.layer = HIDE_RAYCAST; // прятаем объект на слой недоступный для рейкаста
+			
+			gameObject.layer = SingletonNames.Layers.IGNORE_RAYCAST; // прятаем объект на слой недоступный для рейкаста
 		}
 
 		/// <summary>
 		/// Восстанавливает слой для объекта
 		/// </summary>
 		public void Restore() {
-			gameObject.layer = SHOW_RAYCAST;
+
+			gameObject.layer = SingletonNames.Layers.DEFAULT;
+
 		}
 
 		public GameObject toGameObject() {

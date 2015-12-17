@@ -4,6 +4,9 @@ using UnityEditor;
 
 namespace EngineEditor.Terrain {
 
+	/// <summary>
+	/// Класс-обёртка для программно генерируемого объекта
+	/// </summary>
 	public class TempObject {
 
 		private GameObject gameObject;

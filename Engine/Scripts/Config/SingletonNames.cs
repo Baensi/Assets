@@ -54,6 +54,9 @@ namespace Engine {
 
 		}
 
+		/// <summary>
+		/// Набор слоёв
+		/// </summary>
 		public static class Layers {
 
 						  //|    Название   |Сдвиг|Индекс|Смещение|
@@ -68,6 +71,9 @@ namespace Engine {
 
 		}
 
+		/// <summary>
+		/// Набор команд ввода (клавиши, мышь, контроллеры)
+		/// </summary>
 		public static class Input {
 
 			public const string ESC          = "Cancel";

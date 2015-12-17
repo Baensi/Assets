@@ -26,8 +26,6 @@ namespace Engine.AI.Behavior {
 
 		public void setIdle() {
 			setVariantValue(animator.GetInteger(IDLE_COUNT), IDLE);
-
-			Debug.LogWarning("IDLE!");
 		}
 
 		private void setVariantValue(int variation, string valueName) {
@@ -51,7 +49,6 @@ namespace Engine.AI.Behavior {
 			animator.SetInteger(SNEAK, 0);
 			animator.SetInteger(WALK,  0);
 			animator.SetInteger(RUN, 1);
-			Debug.LogWarning("Run!");
 
 		}
 
@@ -61,7 +58,6 @@ namespace Engine.AI.Behavior {
 
 			animator.SetInteger(RUN,   0);
 			animator.SetInteger(SNEAK, 1);
-			Debug.LogWarning("Sneak!");
 		}
 
 		public void setWalk() {
@@ -70,7 +66,6 @@ namespace Engine.AI.Behavior {
 
 			animator.SetInteger(RUN,  0);
 			animator.SetInteger(WALK, 1);
-			Debug.LogWarning("WALK!");
 
 		}
 

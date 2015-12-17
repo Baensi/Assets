@@ -4,6 +4,9 @@ using UnityEditor;
 
 namespace EngineEditor.Terrain {
 
+	/// <summary>
+	/// Генерирует положения в пространстве в ограниченной прямоугольником области
+	/// </summary>
 	public static class Generator {
 
 		private static float minX(Vector3[] vectors) {
