@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Engine.I18N;
 
 namespace Engine {
 
@@ -17,10 +18,18 @@ namespace Engine {
 			/// <summary> Режим GUI - включает курсор, игнорирует модуль Inground и камеру</summary>
 		public const int MODE_GUI  = 0x01;
 
-		public static string Localization = "ru";
+		private static string localization = "ru";
 		private static int   gameMode     = MODE_GAME;
 
 		private static Vector3 centerScreen = Vector3.zero;
+
+		public static string Localization {
+			get { return localization; }
+			set {
+				localization = value;
+				CLang.getInstance().Reload();
+			}
+		}
 
 		public static Vector3 CenterScreen {
 			get { return centerScreen; }

@@ -9,9 +9,11 @@ namespace Engine.Objects.Doors {
 	/// </summary>
 	public interface IDoor {
 
-		string    getId();
+		string    getNameId();
 		DoorState getState();
+		string    getName();
 		string    getCaption();
+		string    getCaptionId();
 
 		Vector3 getOpenedAngles();
 		Vector3 getClosedAngles();

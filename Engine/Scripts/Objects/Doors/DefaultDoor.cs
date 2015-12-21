@@ -20,9 +20,12 @@ namespace Engine.Objects.Doors {
 
 		[SerializeField]public DoorControllerType controllerType = DoorControllerType.Standalone;
 		[SerializeField]public TextDisplayed      textDisplayed  = TextDisplayed.Displayed;
-		[SerializeField]public string             idCode;
-		[SerializeField]public string             captionId;
+		[SerializeField]public string             idName;
+		[SerializeField]public string             idCaption;
 		[SerializeField]public DoorState          state;
+
+		private string doorName;
+		private string doorCaption;
 
 		private IGameObjectAnimation animator;
 		private IDoorSoundData sound;
@@ -31,16 +34,20 @@ namespace Engine.Objects.Doors {
 		/// Возвращает идентификатор двери
 		/// </summary>
 		/// <returns>Уникальный код двери в строковом формате (нужен для идентификации и сравнения кода двери и кода ключа)</returns>
-		public string getId(){
-			return idCode;
+		public string getNameId(){
+			return idName;
 		}
 
-		/// <summary>
-		/// Возвращает метку двери
-		/// </summary>
-		/// <returns>Метку из xml файла с идентификатором captionId</returns>
-		public string getCaption(){
-			return CLang.getInstance().get(captionId);
+		public string getCaptionId() {
+			return idCaption;
+		}
+
+		public string getName() {
+			return doorName;
+		}
+
+		public string getCaption() {
+			return doorCaption;
 		}
 
 		/// <summary>
@@ -139,6 +146,9 @@ namespace Engine.Objects.Doors {
 		#endif
 
 		void Start () {
+
+			doorName = CLang.getInstance().get(idName);
+			doorCaption = CLang.getInstance().get(idCaption);
 
 			if (gameObject.layer != 0)
 				gameObject.layer = 0;

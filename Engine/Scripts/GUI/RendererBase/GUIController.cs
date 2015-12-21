@@ -10,14 +10,16 @@ namespace Engine.EGUI {
 		private DoorGUIRenderer          doorGUIRenderer = null;
 		private DynamicObjectGUIRenderer dynamicObjectGUIRenderer = null;
 		private ReadedPageGUIRenderer    readedPageGUIRenderer = null;
+		private InventoryGUIRenderer     inventoryGUIRenderer = null;
 
-		private bool initGUIState = false;
+        private bool initGUIState = false;
 		
 			void Start(){
 
 				doorGUIRenderer = new DoorGUIRenderer();
 				dynamicObjectGUIRenderer = new DynamicObjectGUIRenderer();
 				readedPageGUIRenderer = new ReadedPageGUIRenderer();
+				inventoryGUIRenderer = new InventoryGUIRenderer();
 
 			}
 
@@ -37,6 +39,10 @@ namespace Engine.EGUI {
 			return dynamicObjectGUIRenderer;
 		}
 		
+		public InventoryGUIRenderer getInventoryGUIRenderer() {
+			return inventoryGUIRenderer;
+        }
+
 		public ReadedPageGUIRenderer getReadedPageGUIRenderer(){
 			return readedPageGUIRenderer;
 		}

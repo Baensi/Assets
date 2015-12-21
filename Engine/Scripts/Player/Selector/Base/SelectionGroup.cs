@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Engine.Objects;
 using Engine.Objects.Doors;
+using Engine.EGUI;
 using System;
 
 namespace Engine.Player {
@@ -12,6 +13,7 @@ namespace Engine.Player {
 		public IDynamicObject selectedObject;
 		public ILever selectedLever;
 		public IDoor selectedDoor;
+		public IExternalInventory selectedInventory;
 
 	}
 

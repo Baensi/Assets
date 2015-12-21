@@ -31,7 +31,12 @@ namespace Engine.I18N {
 			}
 
 			GameConfig.Init();
-			
+			Reload();
+
+		}
+
+		public void Reload() {
+			Dictionary.Reload();
 		}
 		
 		public string get(string key){ // возвращаем слово из словаря

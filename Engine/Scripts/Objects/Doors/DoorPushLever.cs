@@ -19,8 +19,8 @@ namespace Engine.Objects.Doors {
 		[SerializeField] public AnimationDirection direction;
 
 		[SerializeField] public TextDisplayed textDisplayed = TextDisplayed.Displayed;
-		[SerializeField] public string     idCode;
-		[SerializeField] public string     captionId;
+		[SerializeField] public string     idName;
+		[SerializeField] public string     idCaption;
 		[SerializeField] public LeverState state;
 
 		[SerializeField] public bool mayBeState1ToState2 = true;
@@ -29,6 +29,9 @@ namespace Engine.Objects.Doors {
 		[SerializeField] public bool locked = false;
 
 		[SerializeField] public DefaultDoor door;
+
+		private string leverName;
+		private string leverCaption;
 
 		private IGameObjectAnimation animator;
 		private ILeverSoundData      sound;
@@ -40,16 +43,24 @@ namespace Engine.Objects.Doors {
 		/// Возвращает идентификатор двери
 		/// </summary>
 		/// <returns>Уникальный код двери в строковом формате (нужен для идентификации и сравнения кода двери и кода ключа)</returns>
-		public string getId() {
-			return idCode;
+		public string getNameId() {
+			return idName;
 		}
 
 		/// <summary>
 		/// Возвращает метку двери
 		/// </summary>
 		/// <returns>Метку из xml файла с идентификатором captionId</returns>
+		public string getCaptionId() {
+			return idCaption;
+		}
+
+		public string getName() {
+			return leverName;
+		}
+
 		public string getCaption() {
-			return CLang.getInstance().get(captionId);
+			return leverCaption;
 		}
 
 		/// <summary>
@@ -142,6 +153,9 @@ namespace Engine.Objects.Doors {
 #endif
 
 		void Start() {
+
+			leverName = CLang.getInstance().get(idName);
+			leverCaption = CLang.getInstance().get(idCaption);
 
 			audioSource = gameObject.GetComponent<AudioSource>();
 

@@ -84,7 +84,7 @@ namespace Engine.EGUI {
 
 			if (doorObject.getTextDisplayed() == TextDisplayed.None) return;
 
-			GUI.Label(objectTitleRectangle,"["+CLang.getInstance().get(doorObject.getId())+"]\n",titleStyle);
+			GUI.Label(objectTitleRectangle,"["+doorObject.getName()+"]\n",titleStyle);
 			GUI.Label(objectCaptionRectangle,doorObject.getCaption(),captionStyle);
 
 				switch(doorObject.getState()){
@@ -103,11 +103,11 @@ namespace Engine.EGUI {
 
 			if (leverObject.getTextDisplayed() == TextDisplayed.None) return;
 
-			GUI.Label(objectTitleRectangle, "[" + CLang.getInstance().get(leverObject.getId()) + "]\n", titleStyle);
+			GUI.Label(objectTitleRectangle, "[" + leverObject.getName() + "]\n", titleStyle);
 			GUI.Label(objectCaptionRectangle, leverObject.getCaption(), captionStyle);
 
 			if (leverObject.isLocked()) {
-				GUI.Label(objectStateRectangle, CLang.getInstance().get(Dictionary.K_LEVER_LOCKED), doorStateStyle);
+				GUI.Label(objectStateRectangle, Dictionary.LEVER_LOCKED_TEXT, doorStateStyle);
 			} else {
 				switch (leverObject.getState()) {
 					case LeverState.State1: doorStateStyle.normal.textColor = stateOpenedColor; break;
@@ -120,17 +120,17 @@ namespace Engine.EGUI {
 
 		public string stateToString(DoorState state){
 				switch(state){
-					case DoorState.Opened: return CLang.getInstance().get (Dictionary.K_DOOR_OPENED);
-					case DoorState.Closed: return CLang.getInstance().get (Dictionary.K_DOOR_CLOSED);
-					case DoorState.Locked: return CLang.getInstance().get (Dictionary.K_DOOR_LOCKED);
+					case DoorState.Opened: return Dictionary.DOOR_OPENED_TEXT;
+					case DoorState.Closed: return Dictionary.DOOR_CLOSED_TEXT;
+					case DoorState.Locked: return Dictionary.DOOR_LOCKED_TEXT;
 				}
 			return "";
 		}
 
 		public string stateToString(LeverState state) {
 			switch (state) {
-				case LeverState.State1: return CLang.getInstance().get(Dictionary.K_LEVER_STATE1);
-				case LeverState.State2: return CLang.getInstance().get(Dictionary.K_LEVER_STATE2);
+				case LeverState.State1: return Dictionary.LEVER_STATE1_TEXT;
+				case LeverState.State2: return Dictionary.LEVER_STATE2_TEXT;
 			}
 			return "";
 		}

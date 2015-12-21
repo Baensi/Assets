@@ -9,9 +9,12 @@ namespace Engine.Objects.Doors {
 	/// </summary>
 	public interface ILever {
 
-		string     getId();
+		string     getNameId();
 		LeverState getState();
-		string     getCaption();
+		string     getCaptionId();
+
+		string getName();
+		string getCaption();
 
 		Vector3 getState1Angles();
 		Vector3 getState2Angles();

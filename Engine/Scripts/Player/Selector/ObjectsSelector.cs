@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Engine.Objects;
 using Engine;
 using Engine.EGUI;
+using Engine.EGUI.Inventory;
 using Engine.Player.Torch;
 using Engine.Player.Torch.Burn;
 using Engine.Objects.Doors;
@@ -33,6 +34,8 @@ namespace Engine.Player {
 		private GUIController guiController;
 		private AudioSource    audioSource;
 
+		private UInventory playerInventory;
+
 			void OnEnable() {
 
 			}
@@ -40,7 +43,9 @@ namespace Engine.Player {
 		void Start () {
 
 			playerCamera = SingletonNames.getMainCamera();
-			this.audioSource = gameObject.AddComponent<AudioSource>();
+			playerInventory = SingletonNames.getInventory().GetComponent<UInventory>();
+
+            this.audioSource = gameObject.AddComponent<AudioSource>();
 
 			doorController = new DoorPhysXController();
 
@@ -72,7 +77,8 @@ namespace Engine.Player {
 					selected.selectedObject = dynamic;
 					selected.selectType = SelectedType.IsDynamic;
 
-					if (OnUse(dynamic)) return;
+					if (OnUse(dynamic))
+						return;
 
 					OnPickUp(dynamic);
 
@@ -97,6 +103,17 @@ namespace Engine.Player {
 					selected.selectedLever = lever;
 					selected.selectType = SelectedType.IsLever;
 					doorController.update(lever);
+					return;
+				}
+
+				var inventory = obj as IExternalInventory;
+
+				if (inventory != null) {
+					selected.selectedInventory = inventory;
+					selected.selectType = SelectedType.IsInventory;
+
+					OnUse(inventory);
+
 					return;
 				}
 
@@ -130,6 +147,22 @@ namespace Engine.Player {
 						ResetSelected();
 						return true;
 					}
+			}
+
+			return false;
+
+		}
+
+		private bool OnUse(IExternalInventory selectedInventory) {
+
+			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.USE)) {    // использовать
+				if (playerInventory.isVisible()) {
+					playerInventory.hide();
+				} else {
+					playerInventory.show(selectedInventory);
+				}
+
+				return true;
 			}
 
 			return false;
@@ -204,6 +237,9 @@ namespace Engine.Player {
 					break;
 				case SelectedType.IsLever:
 					guiController.getDoorGUIRenderer().printLabel(selected.selectedLever);
+					break;
+				case SelectedType.IsInventory:
+					guiController.getInventoryGUIRenderer().printLabel(selected.selectedInventory);
 					break;
 			}
 			

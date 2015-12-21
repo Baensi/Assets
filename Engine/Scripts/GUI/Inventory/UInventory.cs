@@ -36,7 +36,7 @@ namespace Engine.EGUI.Inventory {
 		private ItemSlot       selectedItem;
 		private EventContainer eventData;
 
-		private InventoryExternal externalInventory;
+		private IExternalInventory externalInventory;
 
 		private Rect          inventarFramePosition;
 		private Rect          cellRect;
@@ -74,7 +74,7 @@ namespace Engine.EGUI.Inventory {
 		/// Отображает инвентрарь в режиме внешнего инвентаря
 		/// </summary>
 		/// <param name="externalInventory"></param>
-		public void show(InventoryExternal externalInventory) {
+		public void show(IExternalInventory externalInventory) {
 			this.externalInventory=externalInventory;
 			visible = true;
 			GameConfig.GameMode = GameConfig.MODE_GUI;
@@ -89,6 +89,7 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public void hide(){
+			externalInventory=null;
 			visible=false;
 			GameConfig.GameMode = GameConfig.MODE_GAME;
 

@@ -19,6 +19,27 @@ namespace Engine.I18N {
 		public const string K_LEVER_STATE2 = "lever_state_state2";
 		public const string K_LEVER_LOCKED = "lever_state_locked";
 
+		public static string COUNT_TEXT;
+		public static string DOOR_OPENED_TEXT;
+		public static string DOOR_CLOSED_TEXT;
+		public static string DOOR_LOCKED_TEXT;
+
+		public static string LEVER_STATE1_TEXT;
+		public static string LEVER_STATE2_TEXT;
+		public static string LEVER_LOCKED_TEXT;
+
+		public static void Reload() {
+			COUNT_TEXT = CLang.getInstance().get(K_COUNT);
+
+			DOOR_OPENED_TEXT = CLang.getInstance().get(K_DOOR_OPENED);
+			DOOR_CLOSED_TEXT = CLang.getInstance().get(K_DOOR_CLOSED);
+			DOOR_LOCKED_TEXT = CLang.getInstance().get(K_DOOR_LOCKED);
+
+			LEVER_STATE1_TEXT = CLang.getInstance().get(K_LEVER_STATE1);
+			LEVER_STATE2_TEXT = CLang.getInstance().get(K_LEVER_STATE2);
+			LEVER_LOCKED_TEXT = CLang.getInstance().get(K_LEVER_LOCKED);
+		}
+
 	}
 	
 }
