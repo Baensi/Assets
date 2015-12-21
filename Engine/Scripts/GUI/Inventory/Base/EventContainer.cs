@@ -14,9 +14,9 @@ namespace Engine.EGUI.Inventory {
 		public Vector2        cursorPosition;
 		public MouseEvent     mouseEvent = new MouseEvent();
 		public InventoryEvent eventType  = InventoryEvent.None;
-		public bool isPopupShow = false;
 
-		public bool isDivMode = false; // Зажат шифт и предметы надо делить
+		public bool isPopupShow = false;
+		public bool isDivMode   = false; // Зажат шифт и предметы надо делить
 
 		public RectangleSlot endSlot; // текущий слот
 		public RectangleSlot startSlot; // слот в котором выбрали selected предмет

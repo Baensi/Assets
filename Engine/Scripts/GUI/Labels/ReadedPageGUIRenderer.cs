@@ -8,7 +8,7 @@ using Engine.Objects.Types.Readed;
 
 namespace Engine.EGUI {
 
-	public class ReadedPageGUIRenderer : IRendererGUI {
+	public class ReadedPageGUIRenderer {
 
 			public ReadedPageGUIRenderer(){
 				

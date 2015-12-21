@@ -14,9 +14,6 @@ namespace EngineEditor.AI {
 
 		private static float cursorSize = 0.5f;
 
-		private NavMeshAgent agent;
-		private PathWalker   walker = null;
-
 		private NavMeshPath path = new NavMeshPath();
 
         private bool showTrace        = true;
@@ -33,29 +30,23 @@ namespace EngineEditor.AI {
 			this.patrol = patrol;
         }
 
-		public void setAgent(NavMeshAgent agent) {
-			this.agent = agent;
-
-			if (agent != null)
-				walker = agent.GetComponent<PathWalker>();
-			else
-				walker = null;
-        }
-
 		void OnEnable() {
 			Data.EditorFactory.getInstance().RegWindow(id, this);
 		}
 
 		void OnGUI() {
 
-			if (walker != null) {
+
+
+
+			//if (walker != null) {
 
 				GUILayout.Label("Ходок:", EditorStyles.boldLabel);
 				showTrace = EditorGUILayout.Toggle("Показывать траекторию", showTrace);
 				showEndPointMove = EditorGUILayout.Toggle("Перемещать конечную точку вручную", showEndPointMove);
 				EditorGUILayout.Separator();
 
-			}
+			//}
 
 			if (patrol != null) {
 
@@ -86,20 +77,35 @@ namespace EngineEditor.AI {
 		public void OnSceneGUI(SceneView sceneView) {
 			oldSceneView = sceneView;
 
-            if (walker != null) {
-				CheckMouse(sceneView);
 
-				if (showTrace)
-					DrawPath();
+			foreach (PathWalker walker in GameObject.FindObjectsOfType<PathWalker>()) {
 
-				DrawEndPoint();
-				DrawSeeAngles();
+				if (walker != null) {
+
+					CheckMouse(sceneView);
+
+					if (showTrace)
+						DrawPath(walker);
+
+					DrawEndPoint(walker);
+					DrawSeeAngles(walker);
+
+					DrawAttackSphere(walker);
+
+				}
 
 			}
 
 			if (patrol != null) {
 				DrawPathPatrol(patrol);
 			}
+
+		}
+
+		public void DrawAttackSphere(PathWalker walker) {
+
+			Handles.color = new Color(1f,0f,0f,0.1f);
+			Handles.SphereCap(0, walker.transform.position, Quaternion.Euler(0,0,0), walker.minAttackDistance);
 
 		}
 
@@ -144,7 +150,7 @@ namespace EngineEditor.AI {
 			}
 		}
 
-		private void DrawSeeAngles() {
+		private void DrawSeeAngles(PathWalker walker) {
 
 			Vector3 position    = walker.transform.position;
 			Vector3 positionEnd = walker.transform.position + walker.transform.forward*(walker.seeDistance*1.05f);
@@ -159,13 +165,13 @@ namespace EngineEditor.AI {
 
 			switch (walker.State) {
 				case AgressionStateAI.Normal:
-					Handles.color = new Color(0.05f, 0.9f, 0f, 0.2f);
+					Handles.color = new Color(0.05f, 0.9f, 0f, 0.07f);
 				break;
 				case AgressionStateAI.Warning:
-					Handles.color = new Color(1f, 0.9f, 0f, 0.3f);
+					Handles.color = new Color(1f, 0.9f, 0f, 0.07f);
 					break;
 				case AgressionStateAI.Enemy:
-					Handles.color = new Color(1f, 0f, 0f, 0.4f);
+					Handles.color = new Color(1f, 0f, 0f, 0.07f);
 					break;
 			}
 
@@ -175,10 +181,15 @@ namespace EngineEditor.AI {
 
 		private void CheckMouse(SceneView sceneView) {
 
+			PathWalker selected = Selection.activeGameObject==null ? null : Selection.activeGameObject.GetComponent<PathWalker>();
+			
+			if(selected==null)
+				return;
+
 			if (!Event.current.control) {
 
 				if (showEndPointMove)
-					walker.setPoint(Handles.DoPositionHandle(walker.getPoint(), walker.transform.rotation));
+					selected.setPoint(Handles.DoPositionHandle(selected.getPoint(), selected.transform.rotation));
 				
 				return;
 			}
@@ -187,11 +198,11 @@ namespace EngineEditor.AI {
 			RaycastHit hitInfo = new RaycastHit();
 
 			if (Physics.Raycast(sceneView.camera.ScreenPointToRay(mousePosition), out hitInfo))
-				walker.setPoint(hitInfo.point);
+				selected.setPoint(hitInfo.point);
 
 		}
 
-		private void DrawEndPoint() {
+		private void DrawEndPoint(PathWalker walker) {
 
 			Vector3 point = walker.getPoint();
 
@@ -208,16 +219,16 @@ namespace EngineEditor.AI {
 
 			if (Time.time - timeStamp >= 0.5f) {
 				timeStamp = Time.time;
-				NavMesh.CalculatePath(agent.transform.position, point, NavMesh.AllAreas, path);
+				NavMesh.CalculatePath(walker.transform.position, point, NavMesh.AllAreas, path);
 			}
 
 		}
 
-		private void DrawPath() {
+		private void DrawPath(PathWalker walker) {
 
-			NavMesh.CalculatePath(agent.transform.position, walker.getPoint(), NavMesh.AllAreas, path);
+			NavMesh.CalculatePath(walker.transform.position, walker.getPoint(), NavMesh.AllAreas, path);
 
-			Vector3 startPosition = agent.transform.position;
+			Vector3 startPosition = walker.transform.position;
 
             foreach (Vector3 pos in path.corners) {
 

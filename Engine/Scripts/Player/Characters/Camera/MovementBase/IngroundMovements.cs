@@ -29,10 +29,10 @@ namespace Engine.Player.Movement.Movements {
 		private float playerRunSpeed  = 7.0f;
 		private float playerJumpSpeed = 7.0f;
 
-		private float m_RunstepLenghtenWalk = 0.7f;
+		private float m_RunstepLenghtenWalk = 0.4f;
 		private float m_RunstepLenghtenRun = 0.1f;
 
-		private float bobRangeWalk = 0.1f;
+		private float bobRangeWalk = 0.05f;
 		private float bobRangeRun = 0.15f;
 
 		private float stickToGroundForce = 10.0f;
@@ -42,7 +42,7 @@ namespace Engine.Player.Movement.Movements {
 		private Vector3        originalCameraPosition;
 		private bool           previouslyGrounded;
 		private float          stepCycle;
-		private float          stepInterval = 3f;
+		private float          stepInterval = 2f;
 		private float          nextStep;
 		
 		private Actions             actions;
@@ -192,12 +192,12 @@ namespace Engine.Player.Movement.Movements {
 
 			if (isSitdown && characterController.height != playerSitdownHeight) {
 				characterController.height = playerSitdownHeight;
-				actions.Sitdown();
+				actions.setSitdown();
 			}
 
 			if (!isSitdown && characterController.height != playerStandupHeight) {
 				characterController.height = playerStandupHeight;
-				actions.Standup();
+				actions.setStandup();
 			}
 
 		}
@@ -205,7 +205,7 @@ namespace Engine.Player.Movement.Movements {
 		private void PlayLandingSound() {
 			audioSource.clip = audioData.getLandSound();
 			audioSource.Play();
-			actions.Stay();
+			actions.setStay();
 			nextStep = stepCycle + .5f;
 		}
 
@@ -213,7 +213,7 @@ namespace Engine.Player.Movement.Movements {
 		private void PlayJumpSound() {
 			audioSource.clip = audioData.getJumpSound();
 			audioSource.Play();
-			actions.Jump();
+			actions.setJump();
 		}
 
 
@@ -240,9 +240,9 @@ namespace Engine.Player.Movement.Movements {
 				return;
 
 			if (isWalking)
-				actions.Walk();
+				actions.setWalk();
 			else
-				actions.Run();
+				actions.setRun();
 
 			audioSource.clip = audioData.getFootStepSound(audioSource.clip);
 			audioSource.PlayOneShot(audioSource.clip);
@@ -272,7 +272,7 @@ namespace Engine.Player.Movement.Movements {
 				newCameraPosition = mainCameraObject.transform.localPosition;
 				newCameraPosition.y = originalCameraPosition.y - jumpBob.Offset();
 
-				actions.Stay();
+				actions.setStay();
 			}
 
 		}

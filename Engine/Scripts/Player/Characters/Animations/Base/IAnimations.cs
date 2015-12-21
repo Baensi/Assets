@@ -14,17 +14,17 @@ namespace Engine.Player.Animations {
 
 	public interface IAnimations {
 
-		void Idle ();
-		void Stay ();
-		void Walk ();
-		void Run ();
-		void Attack ();
-		void Death ();
-		void Damage ();
-		void Jump ();
-		void Aiming ();
-		void Sitdown ();
-		void Standup ();
+		void setIdle ();
+		void setStay ();
+		void setWalk ();
+		void setRun ();
+		void setAttack ();
+		void setDie ();
+		void getDamage ();
+		void setJump ();
+		void setAiming ();
+		void setSitdown ();
+		void setStandup ();
 
 	}
 

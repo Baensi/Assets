@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<images>
+
+	<inventory>
+	
+		<item name="inventory_correct_cell" path="images/gui/correct_cell" />
+		<item name="inventory_selected_cell" path="images/gui/selected_cell" />
+		<item name="inventory_error_cell" path="images/gui/error_cell" />
+		
+		<item name="external_inventory_background" path="images/gui/inventory_external_background" />
+	
+	</inventory>
+
+</images>

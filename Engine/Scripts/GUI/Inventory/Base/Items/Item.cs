@@ -9,6 +9,8 @@ namespace Engine.EGUI.Inventory {
 	[Serializable]
 	public class Item : IItem {
 
+		private string itemName;
+
 		[SerializeField] public ItemDescription description;
 		[SerializeField] public ItemSize        size;
 		[SerializeField] public ItemResource    resource = new ItemResource(null, null);
@@ -18,20 +20,21 @@ namespace Engine.EGUI.Inventory {
 
 		private GameObject gameObject;
 
+		public Item getPhantom() {
+			return DObjectList.getInstance().getItem(itemName);
+		}
+
 		/// <summary>
 		/// Пересоздаёт ресурсы
 		/// </summary>
 		public void ReCreate() {
 
-			if (gameObject != null)
-				GameObject.Destroy(gameObject);
+			Item original = getPhantom();
 
-			gameObject = Resources.Load<GameObject>(resource.files.gameObjectPath);
-
-			Debug.LogError("gameObject="+ resource.files.gameObjectPath);
-
-			resource.ReCreate();
-			description.ReCreate();
+			gameObject = original.gameObject;
+			resource = original.resource;
+			description = original.description;
+			size = original.size;
 			
 		}
 
@@ -65,6 +68,10 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public GameObject toGameObject(){
+
+			if (gameObject == null)
+				ReCreate();
+
 			return gameObject;
 		}
 
@@ -136,16 +143,29 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public ItemDescription getDescription() {
+
+			if (gameObject == null)
+				ReCreate();
+
 			return description;
 		}
 
 		public Texture getIcon(){
+
+			if (gameObject == null)
+				ReCreate();
+
 			return resource.icon;
 		}
 
 		public ItemSize getSize(){
+
+			if (gameObject == null)
+				ReCreate();
+
 			return size;
 		}
+
 		public void setSize(ItemSize size){
 			this.size=size;
 		}
@@ -160,6 +180,8 @@ namespace Engine.EGUI.Inventory {
 
 				result.count    = count;
 				result.maxCount = maxCount;
+
+				result.itemName = itemName;
 
 			return result;
 		}

@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using Engine.AI.Behavior;
+using Engine.Calculators;
+using Engine.Player;
 
 namespace Engine.AI {
 
@@ -9,6 +12,19 @@ namespace Engine.AI {
 	[RequireComponent(typeof(Animator))]
 	[RequireComponent(typeof(NavMeshAgent))]
 	public class PathWalker : EnemyBehaviorAI {
+
+		private bool destroyed = false;
+
+		private const int IDLE  = 0x00;
+		private const int SNEAK = 0x01;
+		private const int WALK  = 0x02;
+		private const int RUN   = 0x04;
+
+		/// <summary> Задержка перед сканированием видимых объектов </summary>
+		private const float SEE_UPDATE_TIME = 0.2f;
+
+		/// <summary> Максимальное время которое AI может стоять на месте без дела </summary>
+		[SerializeField] public float maxIdleDelay = 15f;
 
 		/// <summary> дистанция на которую NPC может покинуть текущую точку </summary>
 		[SerializeField] public float maxOutDistance = 45f;
@@ -44,12 +60,81 @@ namespace Engine.AI {
 
 		private AgressionStateAI state = AgressionStateAI.Normal;
 
-		private Transform player;
-		private float timeStamp;
+		private float seeDelayTimeStamp;
+		private float memoryTimeStamp;
+		private float idleTimeStamp;
 
-
+		private NavMeshPath  tmpPath = new NavMeshPath();
 		private NavMeshAgent agent;
-		private Animator animator;
+		private Animator     animator;
+
+		private bool idle;
+		private int  walkState;
+
+		protected PlayerSpecifications specifications;
+		protected PlayerStates         damage;
+		protected PlayerStates         states;
+
+		/// <summary>
+		/// Возвращает текущие характеристики ходока
+		/// </summary>
+		/// <returns></returns>
+		public override PlayerSpecifications getSpecifications() {
+			return specifications;
+		}
+
+		/// <summary>
+		/// Возвращает текущие статы ходока
+		/// </summary>
+		/// <returns></returns>
+		public override PlayerStates getStates() {
+			return states;
+		}
+
+		/// <summary>
+		/// Возвращает текущий урон-по умолчанию ходока
+		/// </summary>
+		/// <returns></returns>
+		public override PlayerStates getDamageStates() {
+			return damage;
+		}
+
+		/// <summary>
+		/// Наносит урон this
+		/// </summary>
+		/// <param name="value">Значение наносимого урона</param>
+		public override void getDamage(PlayerStates value) {
+			states -= AttackCalculator.doProtection(getStates(),getSpecifications(),value); // пытаемся защититься нанесённому урону
+		}
+
+		/// <summary>
+		/// Возвращает логическое значение "AI стоит на месте"
+		/// </summary>
+		/// <returns></returns>
+		public bool isIdle() {
+			return walkState == IDLE;
+        }
+
+		/// <summary>
+		/// Возвращает логическое значение "AI крадётся"
+		/// </summary>
+		public bool isSneak() {
+			return walkState == SNEAK;
+		}
+
+		/// <summary>
+		/// Возвращает логическое значение "AI идёт"
+		/// </summary>
+		public bool isWalk() {
+			return walkState == WALK;
+		}
+
+		/// <summary>
+		/// Возвращает логическое значение "AI бежит"
+		/// </summary>
+		public bool isRun() {
+			return walkState == RUN;
+		}
 
 		/// <summary>Статус ходока</summary>
 		public AgressionStateAI State {
@@ -93,7 +178,20 @@ namespace Engine.AI {
 		/// </summary>
 		/// <param name="point"></param>
 		public void setPoint(Vector3 point) {
-			this.point = point;
+
+			if(tmpPath==null)
+				tmpPath = new NavMeshPath();
+
+			if (!NavMesh.CalculatePath(transform.position, point, NavMesh.AllAreas, tmpPath)) // пытаемся построить путь
+				return;
+
+			int last = tmpPath.corners.Length - 1;
+
+			if(last<0)
+				return;
+
+			this.point = tmpPath.corners[last]; // используем в качестве конечной точки - последнюю точку построенного пути (она может сильно отличаться от точки в аргументе функции!!)
+			
 		}
 
 		public Vector3 getPoint() {
@@ -114,13 +212,35 @@ namespace Engine.AI {
 			animator = GetComponent<Animator>();
 			base.OnStartEnemyBehaviorAI(animator);
 
-			player = SingletonNames.getPlayer().transform;
 			State = AgressionStateAI.Normal;
 			
         }
 
 
+		public override void OnSeeIteration() {
+
+			if(target!=null)
+				return;
+
+			List<IStateAI> seeNPC = LookViewService.getInstance().getSeeAIObjects(this, new Ray(transform.position, transform.forward),seeDistance,seeAngle);
+
+			foreach(IStateAI ai in seeNPC) {
+
+				if (getFraction() != ai.getFraction()) { // ходок видит врага
+					State  = AgressionStateAI.Enemy;
+					target = ai.toObject().transform;
+					memoryTimeStamp = Time.time; // запоминаем момент когда видим цель
+					return;
+				}
+
+			}
+
+		}
+
 		public override void OnMoveIteration() {
+
+			if(destroyed)
+				return;
 
 			switch (State) {
 				case AgressionStateAI.Enemy:
@@ -129,18 +249,21 @@ namespace Engine.AI {
 							agent.SetDestination(target.position);
 
 					getAnimationBehavior().setRun();
+					walkState = RUN;
 					break;
 				case AgressionStateAI.Normal:
 
 						agent.SetDestination(point);
 
 					getAnimationBehavior().setWalk();
+					walkState = WALK;
 					break;
 				case AgressionStateAI.Warning:
 
 						agent.SetDestination(point);
 
 					getAnimationBehavior().setSneak();
+					walkState = SNEAK;
 					break;
 			}
 
@@ -148,15 +271,42 @@ namespace Engine.AI {
 
 		public override void OnIdleIteration() {
 
-			if(State == AgressionStateAI.Normal)
-				getAnimationBehavior().setIdle();
+			if (State == AgressionStateAI.Normal) {
+
+				if (walkState == IDLE && Time.time - idleTimeStamp >= maxIdleDelay) { // проверяем, если AI простаиваает уже достаточно долго
+
+
+
+				} else {
+
+					getAnimationBehavior().setIdle(); // проигрываем анимацию ожидания
+
+					if (walkState != IDLE) // если персонаж до этого совершал другие действия
+						idleTimeStamp = Time.time;
+
+					walkState = IDLE;
+
+				}
+
+			} else {
+
+
+
+			}
 
 		}
 
 		public override void OnAttackIteration() {
 
-			if (State == AgressionStateAI.Enemy)
+			if (target!=null && State == AgressionStateAI.Enemy) {
 				getAnimationBehavior().setAttack();
+				
+				IStateAI trg = target.gameObject.GetComponent<EnemyBehaviorAI>() as IStateAI;
+
+				if(trg!=null)
+					trg.getDamage(AttackCalculator.createDamage(getStates(),getSpecifications(),getDamageStates()));
+
+			}
 
         }
 
@@ -178,11 +328,30 @@ namespace Engine.AI {
 			return LookViewService.getInstance().isSee(seeObject.position, targetObject.gameObject, seeAngle, seeDistance);
         }
 
+		public void DoDie() {
+			destroyed = true;
+			Destroy(this.gameObject);
+		}
+
 		public void OnUpdateWalker() {
+
+			if(destroyed)
+				return;
+
+			if (states.health <= 0) // ходок умер
+				DoDie();
+
 			base.OnUpdateEnemyBehaviorAI();
 
 			bool moveFlag = true;
 
+				// Пытаемся просканировать видимую местность не чаще раза в SEE_UPDATE_TIME сек.
+			if (Time.time - seeDelayTimeStamp >= SEE_UPDATE_TIME) {
+				OnSeeIteration();
+				seeDelayTimeStamp = Time.time;
+			}
+
+				// Проверяем,
 			if (isMinIdleDistance(transform.position, point, minMovDistance)) {
 				OnIdleIteration();
 				moveFlag = false;
@@ -196,23 +365,15 @@ namespace Engine.AI {
 			if(moveFlag)
 				OnMoveIteration();
 
-			if (isSeeDistanceGameObject(player,transform)) {
+			if (target != null && isSeeDistanceGameObject(target,transform)) {
 
-				if(isSeeGameObject(player,transform,seeAngle,seeDistance)) {
-
-					State = AgressionStateAI.Enemy;
-					target = player;
-					timeStamp = Time.time;
-
-                }
-
-				if (target != null)
-					transform.LookAt(target);
+				memoryTimeStamp = Time.time;
+				transform.LookAt(target);
 
 			} else {
 
-				if (Time.time - timeStamp >= enemyMemory) { // смотрим, как долго персонаж пропадает из вида
-														    // если время больше "памяти" AI, забываем цель
+				if (Time.time - memoryTimeStamp >= enemyMemory) { // смотрим, как долго персонаж пропадает из вида
+														          // если время больше "памяти" AI, забываем цель
 				
 					State = AgressionStateAI.Normal;
 					target = null;

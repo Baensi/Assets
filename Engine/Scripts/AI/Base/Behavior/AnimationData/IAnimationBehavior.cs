@@ -5,15 +5,19 @@ namespace Engine.AI.Behavior {
 
 	public interface IAnimationBehavior {
 
-		void setIdle();
+		void setIdle(); // стоит
 
-		void setWalk();
+		void setWalk(); // идёт
 
-		void setSneak();
+		void setSneak(); // крадётся
 
-		void setRun();
+		void setRun(); // бежит
 
-		void setAttack();
+		void setAttack(); // наносит урон
+
+		void getDamage(); // получает урон
+
+		void setDie(); // умирает
 
 	}
 

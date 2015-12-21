@@ -36,8 +36,17 @@ namespace Engine.I18N {
 		
 		public string get(string key){ // возвращаем слово из словаря
 			string result = "";
-				mapData.TryGetValue(GameConfig.Localization+key, out result);
-			return result;
+
+			if(mapData.TryGetValue(GameConfig.Localization+key, out result))
+				return result;
+			else {
+
+#if UNITY_EDITOR
+				Debug.LogError("Попытка доступа к несуществующей надписи в словаре - '" + GameConfig.Localization + key + "' не найден в словаре I18N!");
+#endif
+
+				return "";
+			}
 		}
 
 	}

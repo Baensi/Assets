@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using Engine.EGUI.Inventory;
+using EngineEditor.Data;
 
 namespace EngineEditor.EGUI.Inventory {
 	
@@ -10,7 +11,7 @@ namespace EngineEditor.EGUI.Inventory {
 		private static Color lineColor  = new Color(0.7f, 0.7f, 0.8f);
 		private static Color lineShadow = new Color(0.4f, 0.4f, 0.4f);
 
-		InventarWindow window;
+		InventoryWindow window;
 
 		private UInventory inventory;
 
@@ -27,8 +28,10 @@ namespace EngineEditor.EGUI.Inventory {
 				if (window != null)
 					window.Close();
 
-				window = (InventarWindow)EditorWindow.GetWindow(typeof(InventarWindow));
-				window.titleContent = new GUIContent("Инвентарь");
+				
+				window = (InventoryWindow)EditorWindow.GetWindow(typeof(InventoryWindow));
+				EditorFactory.getInstance().RegWindow(InventoryWindow.id, window);
+                window.titleContent = new GUIContent("Инвентарь");
 				window.setData(inventory,this);
 			}
 			

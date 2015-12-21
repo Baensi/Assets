@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEditor;
 using System.Collections;
 
 namespace Engine.Maps {
@@ -53,7 +55,7 @@ namespace Engine.Maps {
 
 			LevelData.getInstance().putPlayerData(playerStartPosition,playerStartRotation);
 
-			Application.LoadLevel(sceneName);
+			SceneManager.LoadScene(sceneName);
 		}
 
 	}

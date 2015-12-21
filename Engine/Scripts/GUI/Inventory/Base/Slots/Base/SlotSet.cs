@@ -8,11 +8,11 @@ namespace Engine.EGUI.Inventory {
 	[Serializable]
 	public struct SlotSet {
 
-		public float OffsetX;
-		public float OffsetY;
+		[SerializeField] public float OffsetX;
+		[SerializeField] public float OffsetY;
 
-		public int CellsXCount;
-		public int CellsYCount;
+		[SerializeField] public int CellsXCount;
+		[SerializeField] public int CellsYCount;
 
 		public float SlotWidth {
 			set { }

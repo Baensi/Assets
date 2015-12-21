@@ -12,11 +12,8 @@ namespace EngineEditor.AI {
 	public class PathWalkerEditor : Editor {
 
 		private AIWindow window;
-        private NavMeshAgent agent;
 
 		void OnEnable() {
-			var enemy = target as EnemyBehaviorAI;
-            agent = enemy.GetComponent<NavMeshAgent>();
 
 			window = (AIWindow)EditorFactory.getInstance().FindWindow(AIWindow.id);
 
@@ -25,13 +22,9 @@ namespace EngineEditor.AI {
 				window.titleContent.text = "AI";
 			}
 
-			window.setAgent(agent);
-
 		}
 
-		void OnDestroy() {
-			window.setAgent(null);
-        }
+		void OnDestroy() { }
 
 		public override void OnInspectorGUI() {
 			base.OnInspectorGUI();

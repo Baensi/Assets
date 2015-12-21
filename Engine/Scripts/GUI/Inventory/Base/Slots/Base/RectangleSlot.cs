@@ -9,7 +9,7 @@ namespace Engine.EGUI.Inventory {
 	public class RectangleSlot {
 	
 		[SerializeField] public Texture2D      background;
-		[SerializeField] public List<ItemSlot> Items = new List<ItemSlot>();
+		[SerializeField] public List<ItemSlot> Items;
 		[SerializeField] public SlotSet        position;
 	
 	}

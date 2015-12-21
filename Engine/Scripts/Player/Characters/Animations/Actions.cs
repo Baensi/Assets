@@ -10,12 +10,12 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using Random = UnityEngine.Random;
+using Engine.AI.Behavior;
 
 namespace Engine.Player.Animations {
 
 	[RequireComponent (typeof (Animator))]
-	public class Actions : MonoBehaviour, IAnimations {
+	public class Actions : MonoBehaviour, IAnimations, IAnimationBehavior {
 
 		private static int maxAttackTreeCount = 2; // число анимационных деревьев для атаки
 		private Animator animator;
@@ -26,55 +26,61 @@ namespace Engine.Player.Animations {
 			
 		}
 
-		void OnGUI(){
+			void OnGUI(){
 
 			
 		
-		}
+			}
 
-		public void Idle () {
+		public void setIdle () {
 
 			animator.SetInteger("Attack",0); // сбрасываем статус атаки
 
 		}
 
-		public void Stay () {
-			Idle();
+		public void setStay () {
+			setIdle();
 		}
 		
-		public void Walk () {
+		public void setWalk () {
+
 		}
 		
-		public void Run () {
+		public void setRun () {
+
 		}
 		
-		public void Attack () {
-			int newRandomTree = Random.Range(1,maxAttackTreeCount+1); // выбираем случайный индекс дерева анимации для атаки
+		public void setAttack () {
+			int newRandomTree = UnityEngine.Random.Range(1,maxAttackTreeCount+1); // выбираем случайный индекс дерева анимации для атаки
 			animator.SetInteger("AttackTreeIndex",newRandomTree); // устанавливаем индекс
 			animator.SetInteger("Attack",1); // ставим статус атаки
 		}
 		
-		public void Death () {
+		public void setDie () {
 			
 		}
 		
-		public void Damage () {
+		public void getDamage () {
 			
 		}
 		
-		public void Jump () {
+		public void setJump () {
 			
 		}		
 		
-		public void Aiming () {
+		public void setAiming () {
 
 		}
 		
-		public void Sitdown () {
+		public void setSneak () {
+			
+		}
+
+		public void setSitdown () {
 			
 		}
 		
-		public void Standup () {
+		public void setStandup () {
 			
 		}
 

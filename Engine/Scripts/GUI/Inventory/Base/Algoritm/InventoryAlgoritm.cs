@@ -6,17 +6,16 @@ namespace Engine.EGUI.Inventory {
 
 	public class InventoryAlgoritm {
 
-		private List<RectangleSlot> slots;
+		private static InventoryAlgoritm instance;
 
-		public List<RectangleSlot> getSlots() {
-			return slots;
+		public static InventoryAlgoritm getInstance() {
+			if(instance == null)
+				instance = new InventoryAlgoritm();
+			return instance;
 		}
 
-		public void setSlots(List<RectangleSlot> slots) {
-			this.slots = slots;
-		}
 
-		public float getInventoryWidth() {
+		public float getInventoryWidth(List<RectangleSlot> slots) {
 
 			if (slots==null) return 0f;
 
@@ -34,7 +33,7 @@ namespace Engine.EGUI.Inventory {
 			return maxWidth;
 		}
 
-		public float getInventoryHeight() {
+		public float getInventoryHeight(List<RectangleSlot> slots) {
 
 			if (slots==null) return 0f;
 
@@ -89,7 +88,7 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="posX"></param>
 		/// <param name="posY"></param>
 		/// <returns>Если сумка не найдена вернёт null</returns>
-		public RectangleSlot getSlot(float mouseX, float mouseY) {
+		public RectangleSlot getSlot(List<RectangleSlot> slots, float mouseX, float mouseY) {
 
 			if (slots==null) return null;
 
@@ -118,7 +117,7 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="cellX"></param>
 		/// <param name="cellY"></param>
 		/// <returns>Если предмет не найден вернёт null</returns>
-		public ItemSlot getItem(RectangleSlot slot, int cellX, int cellY) {
+		public ItemSlot getItem(List<RectangleSlot> slots, RectangleSlot slot, int cellX, int cellY) {
 
 			if (slots==null) return null;
 
@@ -144,7 +143,7 @@ namespace Engine.EGUI.Inventory {
 		/// </summary>
 		/// <param name="item">Добавляемый предмет</param>
 		/// <returns>Возвращает число НЕ вместившихся экземпляров, если предмет не был полностью добавлен. 0 - если предмет успешно добавлен</returns>
-		public int addItem(Item item){
+		public int addItem(List<RectangleSlot> slots, Item item){
 
 			foreach (RectangleSlot slot in slots) { // перебираем все сумки
 
@@ -199,7 +198,7 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="full">если true - удаляет предме, независимо от количества</param>
 		/// <param name="count">число удаляемых предметов (действует при full=true)</param>
 		/// <returns>Возращает успех операции</returns>
-		public bool removeItem(Item item, bool equals=true, bool full = true, int count = 1){
+		public bool removeItem(List<RectangleSlot> slots, Item item, bool equals=true, bool full = true, int count = 1){
 
 			bool flagResult = false;
 

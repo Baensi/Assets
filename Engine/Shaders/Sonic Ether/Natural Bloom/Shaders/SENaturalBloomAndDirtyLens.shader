@@ -61,14 +61,15 @@
 			return fixed3(x, x, x);
 		}
 		
-		fixed4 fragBloom ( v2f_simple i ) : COLOR
+		fixed4 fragBloom ( v2f_simple i ) : SV_Target
 		{	
-			fixed4 color = tex2D(_MainTex, i.uv.xy);
         	#if UNITY_UV_STARTS_AT_TOP
 				float2 coord = i.uv2.xy;
 			#else
 				float2 coord = i.uv.xy;
 			#endif
+			fixed4 color = tex2D(_MainTex, coord);
+				
 			fixed3 lens = tex2D(_LensDirt, i.uv.xy).rgb;
 			
 			fixed3 b0 = tex2D(_Bloom0, coord).rgb;
@@ -124,7 +125,7 @@
 			return o; 
 		}		
 		
-		fixed4 fragDownsample ( v2f_tap i ) : COLOR
+		fixed4 fragDownsample ( v2f_tap i ) : SV_Target
 		{				
 			fixed4 color = tex2D (_MainTex, i.uv20.xy);
 			color += tex2D (_MainTex, i.uv21.xy);
@@ -173,7 +174,7 @@
 			return o; 
 		}	
 
-		half4 fragBlur8 ( v2f_withBlurCoords8 i ) : COLOR
+		half4 fragBlur8 ( v2f_withBlurCoords8 i ) : SV_Target
 		{
 			half2 uv = i.uv.xy; 
 			half2 netFilterWidth = i.offs.xy;  
@@ -187,6 +188,27 @@
 				coords += netFilterWidth;
   			}
 			return color;
+		}
+		
+		float3 FLOAT3(float x)
+		{
+			return float3(x,x,x);
+		}
+		
+		half4 fragClamp(v2f_simple input) : SV_Target
+		{
+		    #if UNITY_UV_STARTS_AT_TOP
+				float2 coord = input.uv2.xy;
+			#else
+				float2 coord = input.uv.xy;
+			#endif
+		
+			half4 source = tex2D(_MainTex, coord.xy);
+			float maximum = 100000.0;
+			source.r = min(source.r, maximum);
+			source.g = min(source.g, maximum);
+			source.b = min(source.b, maximum);
+			return source;
 		}
 		
 	ENDCG
@@ -223,13 +245,22 @@
 			ENDCG		 
 		}
 		
-		Pass 	//2 Blur Horizontal
+		Pass 	//3 Blur Horizontal
 		{ 	
 			CGPROGRAM			
 			#pragma vertex vertBlurHorizontal
 			#pragma fragment fragBlur8
 			#pragma fragmentoption ARB_precision_hint_fastest 			
 			ENDCG		 
+		}
+		
+		Pass 	//4 Clamp
+		{
+			CGPROGRAM
+			#pragma vertex vertBloom
+			#pragma fragment fragClamp
+			#pragma fragmentoption ARB_precision_hint_fastest 
+			ENDCG
 		}
 	} 
 	FallBack Off

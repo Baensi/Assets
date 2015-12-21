@@ -31,7 +31,7 @@ namespace Engine.Player {
 		private Vector3        cursorPosition;
 
 		private GUIController guiController;
-		public AudioSource    audioSource;
+		private AudioSource    audioSource;
 
 			void OnEnable() {
 

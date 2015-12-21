@@ -7,7 +7,7 @@ using Engine.Objects;
 
 namespace Engine.EGUI {
 
-	public class DoorGUIRenderer : IRendererGUI {
+	public class DoorGUIRenderer {
 
 		private static float offsetY = 0f;
 
@@ -80,6 +80,8 @@ namespace Engine.EGUI {
 		
 		public void printLabel(IDoor doorObject){
 
+			onResizeWindow();
+
 			if (doorObject.getTextDisplayed() == TextDisplayed.None) return;
 
 			GUI.Label(objectTitleRectangle,"["+CLang.getInstance().get(doorObject.getId())+"]\n",titleStyle);
@@ -96,6 +98,8 @@ namespace Engine.EGUI {
 		}
 
 		public void printLabel(ILever leverObject) {
+
+			onResizeWindow();
 
 			if (leverObject.getTextDisplayed() == TextDisplayed.None) return;
 

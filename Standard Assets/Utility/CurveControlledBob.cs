@@ -8,10 +8,10 @@ namespace UnityStandardAssets.Utility
     public class CurveControlledBob
     {
         public float HorizontalBobRange = 0.33f;
-        public float VerticalBobRange   = 0.33f;
-        public AnimationCurve Bobcurve  = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.5f, 1f),
-                                                             new Keyframe(1f, 0f), new Keyframe(1.5f, -1f),
-                                                             new Keyframe(2f, 0f)); // sin curve for head bob
+        public float VerticalBobRange = 0.33f;
+        public AnimationCurve Bobcurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.5f, 1f),
+                                                            new Keyframe(1f, 0f), new Keyframe(1.5f, -1f),
+                                                            new Keyframe(2f, 0f)); // sin curve for head bob
         public float VerticaltoHorizontalRatio = 1f;
 
         private float m_CyclePositionX;

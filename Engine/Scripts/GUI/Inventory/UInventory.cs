@@ -5,39 +5,42 @@ using Engine.I18N;
 using Engine.Objects;
 using Engine.EGUI.PopupMenu;
 using Engine.EGUI.ToolTip;
+using Engine.Images;
 
 namespace Engine.EGUI.Inventory {
 	
-	public class UInventory : MonoBehaviour, IInventory {
+	public class UInventory : MonoBehaviour, IInventory, IExternalData {
 
 		[SerializeField] public GUIStyle  iconStyle;
+		[SerializeField] public GUIStyle  titleStyle;
 
-		[SerializeField] public Texture2D selectCellImage;
-		[SerializeField] public Texture2D correctCellImage;
-		[SerializeField] public Texture2D errorCellImage;
+		private Texture2D selectCellImage;
+		private Texture2D correctCellImage;
+		private Texture2D errorCellImage;
 
 		[SerializeField] public List<RectangleSlot> slots;
-		[SerializeField] public bool visible = false;
+		private bool visible = false;
 
 		[SerializeField] public InventoryPopupMenu popupMenu;
 		[SerializeField] public ToolTipBase toolTip;
 
-		[SerializeField] public float movXPos = 0f; // смещение положения
+		[SerializeField] public float movXPos = 0f; // смещение положения инвентаря относительно центра
 		[SerializeField] public float movYPos = 0f;
 
 		/// <summary> Положение по x окна инвентаря </summary>
 		private float     offsetX;
 		/// <summary> Положение по y окна инвентаря </summary>
 		private float     offsetY;
-		
-		private ItemPosition   selectedCell = new ItemPosition(-1, -1);
-		private ItemSlot       selectedItem = null;
-		private EventContainer eventData    = new EventContainer();
+
+		private ItemPosition selectedCell;
+		private ItemSlot       selectedItem;
+		private EventContainer eventData;
+
+		private InventoryExternal externalInventory;
 
 		private Rect          inventarFramePosition;
 		private Rect          cellRect;
 
-		private InventoryAlgoritm algoritm;
 		private SlotDrawService   drawService;
 
 		/// <summary> Ширина окна инвентаря </summary>
@@ -56,9 +59,33 @@ namespace Engine.EGUI.Inventory {
 
 #endif
 
+		/// <summary>
+		/// Отображает инвентарь
+		/// </summary>
 		public void show(){
+			externalInventory=null;
+			movXPos = 0f;
+			movYPos = 0f;
 			visible = true;
 			GameConfig.GameMode = GameConfig.MODE_GUI;
+		}
+
+		/// <summary>
+		/// Отображает инвентрарь в режиме внешнего инвентаря
+		/// </summary>
+		/// <param name="externalInventory"></param>
+		public void show(InventoryExternal externalInventory) {
+			this.externalInventory=externalInventory;
+			visible = true;
+			GameConfig.GameMode = GameConfig.MODE_GUI;
+
+			movXPos = externalInventory.getWidth()*0.5f; // смещаем инвентарь вправо, чтобы центровать все инвентари правильно
+			movYPos = 0f;
+
+			float leftCenterX = (offsetX+movXPos - externalInventory.getWidth()) * 0.5f;
+			float leftCenterY = (offsetY+movYPos) + (getHeight()-externalInventory.getHeight())*0.5f;
+			externalInventory.show(this, leftCenterX, leftCenterY); // устанавливаем позицию внешней сумки
+			
 		}
 
 		public void hide(){
@@ -98,7 +125,11 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="item">Добавляемый предмет</param>
 		/// <returns>Возвращает число НЕ добавленных экземпляров предмета, 0 - если педмет успешно добавлен</returns>
 		public int addItem(Item item){
-			return algoritm.addItem(item);
+			return InventoryAlgoritm.getInstance().addItem(slots, item);
+		}
+
+		public bool removeItem(Item item) {
+			return InventoryAlgoritm.getInstance().removeItem(slots, item, false, true);
 		}
 
 		/// <summary>
@@ -110,7 +141,7 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="count">Число удаляемых экземпляров (только при full=false)</param>
 		/// <returns>Возвращает результат операции удаления (false = предмет не найден, или найденных экземпляров меньше count)</returns>
 		public bool removeItem(Item item, bool equals = true, bool full = true, int count = 1){
-			return algoritm.removeItem(item, equals, full, count);
+			return InventoryAlgoritm.getInstance().removeItem(slots, item, equals, full, count);
 		}
 
 		/// <summary>
@@ -142,7 +173,6 @@ namespace Engine.EGUI.Inventory {
 #endif
 
 			drawService.DrawSlots(offsetX, offsetY);
-
 			OnDrawCells();
 			OnEvents();
 			
@@ -155,19 +185,21 @@ namespace Engine.EGUI.Inventory {
 		/// Выполняет update в режиме редактора-отладчика
 		/// </summary>
 		public void OnEditorUpdate(float debugWindowWidth, float debugWindowHeight) {
-			if (!visible)
-				return;
 
 			this.debugWindowWidth  = debugWindowWidth;
             this.debugWindowHeight = debugWindowHeight;
 
 			debugMode = true;
 
-			    if (algoritm==null)
+				if (eventData == null)
+					eventData = new EventContainer();
+
+				if (selectCellImage == null || drawService == null)
 				    Start();
 
-			Update();
-			OnGUI();
+			redraw();
+			popupMenu.redraw();
+			toolTip.redraw();
 
 		}
 
@@ -175,21 +207,23 @@ namespace Engine.EGUI.Inventory {
 
 		void Start () {
 
-			algoritm = new InventoryAlgoritm();
-			algoritm.setSlots(slots);
+			selectCellImage  = DImageList.getInstance().getImage("inventory_selected_cell");
+			correctCellImage = DImageList.getInstance().getImage("inventory_correct_cell");
+			errorCellImage   = DImageList.getInstance().getImage("inventory_error_cell");
+
 			drawService = new SlotDrawService(slots, iconStyle);
 
-				width  = algoritm.getInventoryWidth();
-				height = algoritm.getInventoryHeight();
+				width  = InventoryAlgoritm.getInstance().getInventoryWidth(slots);
+				height = InventoryAlgoritm.getInstance().getInventoryHeight(slots);
+
+			eventData    = new EventContainer();
+			selectedCell = new ItemPosition(-1, -1);
 
 			popupMenu.SetupListeners(toolTip);
 
 #if UNITY_EDITOR
 				debugMode = false;
 #endif
-
-			if(visible)
-				redraw();
 			
 		}
 
@@ -204,7 +238,7 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		private void FindSelectedSlot() {
-			RectangleSlot selectedSlot = algoritm.getSlot(eventData.cursorPosition.x - offsetX, eventData.cursorPosition.y - offsetY);
+			RectangleSlot selectedSlot = InventoryAlgoritm.getInstance().getSlot(slots, eventData.cursorPosition.x - offsetX, eventData.cursorPosition.y - offsetY);
 
 			if (eventData.endSlot != selectedSlot)
 				eventData.endSlot = selectedSlot;
@@ -241,9 +275,9 @@ namespace Engine.EGUI.Inventory {
 				}
 
 				if (eventData.eventType == InventoryEvent.None)
-					selectedItem = algoritm.getItem(eventData.endSlot, selectedCell.X, selectedCell.Y);
+					selectedItem = InventoryAlgoritm.getInstance().getItem(slots, eventData.endSlot, selectedCell.X, selectedCell.Y);
 				else
-					tmpItem = algoritm.getItem(eventData.endSlot, selectedCell.X, selectedCell.Y);
+					tmpItem = InventoryAlgoritm.getInstance().getItem(slots, eventData.endSlot, selectedCell.X, selectedCell.Y);
 
 
 			}
@@ -333,8 +367,8 @@ namespace Engine.EGUI.Inventory {
 
 			if (eventData.mouseEvent.LMouseUp && eventData.eventType == InventoryEvent.ItemMove) {
 
-				if (eventData.collision==null
-					&& selectedCell.X+eventData.selected.item.getSize().getWidth()<= eventData.endSlot.position.CellsXCount+1 && 
+				if (eventData.collision==null &&
+					selectedCell.X+eventData.selected.item.getSize().getWidth()<= eventData.endSlot.position.CellsXCount+1 && 
 					selectedCell.Y+eventData.selected.item.getSize().getHeight()<= eventData.endSlot.position.CellsYCount+1) { // двигаем только в том случае, если нет коллизий, и предмет находится в "сумке"
 
 						if (eventData.isDivMode && eventData.selected.item.getCount()>1) { // можно разделить?
@@ -354,7 +388,7 @@ namespace Engine.EGUI.Inventory {
 
 						} else { // нужно перемещать
 
-							if (algoritm.slotContain(eventData.endSlot, eventData.selected)){ // предмет перемещается внутри одной сумки
+							if (InventoryAlgoritm.getInstance().slotContain(eventData.endSlot, eventData.selected)){ // предмет перемещается внутри одной сумки
 
 								eventData.selected.getPosition().X = selectedCell.X; // перемещаем предмет
 								eventData.selected.getPosition().Y = selectedCell.Y;
@@ -413,11 +447,9 @@ namespace Engine.EGUI.Inventory {
 
 			if (eventData.selected!=null) { // если предмет переносится
 
-				drawService.getItemDrawService().DrawItem(eventData.selected, eventData.cursorPosition.x, eventData.cursorPosition.y, false);
-
 				if (eventData.endSlot != null) { // если предмет перенесли в какую то сумку и он не вылазиет за рамки сумки
 
-					eventData.collision = algoritm.getCollisionItem(eventData.endSlot, eventData.selected, selectedCell.X, selectedCell.Y); // вычисляем коллизии внутри зоны перемещения
+					eventData.collision = InventoryAlgoritm.getInstance().getCollisionItem(eventData.endSlot, eventData.selected, selectedCell.X, selectedCell.Y); // вычисляем коллизии внутри зоны перемещения
 
 					if (eventData.collision==null) { // если нет коллизии
 
@@ -438,6 +470,8 @@ namespace Engine.EGUI.Inventory {
 					}
 
 				}
+
+				drawService.getItemDrawService().DrawItem(eventData.selected, eventData.cursorPosition.x, eventData.cursorPosition.y, false); // рисуем предмет возле курсора
 
 			}
 

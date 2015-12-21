@@ -124,7 +124,7 @@ namespace Engine.Player.Movement.Movements {
 				newCameraPosition = mainCameraObject.transform.localPosition;
 				newCameraPosition.y = originalCameraPosition.y - jumpBob.Offset();
 
-				actions.Stay();
+				actions.setStay();
 			}
 
 		}

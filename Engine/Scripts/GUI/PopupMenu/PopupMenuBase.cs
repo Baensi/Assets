@@ -20,7 +20,7 @@ namespace Engine.EGUI.PopupMenu {
 		[SerializeField] public Vector2 position;
 		[SerializeField] public bool    visible;
 
-		[SerializeField] public float stepSize = 0.01f;
+		[SerializeField] public float stepSize = 0.1f;
 
 		private float width;
 		private float height;
@@ -59,7 +59,8 @@ namespace Engine.EGUI.PopupMenu {
 		/// <param name="menuItemClickListener"></param>
 		public void initEvents(MenuItemSelectListener menuItemSelectListener, MenuItemClickListener menuItemClickListener){
 			foreach (MenuItem item in items)
-				item.InitEvents(menuItemSelectListener, menuItemClickListener);
+				if(!item.isHaveSpecificClickListener()) // устанавливаем слушателей событий по умолчанию только там, где их нет
+					item.InitEvents(menuItemSelectListener, menuItemClickListener);
 		}
 
 

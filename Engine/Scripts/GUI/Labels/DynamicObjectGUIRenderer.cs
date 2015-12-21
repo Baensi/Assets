@@ -6,7 +6,7 @@ using Engine.I18N;
 
 namespace Engine.EGUI {
 
-	public class DynamicObjectGUIRenderer : IRendererGUI {
+	public class DynamicObjectGUIRenderer {
 
 		private static float offsetY = 0f;
 
@@ -63,6 +63,8 @@ namespace Engine.EGUI {
 		}
 															  
 		public void printLabel(IDynamicObject dynamicObject){
+
+			onResizeWindow();
 
 			if(dynamicObject.getDisplayed().Equals(TextDisplayed.None)) return;
 

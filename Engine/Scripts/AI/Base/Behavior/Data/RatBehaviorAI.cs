@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Engine.Player;
+using Engine.Calculators;
 
 namespace Engine.AI.Behavior {
 
@@ -10,31 +11,39 @@ namespace Engine.AI.Behavior {
 	/// </summary>
 	public class RatBehaviorAI : MeleeAI {
 
-		private PlayerSpecifications specifications = PlayerSpecifications.Create(3, 4, 0, 4);
-		private PlayerStates states = new PlayerStates() {
-			damageMelee = 2f,
-			criticalDamageMelee = 0.05f,
-			health = 30,
-			maxHealth=30,
-		};
-
-		public override PlayerSpecifications getSpecifications() {
-			return specifications;
-		}
-
-		public override PlayerStates getStates() {
-			return states;
-		}
+		//private float timeStamp;
 
 		void Start() {
+
+			states         = new PlayerStates();
+			damage         = new PlayerStates();
+			specifications = new PlayerSpecifications();
+
+				specifications.strength     = 3;
+				specifications.stamina      = 4;
+				specifications.intelligence = 0;
+				specifications.agility      = 4;
+
+				damage.health = 50f; // урон в 2 ед.
+
+				states.damageMelee               = 2f;
+				states.chanceCriticalDamageMelee = 0.05f;
+				states.criticalDamageMelee       = 0.2f;
+				states.health                    = 30f;
+				states.maxHealth                 = 30f;
+
 			OnStart();
-
-
 		} 
 
 		void Update() {
-			OnUpdate();
 
+			//if (Time.time - timeStamp >= 0.01f) {
+
+				OnUpdate();
+
+				//timeStamp = Time.time;
+
+			//}
 
 		}
 

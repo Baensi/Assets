@@ -5,14 +5,18 @@ namespace Engine.AI.Behavior {
 
 	public class AnimationBehavior : IAnimationBehavior {
 
-		public const string IDLE_COUNT   = "IdleCount";
-		public const string ATTACK_COUNT = "AttackCount";
+		public const string IDLE_COUNT       = "IdleCount";
+		public const string ATTACK_COUNT     = "AttackCount";
+		public const string GET_DAMAGE_COUNT = "GetDamageCount";
+		public const string DIE_COUNT        = "DieCount";
 
-		public const string ATTACK = "Attack";
-		public const string IDLE   = "Idle";
-		public const string WALK   = "Walk";
-		public const string RUN    = "Run";
-		public const string SNEAK  = "Sneak";
+		public const string ATTACK     = "Attack";
+		public const string IDLE       = "Idle";
+		public const string WALK       = "Walk";
+		public const string RUN        = "Run";
+		public const string SNEAK      = "Sneak";
+		public const string GET_DAMAGE = "GetDamage";
+		public const string DIE        = "Die";
 
 		private Animator animator;
 
@@ -20,14 +24,39 @@ namespace Engine.AI.Behavior {
 				this.animator = animator;
 			}
 
+		/// <summary>
+		/// Устанавливает анимацию атаки
+		/// </summary>
 		public void setAttack() {
 			setVariantValue(animator.GetInteger(ATTACK_COUNT), ATTACK);
         }
 
+		/// <summary>
+		/// Устаналивает анимацию получения урона
+		/// </summary>
+		public void getDamage() {
+			setVariantValue(animator.GetInteger(GET_DAMAGE_COUNT), GET_DAMAGE);
+        }
+
+		/// <summary>
+		/// Устанавливает анимацию смерти
+		/// </summary>
+		public void setDie() {
+			setVariantValue(animator.GetInteger(DIE_COUNT), DIE);
+        }
+
+		/// <summary>
+		/// Устанавливает анимацию ожидания
+		/// </summary>
 		public void setIdle() {
 			setVariantValue(animator.GetInteger(IDLE_COUNT), IDLE);
 		}
 
+		/// <summary>
+		/// Произвольно устанавливает одно значение анимации из набора вариаций
+		/// </summary>
+		/// <param name="variation">Максимальное число вариаций анимации</param>
+		/// <param name="valueName">Имя анимации</param>
 		private void setVariantValue(int variation, string valueName) {
 
 			if (variation <= 1) {
@@ -42,6 +71,9 @@ namespace Engine.AI.Behavior {
 
 		}
 
+		/// <summary>
+		/// Устанавливает анимацию бега
+		/// </summary>
 		public void setRun() {
 
 			animator.SetInteger(IDLE,  0);
@@ -52,6 +84,9 @@ namespace Engine.AI.Behavior {
 
 		}
 
+		/// <summary>
+		/// Устанавливает анимацию "красться"
+		/// </summary>
 		public void setSneak() {
 
 			animator.SetInteger(IDLE, 0);
@@ -60,6 +95,9 @@ namespace Engine.AI.Behavior {
 			animator.SetInteger(SNEAK, 1);
 		}
 
+		/// <summary>
+		/// Устанавливает анимацию хотьбы
+		/// </summary>
 		public void setWalk() {
 
 			animator.SetInteger(IDLE, 0);

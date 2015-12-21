@@ -65,11 +65,14 @@ public class SENaturalBloomAndDirtyLens : MonoBehaviour
 		material.SetFloat("_LensDirtIntensity", Mathf.Exp(lensDirtIntensity) - 1.0f);
 		source.filterMode = FilterMode.Bilinear;
 
+		RenderTexture clampedSource = RenderTexture.GetTemporary(source.width, source.height, 0, source.format);
+		Graphics.Blit(source, clampedSource, material, 4);
+
 		int rtWidth = source.width / 2;
 		int rtHeight = source.height / 2;
 
 		RenderTexture downsampled;
-		downsampled = source;
+		downsampled = clampedSource;
 
 		float spread = 1.0f;
 		int iterations = 2;
@@ -136,11 +139,12 @@ public class SENaturalBloomAndDirtyLens : MonoBehaviour
 
 			RenderTexture.ReleaseTemporary(rt);
 
-			rtWidth /= 2;
+			rtWidth /= 2; 
 			rtHeight /= 2;
 		}
 
 		material.SetTexture("_LensDirt", lensDirtTexture);
-		Graphics.Blit(source, destination, material, 0);
+		Graphics.Blit(clampedSource, destination, material, 0);
+		RenderTexture.ReleaseTemporary(clampedSource);
 	}
 }

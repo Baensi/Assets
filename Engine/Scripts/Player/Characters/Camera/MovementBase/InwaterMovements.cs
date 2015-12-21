@@ -161,9 +161,9 @@ namespace Engine.Player.Movement.Movements {
 				return;
 
 			if (isWalking)
-				actions.Walk();
+				actions.setWalk();
 			else
-				actions.Run();
+				actions.setRun();
 
 			audioSource.clip = audioData.getFootStepSound(audioSource.clip);
 			audioSource.PlayOneShot(audioSource.clip);
@@ -184,7 +184,7 @@ namespace Engine.Player.Movement.Movements {
 				newCameraPosition = mainCameraObject.transform.localPosition;
 				newCameraPosition.y = originalCameraPosition.y - jumpBob.Offset();
 
-				actions.Stay();
+				actions.setStay();
 			}
 
 		}

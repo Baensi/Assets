@@ -8,6 +8,10 @@ namespace Engine.EGUI.PopupMenu {
 	[Serializable]
 	public class MenuItem : MonoBehaviour {
 
+		private const float minAlpha  = 0.65f;
+		private const float stepAlpha = 0.01f;
+		private const float sizeDelay = 0.001f;
+
 		private PopupMenuBase  menu;
 		[SerializeField] public List<MenuItem> childs;
 		[SerializeField] public bool childVisible = false; // показывать дочерние элементы
@@ -26,13 +30,15 @@ namespace Engine.EGUI.PopupMenu {
 		private bool  selFlag      = false;
 
 		private Color diffColor; // промежуточный цвет
-		private static float minAlpha  = 0.65f;
-		private static float stepAlpha = 0.01f;
+
 
 		private bool isLoaded = false;
 
         private float transferent  = 0.7f;  // прозрачность выделения
 		private float size = 0.0f;
+
+		private float sizeTimeStamp;
+		private float alphaTimeStamp;
 
 		private int textSize;
 		private Vector2 oldOffset = new Vector2(0,0);
@@ -95,10 +101,14 @@ namespace Engine.EGUI.PopupMenu {
 
 		public void InitEvents(MenuItemSelectListener menuItemSelectListener, MenuItemClickListener menuItemClickListener){
 			this.menuItemSelectListener = menuItemSelectListener;
-			this.menuItemClickListener = menuItemClickListener;
+			this.menuItemClickListener  = menuItemClickListener;
 
 			foreach (MenuItem item in childs) // Закидываем интерфейсы дочерним элементам
 				item.InitEvents (menuItemSelectListener, menuItemClickListener);
+		}
+
+		public bool isHaveSpecificClickListener() {
+			return menuItemClickListener!=null;
 		}
 
 		public bool isEnabled() {
@@ -135,6 +145,10 @@ namespace Engine.EGUI.PopupMenu {
 		private void OnMenuItemClickListener(){
 			if (menuItemClickListener != null)
 				menuItemClickListener.onClick(this);
+#if UNITY_EDITOR
+			else
+				Debug.LogError("Не установлен слушатель клика по элементу всплывающего меню!");
+#endif				
 		}
 
 		public void setVisible(bool visible){
@@ -196,8 +210,9 @@ namespace Engine.EGUI.PopupMenu {
 				if (!selected)
 					OnMenuItemSelectListener();
 
-				if (Event.current.isMouse && Event.current.type == EventType.MouseDown && menu.isLoad())
+				if (Event.current.isMouse && Event.current.type == EventType.MouseDown && menu.isLoad()) {
 					OnMenuItemClickListener();
+				}
 
 				selected = true;
 
@@ -265,10 +280,13 @@ namespace Engine.EGUI.PopupMenu {
 		}
 
 		private void onSelectIteration() {
-			if (selected)
-				incAlhpa();
-			else
-				decAlhpa();
+			if (Time.time - alphaTimeStamp >= sizeDelay) {
+				if (selected)
+					incAlhpa();
+				else
+					decAlhpa();
+				alphaTimeStamp = Time.time;
+			}
         }
 
 		public void draw(float offsetX, float offsetY){
@@ -276,16 +294,19 @@ namespace Engine.EGUI.PopupMenu {
 			if (!visible || !enabled || !isLoaded)
 				return;
 
-			if (visible) {
-				if (size < 1.0f)
-					size += menu.stepSize;
-				else
-					size = 1.0f;
-			} else {
-				if (size > 0.0f)
-					size -= menu.stepSize;
-				else
-					size = 0.0f;
+			if (Time.time - sizeTimeStamp >= sizeDelay) {
+				if (visible) {
+					if (size < 1.0f)
+						size += menu.stepSize;
+					else
+						size = 1.0f;
+				} else {
+					if (size > 0.0f)
+						size -= menu.stepSize;
+					else
+						size = 0.0f;
+				}
+				sizeTimeStamp = Time.time;
 			}
 
 			oldOffset.x = offsetX;

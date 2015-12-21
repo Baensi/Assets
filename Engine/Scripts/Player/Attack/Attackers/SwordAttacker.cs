@@ -14,7 +14,7 @@ namespace Engine.Player.Attack {
 		}
 		
 		public void attack(){
-			actions.Attack();
+			actions.setAttack();
 		}
 		
 		public void superAttack(){

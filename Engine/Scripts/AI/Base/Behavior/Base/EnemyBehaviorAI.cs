@@ -8,7 +8,9 @@ namespace Engine.AI.Behavior {
 	/// Модель поведения враждебного герою AI
 	/// </summary>
 	[RequireComponent(typeof(PathBehavior))]
-	public abstract class EnemyBehaviorAI : MonoBehaviour, IModelBehaviorAI, IAIState, IMoveBehavior {
+	public abstract class EnemyBehaviorAI : MonoBehaviour, AIC, IMoveBehavior {
+
+		[SerializeField] public AIFraction fraction;
 
 		private PathBehavior       pathBehavior;
 		private IAnimationBehavior animationBehavior;
@@ -18,12 +20,22 @@ namespace Engine.AI.Behavior {
 		/// Возвращает характеристики AI
 		/// </summary>
 		/// <returns></returns>
-		public virtual PlayerSpecifications getSpecifications() { return PlayerSpecifications.NULL; }
+		public abstract PlayerSpecifications getSpecifications();
 		/// <summary>
 		/// Возвращает статы AI
 		/// </summary>
 		/// <returns></returns>
-		public virtual PlayerStates         getStates() { return null; }
+		public abstract PlayerStates         getStates();
+		public abstract PlayerStates         getDamageStates();
+		/// <summary>
+		/// Увеличивает текущие статы AI на набор value
+		/// </summary>
+		/// <param name="value">набор статов, изменяющих значение</param>
+		public abstract void getDamage(PlayerStates value);
+
+		public AIFraction getFraction() {
+			return fraction;
+		}
 
 			public void OnStartEnemyBehaviorAI(Animator animator) {
 				pathBehavior = GetComponent<PathBehavior>();
@@ -33,9 +45,13 @@ namespace Engine.AI.Behavior {
 
 			public void OnUpdateEnemyBehaviorAI() {
 
-
+				
 
 			}
+
+		public PathBehavior getPathBehavior() {
+			return pathBehavior;
+		}
 
 		public IAnimationBehavior getAnimationBehavior() {
             return animationBehavior;
@@ -45,6 +61,11 @@ namespace Engine.AI.Behavior {
 			return audioBehavior;
 		}
 
+		public GameObject toObject() {
+			return gameObject;
+		}
+
+		public abstract void OnSeeIteration();
 		public abstract void OnMoveIteration();
 		public abstract void OnIdleIteration();
 		public abstract void OnAttackIteration();
