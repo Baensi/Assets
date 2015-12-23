@@ -7,7 +7,7 @@ using Engine.Objects;
 
 namespace Engine.EGUI.Inventory {
 
-	public class InventoryExternal : MonoBehaviour, IExternalData {
+	public class InventoryExternal : MonoBehaviour, IExternalInventory {
 
 		private GUIStyle titleStyle;
 
@@ -18,7 +18,9 @@ namespace Engine.EGUI.Inventory {
 		private Texture2D correctCellImage;
 
 		[SerializeField] public string titleTextId;
+		[SerializeField] public string captionTextId;
 		private string titleText;
+		private string captionText;
 
 		[SerializeField] public int cellXCount = 4;
 		[SerializeField] public int cellYCount = 2;
@@ -42,6 +44,8 @@ namespace Engine.EGUI.Inventory {
 
 			void Start() {
 
+				slot = new SlotData();
+
 				foreach(string item in initListItems)
 					addItem(DObjectList.getInstance().getItem(item));
 
@@ -53,6 +57,7 @@ namespace Engine.EGUI.Inventory {
 				titleStyle = playerInventory.titleStyle;
 				
 				titleText = CLang.getInstance().get(titleTextId);
+				captionText = CLang.getInstance().get(captionTextId);
 
 				initListItems.Clear();
 
@@ -68,6 +73,14 @@ namespace Engine.EGUI.Inventory {
 
 		public float getHeight() {
 			return slot.position.SlotHeight;
+		}
+
+		public string getTitleText() {
+			return titleText;
+		}
+
+		public string getCaptionText() {
+			return captionText;
 		}
 
 		public void show(IExternalData inventory, float x, float y) {
@@ -93,6 +106,7 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public void hide() {
+			inventory = null;
 			visible = false;
 		}
 
@@ -101,10 +115,10 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public int addItem(Item item) {
-
+			int count = slot.Items.Count;
 			int result = ExternalInventoryAlgorithm.getInstance().AddItem(slot, item);
 			
-			if(result!=item.getCount())
+			if(count!=slot.Items.Count)
 				ExternalInventoryAlgorithm.getInstance().SortData(slot);
 
 			return result;
@@ -127,24 +141,30 @@ namespace Engine.EGUI.Inventory {
 
 		void OnGUI() {
 
+			if(!visible)
+				return;
+
 			int selX = (int)((Event.current.mousePosition.x - slot.position.OffsetX - CellSettings.cellPaddingX) / CellSettings.cellWidth)+1;
 			int selY = (int)((Event.current.mousePosition.y - slot.position.OffsetY - CellSettings.cellPaddingY) / CellSettings.cellHeight)+1;
 
+			
 			GUI.Label(titleRect, titleText, titleStyle); // отображаем метку сумки
 			GUI.DrawTextureWithTexCoords(bounds, background, sourceBounds, true); // рисуем фрагмент инвентаря, нужного размера
+			
 
 			if (selX >= 0 && selX <= cellXCount && selY >= 0 && selY <= cellYCount)
 				selectedItem = ExternalInventoryAlgorithm.getInstance().getItem(slot, selX, selY);
 			else
 				selectedItem = null;
 
-
+			
 			if (selectedItem != null) {
+				
 				InventoryExternalDrawServices.getInstance().DrawCellsItem(slot.position.OffsetX,
 																		  slot.position.OffsetY,
 																		  selectedItem,
 																		  correctCellImage);
-
+				
 				if (Event.current.isMouse && Event.current.type == EventType.MouseDown && Event.current.button == 0) {
 
 					if (inventory != null) { // пытаемся передать предмет в другой инвентарь
@@ -159,27 +179,22 @@ namespace Engine.EGUI.Inventory {
 					}
 
 				}
+				
 			}
 
-
-			foreach (ItemSlot item in slot.Items) // рисуем иконки предметов
-				drawService.DrawItem(item, slot.position.OffsetX, slot.position.OffsetY);
-
+			if(slot.Items.Count>0)
+				foreach (ItemSlot item in slot.Items) // рисуем иконки предметов
+					drawService.DrawItem(item, slot.position.OffsetX, slot.position.OffsetY);
+			
 		}
 
 #if UNITY_EDITOR
 
-		void OnValidate() {
-
-			if (cellXCount < 1)
-				cellXCount = 1;
-
-			if (cellYCount < 1)
-				cellYCount = 1;
-
-		}
-
 		public void OnUpdateEditor(float x, float y) {
+
+			visible = true;
+
+			TryInit();
 
 			slot.position.OffsetX = x;
 			slot.position.OffsetY = y;
@@ -193,18 +208,22 @@ namespace Engine.EGUI.Inventory {
 			float maxWidth  = CellSettings.cellPaddingX + MAX_COUNT_X * CellSettings.cellWidth;
 			float maxHeight = CellSettings.cellPaddingY + MAX_COUNT_Y * CellSettings.cellHeight;
 
-			sourceBounds = new Rect(1, 1, getWidth()/ maxWidth, getHeight()/ maxHeight); // расчитываем мколько нужно вырезать из исходной картинки чтобы показать видимые ячейки
-
-			TryInit();
-
-			titleText = CLang.getInstance().get(titleTextId);
-			titleStyle = playerInventory.titleStyle;
+			sourceBounds = new Rect(1, 1, getWidth()/maxWidth, getHeight()/maxHeight); // расчитываем мколько нужно вырезать из исходной картинки чтобы показать видимые ячейки
 
 			OnGUI();
 
 		}
 
-		private void TryInit() {
+		public void TryInit() {
+
+			if(slot==null)
+				slot = new SlotData();
+
+			if(slot.position.CellsXCount<1)
+				slot.position.CellsXCount=1;
+
+			if(slot.position.CellsYCount<1)
+				slot.position.CellsYCount=1;
 
 			if(background==null)
 				background = DImageList.getInstance().getImage("external_inventory_background");
@@ -218,11 +237,10 @@ namespace Engine.EGUI.Inventory {
 			if(drawService==null)
 				drawService = new ItemDrawService(playerInventory.iconStyle);
 
-			if(titleStyle==null)
-				titleStyle = playerInventory.titleStyle;
+			titleStyle = playerInventory.titleStyle;
 
-			if(titleText==null)
-				titleText = CLang.getInstance().get(titleTextId);
+			titleText   = CLang.getInstance().get(titleTextId);
+			captionText = CLang.getInstance().get(captionTextId);
 
 		}
 

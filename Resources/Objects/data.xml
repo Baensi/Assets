@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <data>
 
   <item name="HealthPotion" gameObject="Objects/health_potion" id="0">
-    <property width="1" height="1" count="5"/>
+    <property width="1" height="2" count="5"/>
     <description icon="Objects/health_potion_icon" textName="healthpotion_id_name" textCaption="healthpotion_id_caption" costValue="1.0">
     </description>
   </item>
   <item name="ManaPotion" gameObject="Objects/mana_potion" id="1">
-    <property width="1" height="1" count="5"/>
+    <property width="1" height="2" count="5"/>
     <description icon="Objects/mana_potion_icon" textName="manapotion_id_name" textCaption="manapotion_id_caption" costValue="1.1">
     </description>
   </item>

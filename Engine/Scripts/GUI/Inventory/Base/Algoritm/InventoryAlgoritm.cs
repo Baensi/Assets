@@ -111,6 +111,21 @@ namespace Engine.EGUI.Inventory {
 			return slot.Items.Contains(item);
 		}
 
+		public ItemSlot findItem(List<RectangleSlot> slots, Item item) {
+			foreach(RectangleSlot slot in slots)
+				foreach(ItemSlot itemSlot in slot.Items)
+					if(itemSlot.item==item)
+						return itemSlot;
+			return null;
+		}
+
+		public ItemSlot findItem(RectangleSlot slot, Item item) {
+			foreach(ItemSlot itemSlot in slot.Items)
+				if(itemSlot.item==item)
+					return itemSlot;
+			return null;
+		}
+
 		/// <summary>
 		/// Возвращает предмет, который занимает ячейку {cellX,cellY}
 		/// </summary>
@@ -176,7 +191,7 @@ namespace Engine.EGUI.Inventory {
 						}
 
 						if(result){ // предметы можно полностью добавить
-							slot.Items.Add(new ItemSlot(item, new ItemPosition(x, y)));
+							slot.Items.Add(new ItemSlot(item.Clone(), new ItemPosition(x, y)));
 							return 0;
 						}
 

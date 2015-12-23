@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Engine.EGUI.Inventory {
 
@@ -49,7 +50,7 @@ namespace Engine.EGUI.Inventory {
 					}
 
 					if (result) { // предметы можно полностью добавить
-						slotData.Items.Add(new ItemSlot(item, new ItemPosition(x, y)));
+						slotData.Items.Add(new ItemSlot(item.Clone(), new ItemPosition(x, y)));
 						return 0;
 					}
 
@@ -92,8 +93,7 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="item">Предмет который удаляют из сумки</param>
 		/// <returns>Возвращает логическое значение совершения операции удаления</returns>
 		public bool RemoveItem(SlotData slotData, ItemSlot item) {
-
-			return false;
+			return slotData.Items.Remove(item);
 		}
 
 		/// <summary>
@@ -102,9 +102,150 @@ namespace Engine.EGUI.Inventory {
 		/// <param name="slotData">Сумка, в которой выполняется сортировка</param>
 		/// <returns>Возвращает логический результат операции сортировки</returns>
 		public bool SortData(SlotData slotData) {
+			List<ItemBounds> bounds    = new List<ItemBounds>();
 
+			foreach (ItemSlot item in slotData.Items)
+				bounds.Add(new ItemBounds(item)); // формируем все рамки
+
+			if (sortByLeftTop(slotData, bounds)) // сортируем по левому краю сверху
+				return true;
+
+			if (sortByTopLeft(slotData, bounds)) // сортируем по верху слева
+				return true;
 
 			return false;
+		}
+
+
+		private bool sortByTopLeft(SlotData slotData, List<ItemBounds> bounds) {
+
+			foreach (ItemBounds bound in bounds)
+				bound.Reset();
+
+			ItemBounds i = null;
+
+			while ((i = findMaxSizeY(bounds)) != null) {
+
+				for (int x = 1; x <= slotData.position.CellsXCount; x++) {
+					for (int y = 1; y <= slotData.position.CellsYCount; y++) {
+
+						i.X = x;
+						i.Y = y;
+
+						if (!getCollision(bounds, i)) // предмет нашёл пустое место
+							i.setFix(true);
+
+						if (i.isFix())
+							break;
+
+					}
+
+					if (i.isFix())
+						break;
+				}
+
+
+				if (!i.isFix()) { // сортировка не удалась
+					return false;
+				}
+
+			}
+
+			slotData.Items.Clear();
+
+			foreach (ItemBounds bound in bounds)
+				slotData.Items.Add(bound.createItemSlot()); // перемещаем предметы
+
+			return true;
+		}
+
+		private bool sortByLeftTop(SlotData slotData, List<ItemBounds> bounds) {
+
+			foreach (ItemBounds bound in bounds)
+				bound.Reset();
+
+			ItemBounds i = null;
+
+			while ((i = findMaxSizeY(bounds)) != null) {
+
+				for (int y = 1; y <= slotData.position.CellsYCount; y++) {
+					for (int x = 1; x <= slotData.position.CellsXCount; x++) {
+
+						i.X = x;
+						i.Y = y;
+
+						if (!getCollision(bounds, i)) // предмет нашёл пустое место
+							i.setFix(true);
+
+						if (i.isFix())
+							break;
+
+					}
+
+					if (i.isFix())
+						break;
+				}
+
+
+				if (!i.isFix()) { // сортировка не удалась
+					return false;
+				}
+
+			}
+
+			slotData.Items.Clear();
+
+			foreach (ItemBounds bound in bounds)
+				slotData.Items.Add(bound.createItemSlot()); // перемещаем предметы
+
+			return true;
+		}
+
+		private bool getCollision(List<ItemBounds> bounds, ItemBounds bound) {
+			foreach (ItemBounds item in bounds) {
+
+				if(item != bound &&
+				   (item.X <= bound.X &&
+					item.Y <= bound.Y &&
+					item.X + item.W >= bound.X + bound.W &&
+					item.Y + item.H >= bound.Y + bound.H
+						||
+					item.X >= bound.X &&
+					item.Y >= bound.Y &&
+					item.X + item.W <= bound.X + bound.W &&
+					item.Y + item.H <= bound.Y + bound.H
+					))
+					return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>Ищет бОльший предмет по высоте из списка</summary>
+		private ItemBounds findMaxSizeY(List<ItemBounds> bounds) {
+			if (bounds == null || bounds.Count == 0)
+				return null;
+
+			if (bounds.Count == 1)
+				return bounds[0].isFix() ? null : bounds[0];
+
+			ItemBounds link = findFirstNotFix(bounds);
+
+			if (link == null)
+				return null;
+
+			foreach (ItemBounds bound in bounds)
+				if (!bound.isFix() && bound.H > link.H)
+					link = bound;
+
+			return link;
+		}
+
+		private ItemBounds findFirstNotFix(List<ItemBounds> bounds) {
+			foreach (ItemBounds bound in bounds)
+				if (!bound.isFix())
+					return bound;
+			return null;
 		}
 
 		/// <summary>

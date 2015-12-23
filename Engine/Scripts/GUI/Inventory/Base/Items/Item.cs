@@ -20,24 +20,6 @@ namespace Engine.EGUI.Inventory {
 
 		private GameObject gameObject;
 
-		public Item getPhantom() {
-			return DObjectList.getInstance().getItem(itemName);
-		}
-
-		/// <summary>
-		/// Пересоздаёт ресурсы
-		/// </summary>
-		public void ReCreate() {
-
-			Item original = getPhantom();
-
-			gameObject = original.gameObject;
-			resource = original.resource;
-			description = original.description;
-			size = original.size;
-			
-		}
-
 		public override bool Equals(object obj){
 			IItem item = obj as IItem;
 
@@ -68,10 +50,6 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public GameObject toGameObject(){
-
-			if (gameObject == null)
-				ReCreate();
-
 			return gameObject;
 		}
 
@@ -143,26 +121,14 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public ItemDescription getDescription() {
-
-			if (gameObject == null)
-				ReCreate();
-
 			return description;
 		}
 
 		public Texture getIcon(){
-
-			if (gameObject == null)
-				ReCreate();
-
 			return resource.icon;
 		}
 
 		public ItemSize getSize(){
-
-			if (gameObject == null)
-				ReCreate();
-
 			return size;
 		}
 
@@ -187,6 +153,7 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public Item Create(GameObject gameObject, ItemResource resource, ItemSize size, int maxCount, ItemDescription description) {
+			this.itemName=resource.files.itemName;
 			this.gameObject=gameObject;
 			this.resource=resource;
 			this.size=size;

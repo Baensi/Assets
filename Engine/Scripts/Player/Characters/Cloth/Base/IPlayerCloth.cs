@@ -7,7 +7,7 @@ namespace Engine.Player {
 	/// <summary>
 	/// Интерфейс одежды
 	/// </summary>
-	public interface ICloth {
+	public interface IPlayerCloth {
 
 		ClothRequire getRequire(); // требования к герою
 		PlayerStates getStates();  // статистики от одежды

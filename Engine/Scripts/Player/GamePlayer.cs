@@ -14,7 +14,7 @@ namespace Engine {
 		public static PlayerSpecifications specifications = new PlayerSpecifications();
 		public static PlayerSkills         skills         = new PlayerSkills();
 
-		public static Cloth                cloth          = new Cloth();
+		public static PlayerCloth          cloth          = new PlayerCloth();
 
 	}
 

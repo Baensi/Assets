@@ -88,8 +88,13 @@ namespace Engine.EGUI.Inventory {
 			
 		}
 
-		public void hide(){
-			externalInventory=null;
+		public void hide() {
+
+			if (externalInventory != null) { 
+				externalInventory.hide();
+				externalInventory = null;
+			}
+
 			visible=false;
 			GameConfig.GameMode = GameConfig.MODE_GAME;
 
@@ -158,21 +163,6 @@ namespace Engine.EGUI.Inventory {
 		/// </summary>
 		public void redraw() {
 
-#if UNITY_EDITOR
-
-			if (debugMode) { 
-				offsetX = (debugWindowWidth - width) * 0.5f + movXPos;
-				offsetY = (debugWindowHeight - height) * 0.5f + movYPos;
-			} else {
-				offsetX = (Screen.width - width) * 0.5f + movXPos;
-				offsetY = (Screen.height - height) * 0.5f + movYPos;
-			}
-
-#else
-			offsetX = (Screen.width - width) * 0.5f + movXPos;
-			offsetY = (Screen.height - height) * 0.5f + movYPos;
-#endif
-
 			drawService.DrawSlots(offsetX, offsetY);
 			OnDrawCells();
 			OnEvents();
@@ -229,6 +219,21 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		void Update () {
+
+#if UNITY_EDITOR
+
+			if (debugMode) { 
+				offsetX = (debugWindowWidth - width) * 0.5f + movXPos;
+				offsetY = (debugWindowHeight - height) * 0.5f + movYPos;
+			} else {
+				offsetX = (Screen.width - width) * 0.5f + movXPos;
+				offsetY = (Screen.height - height) * 0.5f + movYPos;
+			}
+
+#else
+			offsetX = (Screen.width - width) * 0.5f + movXPos;
+			offsetY = (Screen.height - height) * 0.5f + movYPos;
+#endif
 
 			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTORY))
 				if (!visible)
@@ -339,6 +344,28 @@ namespace Engine.EGUI.Inventory {
 		private void OnEvents() {
 
 			ReadMouseEvents(); // читаем события мыши
+
+			if (externalInventory != null) {
+
+				if(eventData.mouseEvent.LMouseDown && selectedItem != null) {
+
+					int result = externalInventory.addItem(selectedItem.item);
+
+						if (result == 0)
+							eventData.endSlot.Items.Remove(selectedItem);
+						else
+							selectedItem.item.setCount(result);
+
+				}
+
+				if(CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC) || 
+					CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTORY) ||
+					CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.USE)) {
+					hide();
+				}
+
+				return;
+			}
 
 			if (popupMenu.isVisible() || toolTip.isVisible()) {
 				

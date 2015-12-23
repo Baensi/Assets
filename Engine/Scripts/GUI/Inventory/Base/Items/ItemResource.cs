@@ -33,20 +33,6 @@ namespace Engine.EGUI.Inventory {
 		public Texture2D icon;
 		public SortedDictionary<string,AudioClip> sounds;
 
-		public void ReCreate() {
-
-			icon = Resources.Load<Texture2D>(files.iconPath);
-
-			if (sounds != null) {
-				sounds.Clear();
-				sounds = new SortedDictionary<string, AudioClip>();
-            }
-
-			for(int i=0;i<files.soundsPaths.Count-1;i++)
-				sounds.Add(files.soundsNames[i], Resources.Load<AudioClip>(files.soundsPaths[i]));
-
-		}
-
 		public ItemResource(Texture2D icon, List<SoundPack> sounds) {
 			this.icon=icon;
 

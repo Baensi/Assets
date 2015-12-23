@@ -10,11 +10,20 @@ namespace Engine.AI.Behavior {
 	public class PathBehavior : MonoBehaviour, IPathBehavior {
 
 		/// <summary> Набор патрулей </summary>
-		private AIPatrol patrol;
+		private AIPatrol      patrol;
+		private List<AIPoint> stayPoints;
 
 			void Start() {
 
 			}
+
+		public List<AIPoint> getStayPoints() {
+			return stayPoints;
+        }
+
+		public void setStayPoints(List<AIPoint> stayPoints) {
+			this.stayPoints = stayPoints;
+        }
 
 		/// <summary>
 		/// Возвращает все возможные патрули

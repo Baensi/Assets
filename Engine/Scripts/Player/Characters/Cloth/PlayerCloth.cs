@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace Engine {
 	
-	public class Cloth {
+	public class PlayerCloth {
 
 		public IWeaponType weapon;
 
-		private ICloth head;
-		private ICloth body;
-		private ICloth hands;
-		private ICloth legs;
-		private ICloth foots;
+		private IPlayerCloth head;
+		private IPlayerCloth body;
+		private IPlayerCloth hands;
+		private IPlayerCloth legs;
+		private IPlayerCloth foots;
 
 		public void setPlayerMesh(string objectName, SkinnedMeshRenderer mesh){
 			GameObject playerObject = GameObject.Find(objectName);
@@ -28,7 +28,7 @@ namespace Engine {
 		/// <summary>
 		/// Голова
 		/// </summary>
-		public ICloth Head {
+		public IPlayerCloth Head {
 
 			get { return head; }
 
@@ -51,7 +51,7 @@ namespace Engine {
 		/// <summary>
 		/// Тело
 		/// </summary>
-		public ICloth Body {
+		public IPlayerCloth Body {
 
 			get { return body; }
 
@@ -74,7 +74,7 @@ namespace Engine {
 		/// <summary>
 		/// Руки
 		/// </summary>
-		public ICloth Hands {
+		public IPlayerCloth Hands {
 
 			get { return hands; }
 
@@ -97,7 +97,7 @@ namespace Engine {
 		/// <summary>
 		/// Поножи
 		/// </summary>
-		public ICloth Legs {
+		public IPlayerCloth Legs {
 
 			get { return legs; }
 
@@ -120,7 +120,7 @@ namespace Engine {
 		/// <summary>
 		/// Ноги
 		/// </summary>
-		public ICloth Foots {
+		public IPlayerCloth Foots {
 
 			get { return foots; }
 

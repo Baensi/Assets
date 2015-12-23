@@ -31,27 +31,31 @@ namespace Engine.I18N {
 			}
 
 			GameConfig.Init();
-			Reload();
 
 		}
 
-		public void Reload() {
+		public void ReloadLocalization() {
 			Dictionary.Reload();
+			DObjectList.getInstance().UpdateLocalization();
 		}
 		
+		public bool ContainsKey(string key) {
+			return mapData.ContainsKey(key);
+		}
+
 		public string get(string key){ // возвращаем слово из словаря
 			string result = "";
+			string keyValue = GameConfig.Localization+key;
 
-			if(mapData.TryGetValue(GameConfig.Localization+key, out result))
-				return result;
-			else {
-
+			if(mapData.ContainsKey(keyValue))
+				mapData.TryGetValue(keyValue, out result);
 #if UNITY_EDITOR
-				Debug.LogError("Попытка доступа к несуществующей надписи в словаре - '" + GameConfig.Localization + key + "' не найден в словаре I18N!");
+			else 
+				Debug.LogError("Попытка доступа к несуществующей надписи в словаре - '" + keyValue + "' не найден в словаре I18N!");
 #endif
 
-				return "";
-			}
+			return result;
+
 		}
 
 	}

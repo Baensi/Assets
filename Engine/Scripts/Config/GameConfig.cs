@@ -18,8 +18,9 @@ namespace Engine {
 			/// <summary> Режим GUI - включает курсор, игнорирует модуль Inground и камеру</summary>
 		public const int MODE_GUI  = 0x01;
 
+		private static bool   loadingState = true;
 		private static string localization = "ru";
-		private static int   gameMode     = MODE_GAME;
+		private static int    gameMode     = MODE_GAME;
 
 		private static Vector3 centerScreen = Vector3.zero;
 
@@ -27,7 +28,6 @@ namespace Engine {
 			get { return localization; }
 			set {
 				localization = value;
-				CLang.getInstance().Reload();
 			}
 		}
 
@@ -62,10 +62,14 @@ namespace Engine {
 
 		}
 
+		public static bool isLoaded() {
+			return !loadingState;
+		}
 
 		public static void Init() {
 			ConfigReader reader = new ConfigReader();
 			reader.readConfig(CONFIG_FILE);
+			loadingState = false;
 		}
 			
 

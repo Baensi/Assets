@@ -1,25 +1,19 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 using Engine.Objects.Doors;
 
 namespace Engine.Player {
 
-	public class DoorPhysXController {
-
-		private Vector3 push;
-		private Vector3 direct;
-
-		private float horizontal;
-		private float vertical;
-
-		public DoorPhysXController(){
+	public class DoorController {
+		
+		public DoorController(){
 			
 		}
 		
 		public void update(IDoor obj) {
 
-			if (obj.getControllerType() != DoorControllerType.Standalone) return;
+			if (obj.getControllerType() != DoorControllerType.Standalone)
+				return;
 
 			if(CrossPlatformInputManager.GetButtonDown("Use")){
 

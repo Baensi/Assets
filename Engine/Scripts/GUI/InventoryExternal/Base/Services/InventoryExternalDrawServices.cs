@@ -6,7 +6,7 @@ namespace Engine.EGUI.Inventory {
 
 		private static InventoryExternalDrawServices instance;
 
-		private Rect textCoords = new Rect(1,1,1,1);
+		private static Rect textCoords = new Rect(1,1,1,1);
 
 		public static InventoryExternalDrawServices getInstance() {
 			if(instance==null)
@@ -22,7 +22,6 @@ namespace Engine.EGUI.Inventory {
 			cellRect.width = CellSettings.cellWidth * item.item.getSize().getWidth();
 			cellRect.height = CellSettings.cellHeight * item.item.getSize().getHeight();
 
-			GUI.color = Color.white;
 			GUI.DrawTextureWithTexCoords(cellRect, image, textCoords);
 		}
 

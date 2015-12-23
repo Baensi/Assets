@@ -10,6 +10,14 @@ namespace Engine.EGUI.Inventory {
 		[SerializeField] public List<ItemSlot> Items;
 		[SerializeField] public SlotSet        position;
 
+		public SlotData() {
+			Items = new List<ItemSlot>();
+			position = new SlotSet();
+
+			position.CellsXCount = 1;
+			position.CellsYCount = 1;
+		}
+
 	}
 
 }

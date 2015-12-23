@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Engine.EGUI.Bars;
+using Engine.Images;
 
 namespace Engine.EGUI {
 	
@@ -12,24 +13,20 @@ namespace Engine.EGUI {
 		private ReadedPageGUIRenderer    readedPageGUIRenderer = null;
 		private InventoryGUIRenderer     inventoryGUIRenderer = null;
 
-        private bool initGUIState = false;
-		
 			void Start(){
 
-				doorGUIRenderer = new DoorGUIRenderer();
+			Texture2D backgroundCaptionTexture = DImageList.getInstance().getImage("gui_label_background");
+
+				doorGUIRenderer          = new DoorGUIRenderer();
 				dynamicObjectGUIRenderer = new DynamicObjectGUIRenderer();
-				readedPageGUIRenderer = new ReadedPageGUIRenderer();
-				inventoryGUIRenderer = new InventoryGUIRenderer();
+				readedPageGUIRenderer    = new ReadedPageGUIRenderer();
+				inventoryGUIRenderer     = new InventoryGUIRenderer();
+
+				dynamicObjectGUIRenderer.initStyles(backgroundCaptionTexture);
+				doorGUIRenderer.initStyles(backgroundCaptionTexture);
+				inventoryGUIRenderer.initStyles(backgroundCaptionTexture);
 
 			}
-
-		public bool isInitGUIState() {
-			return initGUIState;
-		}
-
-		public void setInitGUIState(bool initGUIState) {
-			this.initGUIState = initGUIState;
-		}
 
 		public DoorGUIRenderer getDoorGUIRenderer(){
 			return doorGUIRenderer;

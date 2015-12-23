@@ -16,6 +16,10 @@ namespace EngineEditor.EGUI.Inventory {
 		private IItemSelectedListener listener = null;
 		private UInventory inventory = null;
 
+		void OnEnable() {
+			EditorFactory.getInstance().RegWindow(id,this);
+		}
+
 		public void setData(UInventory inventory, IItemSelectedListener listener) {
 			this.inventory=inventory;
 			this.listener = listener;

@@ -3,6 +3,7 @@
 	<lang name="ru">
 		
 		<item id="red_chest_title">Красный сундук</item>
+    <item id="red_chest_caption">Небольшое хранилище</item>
 		
 	</lang>
 </data>

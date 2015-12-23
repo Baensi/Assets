@@ -49,15 +49,15 @@ namespace Engine.Images {
 
 		public Texture2D getImage(string name) {
 			Texture2D result = null;
-			if (imageData.TryGetValue(name, out result))
-				return result;
-			else {
-
+			
+			if(imageData.ContainsKey(name))
+				imageData.TryGetValue(name, out result);
 #if UNITY_EDITOR
+			else 
 				Debug.LogError("Попытка доступа к несуществующей картинке в словаре - '" + name + "' не найден в словаре!");
 #endif
-				return null;
-			}
+
+			return result;
 
 		}
 	}

@@ -18,17 +18,13 @@ namespace EngineEditor.AI {
 
         private bool showTrace        = true;
 		private bool showEndPointMove = false;
-
-		private AIPatrol patrol = null;
+		
 		private bool patrolEditMode = false;
 
 		private float timeStamp = 0;
 
-		private SceneView oldSceneView;
-
-		public void setPatrol(AIPatrol patrol) {
-			this.patrol = patrol;
-        }
+		private PathWalker selected;
+        private SceneView oldSceneView;
 
 		void OnEnable() {
 			Data.EditorFactory.getInstance().RegWindow(id, this);
@@ -36,20 +32,15 @@ namespace EngineEditor.AI {
 
 		void OnGUI() {
 
+			selected = Selection.activeGameObject == null ? null : Selection.activeGameObject.GetComponent<PathWalker>();
 
+			GUILayout.Label("Ходок:", EditorStyles.boldLabel);
+			showTrace = EditorGUILayout.Toggle("Показывать траекторию", showTrace);
+			showEndPointMove = EditorGUILayout.Toggle("Перемещать конечную точку вручную", showEndPointMove);
+			EditorGUILayout.Separator();
 
-
-			//if (walker != null) {
-
-				GUILayout.Label("Ходок:", EditorStyles.boldLabel);
-				showTrace = EditorGUILayout.Toggle("Показывать траекторию", showTrace);
-				showEndPointMove = EditorGUILayout.Toggle("Перемещать конечную точку вручную", showEndPointMove);
-				EditorGUILayout.Separator();
-
-			//}
-
-			if (patrol != null) {
-
+			if (selected.getPathBehavior().getPatrol() != null) {
+				
 				GUILayout.Label("Патрулирование:", EditorStyles.boldLabel);
 				patrolEditMode = EditorGUILayout.Toggle("Редактировать все точки",patrolEditMode);
 				EditorGUILayout.Separator();
@@ -96,8 +87,14 @@ namespace EngineEditor.AI {
 
 			}
 
-			if (patrol != null) {
-				DrawPathPatrol(patrol);
+			if (selected != null) {
+
+				if (selected.getPathBehavior().getPatrol() != null) 
+					DrawPathPatrol(selected.getPathBehavior().getPatrol());
+				
+				if (selected.getPathBehavior().getStayPoints() != null) 
+					DrawStayPoints(selected.getPathBehavior().getStayPoints());
+				
 			}
 
 		}
@@ -106,6 +103,43 @@ namespace EngineEditor.AI {
 
 			Handles.color = new Color(1f,0f,0f,0.1f);
 			Handles.SphereCap(0, walker.transform.position, Quaternion.Euler(0,0,0), walker.minAttackDistance);
+
+		}
+
+		public void DrawStayPoints(List<AIPoint> stayPoints) {
+
+			if (stayPoints != null && stayPoints.Count > 0) {
+
+				Vector3 startPosition = stayPoints[0].getData();
+
+				foreach (AIPoint pos in stayPoints) {
+
+				Handles.color = new Color(0f, 1f, 0f);
+					Handles.DrawLine(startPosition, pos.getData());
+
+					Handles.color = new Color(1f, 0.98f, 0f);
+
+					if (patrolEditMode) {
+						pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0, 0, 0)));
+					} else {
+						DragHandleResult dhResult;
+						float size = Vector3.Distance(SceneView.currentDrawingSceneView.camera.transform.position, pos.getData()) * 0.07f;
+						Vector3 newPosition = UHandles.DragHandle(pos.getData(), size, Handles.CubeCap, Color.red, out dhResult);
+
+						switch (dhResult) {
+							case DragHandleResult.LeftMouseButtonDrag:
+								pos.setData(newPosition);
+								Handles.color = new Color(1f, 0, 0);
+								Handles.Label(newPosition, newPosition.ToString());
+								break;
+						}
+					}
+
+					startPosition = pos.getData();
+
+				}
+
+			}
 
 		}
 
@@ -181,8 +215,6 @@ namespace EngineEditor.AI {
 
 		private void CheckMouse(SceneView sceneView) {
 
-			PathWalker selected = Selection.activeGameObject==null ? null : Selection.activeGameObject.GetComponent<PathWalker>();
-			
 			if(selected==null)
 				return;
 

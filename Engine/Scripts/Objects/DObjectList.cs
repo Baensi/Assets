@@ -21,7 +21,7 @@ namespace Engine.Objects {
 		}
 
 			public DObjectList() {
-				items=readItems(Dictionary.DictionaryObjectsFileName);
+				items = readItems(Dictionary.DictionaryObjectsFileName);
 				mainCamera = SingletonNames.getMainCamera();
             }
 
@@ -33,8 +33,8 @@ namespace Engine.Objects {
 		/// Возвращает коллекцию предметов из словаря
 		/// </summary>
 		/// <returns></returns>
-		public List<Item> getItemList() {
-			return new List<Item>(items.Values);
+		public SortedDictionary<string,Item>.ValueCollection getItemList() {
+			return items.Values;
         }
 
 		/// <summary>
@@ -132,12 +132,18 @@ namespace Engine.Objects {
 		/// <returns></returns>
 		public Item getItem(string key) {
 
-			if (items==null)
+			if (isEmpty())
 				items = readItems(Dictionary.DictionaryObjectsFileName);
 
-			Item result;
+			Item result = null;
 
-			items.TryGetValue(key, out result);
+			if(items.ContainsKey(key))
+				items.TryGetValue(key, out result);
+# if UNITY_EDITOR
+			else
+				Debug.LogError("опытка получить объект '"+key+"' - предмет не существует в словаре!");
+#endif
+
 			return result;
 		}
 
@@ -164,9 +170,9 @@ namespace Engine.Objects {
 		/// <summary>
 		/// Пересоздаёт ресурсы у предмета (например, может пересоздать метки при смене языка)
 		/// </summary>
-		public void ReCreate() {
+		public void UpdateLocalization() {
 			foreach (Item value in items.Values)
-				value.ReCreate();
+				value.getDescription().ReCreate();
 		}
 
 	}

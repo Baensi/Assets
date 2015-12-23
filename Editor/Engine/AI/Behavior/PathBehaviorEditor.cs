@@ -25,12 +25,7 @@ namespace EngineEditor.AI {
 				window.titleContent.text = "AI";
 			}
 
-			window.setPatrol(pathBehavior.getPatrol());
 		}
-
-		void OnDestroy() {
-			window.setPatrol(null);
-        }
 
 		public override void OnInspectorGUI() {
 			//base.OnInspectorGUI();
@@ -38,11 +33,10 @@ namespace EngineEditor.AI {
 			editMode = EditorGUILayout.Toggle("Включить редактирование", editMode);
 
 			AIPatrol patrol = pathBehavior.getPatrol();
-
-			if (patrol == null) {
+			
+			if (patrol == null)
 				pathBehavior.setPatrol(new AIPatrol(new List<AIPath>()));
-				window.setPatrol(pathBehavior.getPatrol());
-			}
+			
 
 			AIPatrolEditor.getInstance().OnInspectorGUI(patrol);
 

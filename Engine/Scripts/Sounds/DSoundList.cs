@@ -71,14 +71,14 @@ namespace Engine.Sounds {
 		public AudioClip getSound(string name) {
 			AudioClip result = null;
 
-			if (audioData.TryGetValue(name, out result))
-				return result;
-			else {
+			if(audioData.ContainsKey(name))
+				audioData.TryGetValue(name, out result);
 #if UNITY_EDITOR
+			else
 				Debug.LogError("Чтение звука - Записи '"+name+"' не существует в словаре!");
 #endif
-				return null;
-			}
+
+			return result;
 
 		}
 
@@ -90,14 +90,15 @@ namespace Engine.Sounds {
 		public string getParameter(string name) {
 			string result = null;
 
-			if (paramsData.TryGetValue(name, out result))
-				return result;
-			else {
+			if(paramsData.ContainsKey(name))
+				paramsData.TryGetValue(name, out result);
 #if UNITY_EDITOR
+			else
 				Debug.LogError("Чтение параметра звука - Записи '"+name+"' не существует в словаре!");
 #endif
-				return null;
-			}
+
+			return result;
+
 		}
 
 	}

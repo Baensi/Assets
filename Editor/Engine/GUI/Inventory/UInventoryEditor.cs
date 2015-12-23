@@ -30,7 +30,6 @@ namespace EngineEditor.EGUI.Inventory {
 
 				
 				window = (InventoryWindow)EditorWindow.GetWindow(typeof(InventoryWindow));
-				EditorFactory.getInstance().RegWindow(InventoryWindow.id, window);
                 window.titleContent = new GUIContent("Инвентарь");
 				window.setData(inventory,this);
 			}

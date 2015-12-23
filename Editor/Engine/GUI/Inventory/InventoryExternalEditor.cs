@@ -2,16 +2,14 @@
 using UnityEngine;
 using Engine.EGUI.Inventory;
 using EngineEditor.Data;
+using Engine.I18N;
 
 namespace EngineEditor.EGUI.Inventory {
-
-	[CustomEditor(typeof(InventoryExternal),true)]
+	
+	[CustomEditor(typeof(InventoryExternal))]
 	public class InventoryExternalEditor : Editor {
 
-		private InventoryExternal inventory;
-
-		private int selectItem = 0;
-
+		private InventoryExternal       inventory;
 		private InventoryExternalWindow window;
 
 			void OnEnable() {
@@ -20,25 +18,7 @@ namespace EngineEditor.EGUI.Inventory {
 
 		public override void OnInspectorGUI() {
 
-			GUILayout.Label("Сумка", EditorStyles.boldLabel);
-			EditorGUILayout.Separator();
-
-			inventory.titleTextId = EditorGUILayout.TextField("id заголовка сумки", inventory.titleTextId);
-
-            GUILayout.Label("Ячейки:");
-			EditorGUILayout.BeginHorizontal();
-
-				inventory.cellXCount = EditorGUILayout.IntField("X",inventory.cellXCount);
-				if (inventory.cellXCount < 1)
-					inventory.cellXCount = 1;
-
-                inventory.cellYCount = EditorGUILayout.IntField("Y",inventory.cellYCount);
-				if (inventory.cellYCount < 1)
-					inventory.cellYCount = 1;
-
-			EditorGUILayout.EndHorizontal();
-
-			selectItem = GUILayout.SelectionGrid(selectItem, inventory.initListItems.ToArray(), inventory.initListItems.Count, EditorStyles.miniButton);
+			base.OnInspectorGUI();
 
 			if(GUILayout.Button("Редактировать содержимое")) {
 
@@ -46,7 +26,6 @@ namespace EngineEditor.EGUI.Inventory {
 					window.Close();
 
 				window = (InventoryExternalWindow)EditorWindow.GetWindow(typeof(InventoryExternalWindow));
-				EditorFactory.getInstance().RegWindow(InventoryExternalWindow.id, window);
 				window.titleContent = new GUIContent("Сумка");
 				window.setInventory(inventory);
 
@@ -55,5 +34,5 @@ namespace EngineEditor.EGUI.Inventory {
         }
 
 	}
-
+	
 }

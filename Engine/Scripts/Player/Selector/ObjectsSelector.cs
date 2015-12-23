@@ -15,9 +15,8 @@ using UnityStandardAssets.CrossPlatformInput;
 namespace Engine.Player {
 
 	public class ObjectsSelector : MonoBehaviour {
-
-		[SerializeField] public Texture2D  backgroundCaptionTexture;
-		[SerializeField] public float      selectRange;
+		
+		[SerializeField] public float selectDistantion = 1.5f;
 
 		private SelectionGroup selected;
 
@@ -27,12 +26,12 @@ namespace Engine.Player {
 		private GameObject     pickedObjectGameObject;
 		private Rigidbody      pickedObjectRigidBody;
 
-		private DoorPhysXController doorController;
+		private DoorController doorController;
 		
 		private Vector3        cursorPosition;
 
 		private GUIController guiController;
-		private AudioSource    audioSource;
+		private AudioSource   audioSource;
 
 		private UInventory playerInventory;
 
@@ -47,10 +46,10 @@ namespace Engine.Player {
 
             this.audioSource = gameObject.AddComponent<AudioSource>();
 
-			doorController = new DoorPhysXController();
+			doorController = new DoorController();
 
 			guiController = SingletonNames.getGUI().GetComponent<GUIController>();
-			
+
 		}
 
 		void Update () {
@@ -63,7 +62,7 @@ namespace Engine.Player {
 
 			OnPickMove();
 
-			if (Physics.Raycast(ray, out hitInfo, selectRange)) {
+			if (Physics.Raycast(ray, out hitInfo, selectDistantion)) {
 
 				MonoBehaviour obj = hitInfo.transform.GetComponent<MonoBehaviour>();
 
@@ -155,14 +154,14 @@ namespace Engine.Player {
 
 		private bool OnUse(IExternalInventory selectedInventory) {
 
-			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.USE)) {    // использовать
-				if (playerInventory.isVisible()) {
-					playerInventory.hide();
-				} else {
-					playerInventory.show(selectedInventory);
-				}
+			if(playerInventory.isVisible())
+				return false;
 
-				return true;
+			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.USE)) {    // использовать
+				if (!playerInventory.isVisible()) {
+					playerInventory.show(selectedInventory);
+					return true;
+				}
 			}
 
 			return false;
@@ -218,12 +217,6 @@ namespace Engine.Player {
 		}
 
 		void OnGUI(){
-
-			if (!guiController.isInitGUIState()) {
-				guiController.getDynamicObjectGUIRenderer().initStyles(backgroundCaptionTexture);
-				guiController.getDoorGUIRenderer().initStyles(backgroundCaptionTexture);
-				guiController.setInitGUIState(true);
-			}
 
 			if (selected.selectType == SelectedType.None)
 				return;

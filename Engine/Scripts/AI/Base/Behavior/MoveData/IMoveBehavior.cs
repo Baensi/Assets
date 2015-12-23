@@ -4,6 +4,8 @@ namespace Engine.AI.Behavior {
 
 	public interface IMoveBehavior {
 
+		void OnFindNewIdlePoint();
+
 		/// <summary> Итерация прощупывания окружения </summary>
 		void OnSeeIteration();
 

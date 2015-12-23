@@ -179,19 +179,11 @@ namespace Engine.AI {
 		/// <param name="point"></param>
 		public void setPoint(Vector3 point) {
 
-			if(tmpPath==null)
-				tmpPath = new NavMeshPath();
-
-			if (!NavMesh.CalculatePath(transform.position, point, NavMesh.AllAreas, tmpPath)) // пытаемся построить путь
-				return;
-
-			int last = tmpPath.corners.Length - 1;
-
-			if(last<0)
-				return;
-
-			this.point = tmpPath.corners[last]; // используем в качестве конечной точки - последнюю точку построенного пути (она может сильно отличаться от точки в аргументе функции!!)
+			NavMeshHit Hit;
+			NavMesh.SamplePosition(point, out Hit, maxOutDistance, NavMesh.AllAreas);
 			
+            this.point = Hit.position; 
+
 		}
 
 		public Vector3 getPoint() {
@@ -269,13 +261,25 @@ namespace Engine.AI {
 
 		}
 
+		public override void OnFindNewIdlePoint() {
+
+			float offset = maxOutDistance / 2f;
+			float min    = maxOutDistance / 4f;
+
+			Vector3 newPoint    = new Vector3(-min + UnityEngine.Random.value * offset, 0, -min + UnityEngine.Random.value * offset);
+			Vector3 randomPoint = getPathBehavior().getStayPoints()[Random.Range(0, getPathBehavior().getStayPoints().Count - 1)].getData();
+
+			setPoint(randomPoint+newPoint);
+
+		}
+
 		public override void OnIdleIteration() {
 
 			if (State == AgressionStateAI.Normal) {
 
 				if (walkState == IDLE && Time.time - idleTimeStamp >= maxIdleDelay) { // проверяем, если AI простаиваает уже достаточно долго
 
-
+					OnFindNewIdlePoint();
 
 				} else {
 

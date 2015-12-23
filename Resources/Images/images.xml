@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <images>
 
+	<gui>
+	
+		<item name="gui_label_background" path="images/gui/label_background"/>
+	
+	</gui>
+
 	<inventory>
 	
 		<item name="inventory_correct_cell" path="images/gui/correct_cell" />

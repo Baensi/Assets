@@ -65,7 +65,8 @@ namespace Engine.AI.Behavior {
 			return gameObject;
 		}
 
-		public abstract void OnSeeIteration();
+		public abstract void OnFindNewIdlePoint();
+        public abstract void OnSeeIteration();
 		public abstract void OnMoveIteration();
 		public abstract void OnIdleIteration();
 		public abstract void OnAttackIteration();
