@@ -44,7 +44,7 @@ namespace Engine.EGUI {
 		public void initStyles(Texture2D backgroundCaptionTexture){
 
 			if (titleStyle == null) {
-				titleStyle = new GUIStyle(GUI.skin.label);
+				titleStyle = new GUIStyle();
 				titleStyle.alignment = TextAnchor.MiddleCenter;
 				titleStyle.normal.textColor = titleColor;
 				titleStyle.normal.background = backgroundCaptionTexture;
@@ -53,7 +53,7 @@ namespace Engine.EGUI {
 			}
 
 			if (captionStyle == null) {
-				captionStyle = new GUIStyle(GUI.skin.label);
+				captionStyle = new GUIStyle();
 				captionStyle.alignment = TextAnchor.MiddleCenter;
 				captionStyle.normal.textColor = captionColor;
 				captionStyle.fontSize = 14;

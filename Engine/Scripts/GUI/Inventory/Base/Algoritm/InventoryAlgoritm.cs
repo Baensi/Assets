@@ -42,7 +42,7 @@ namespace Engine.EGUI.Inventory {
 
 			foreach (RectangleSlot slot in slots) {
 
-				tmp = slot.position.OffsetY+slot.position.SlotWidth;
+				tmp = slot.position.OffsetY+slot.position.SlotHeight;
 
 				if (tmp>maxHeight)
 					maxHeight=tmp;

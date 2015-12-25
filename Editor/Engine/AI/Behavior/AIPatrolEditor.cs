@@ -37,12 +37,12 @@ namespace EngineEditor.AI {
 
 				EditorGUILayout.Separator();
 
-				EditorGUILayout.BeginHorizontal();
+				//EditorGUILayout.BeginHorizontal();
 
 				if (GUILayout.Button("Добавить путь"))
 					patrol.getPaths().Add(new AIPath(new List<AIPoint>()));
 
-				EditorGUILayout.EndHorizontal();
+				//EditorGUILayout.EndHorizontal();
 
 			}
 

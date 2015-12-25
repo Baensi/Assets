@@ -15,9 +15,9 @@ namespace Engine.EGUI.Inventory {
 		private List<RectangleSlot> slots;
 		private Rect backgroundRect;
 		
-		public SlotDrawService(List<RectangleSlot> slots, GUIStyle iconStyle){
+		public SlotDrawService(List<RectangleSlot> slots, GUIStyle iconStyle, GUIStyle iconShadow){
 			this.slots=slots;
-			itemDrawService = new ItemDrawService(iconStyle);
+			itemDrawService = new ItemDrawService(iconStyle,iconShadow);
 		}
 
 		public ItemDrawService getItemDrawService() {

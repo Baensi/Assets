@@ -11,8 +11,9 @@ namespace Engine.EGUI.Inventory {
 	
 	public class UInventory : MonoBehaviour, IInventory, IExternalData {
 
-		[SerializeField] public GUIStyle  iconStyle;
-		[SerializeField] public GUIStyle  titleStyle;
+		[SerializeField] public GUIStyle iconStyle;
+		[SerializeField] public GUIStyle iconShadow;
+		[SerializeField] public GUIStyle titleStyle;
 
 		private Texture2D selectCellImage;
 		private Texture2D correctCellImage;
@@ -59,13 +60,38 @@ namespace Engine.EGUI.Inventory {
 
 #endif
 
+		private void setupInventoryPosition() {
+
+			width  = InventoryAlgoritm.getInstance().getInventoryWidth(slots);
+			height = InventoryAlgoritm.getInstance().getInventoryHeight(slots);
+
+#if UNITY_EDITOR
+
+			if (debugMode) { 
+				offsetX = (debugWindowWidth - width) * 0.5f + movXPos;
+				offsetY = (debugWindowHeight - height) * 0.5f + movYPos;
+			} else {
+				offsetX = (Screen.width - width) * 0.5f + movXPos;
+				offsetY = (Screen.height - height) * 0.5f + movYPos;
+			}
+
+#else
+			offsetX = (Screen.width - width) * 0.5f + movXPos;
+			offsetY = (Screen.height - height) * 0.5f + movYPos;
+#endif
+
+		}
+
 		/// <summary>
 		/// Отображает инвентарь
 		/// </summary>
 		public void show(){
-			externalInventory=null;
+
 			movXPos = 0f;
 			movYPos = 0f;
+			setupInventoryPosition();
+
+			externalInventory=null;
 			visible = true;
 			GameConfig.GameMode = GameConfig.MODE_GUI;
 		}
@@ -75,15 +101,17 @@ namespace Engine.EGUI.Inventory {
 		/// </summary>
 		/// <param name="externalInventory"></param>
 		public void show(IExternalInventory externalInventory) {
+
+			movXPos = externalInventory.getWidth()*0.5f; // смещаем инвентарь вправо, чтобы центровать все инвентари правильно
+			movYPos = 0f;
+			setupInventoryPosition();
+
 			this.externalInventory=externalInventory;
 			visible = true;
 			GameConfig.GameMode = GameConfig.MODE_GUI;
 
-			movXPos = externalInventory.getWidth()*0.5f; // смещаем инвентарь вправо, чтобы центровать все инвентари правильно
-			movYPos = 0f;
-
-			float leftCenterX = (offsetX+movXPos - externalInventory.getWidth()) * 0.5f;
-			float leftCenterY = (offsetY+movYPos) + (getHeight()-externalInventory.getHeight())*0.5f;
+			float leftCenterX = (getX() - externalInventory.getWidth()) * 0.5f;
+			float leftCenterY = getY() + (getHeight()-externalInventory.getHeight())*0.5f;
 			externalInventory.show(this, leftCenterX, leftCenterY); // устанавливаем позицию внешней сумки
 			
 		}
@@ -110,11 +138,11 @@ namespace Engine.EGUI.Inventory {
 		}
 
 		public float getX(){
-			return offsetX;
+			return offsetX + movXPos;
 		}
 
 		public float getY(){
-			return offsetY;
+			return offsetY + movYPos;
 		}
 
 		public float getWidth() {
@@ -157,7 +185,7 @@ namespace Engine.EGUI.Inventory {
 		public List<RectangleSlot> getSlots() {
 			return slots;
 		}
-
+		
 		/// <summary>
 		/// Метод отрисовки
 		/// </summary>
@@ -185,7 +213,7 @@ namespace Engine.EGUI.Inventory {
 				if (eventData == null)
 					eventData = new EventContainer();
 
-				if (selectCellImage == null || drawService == null)
+				if (selectCellImage == null || drawService == null || iconShadow==null || iconStyle ==null) 
 				    Start();
 
 			redraw();
@@ -202,10 +230,7 @@ namespace Engine.EGUI.Inventory {
 			correctCellImage = DImageList.getInstance().getImage("inventory_correct_cell");
 			errorCellImage   = DImageList.getInstance().getImage("inventory_error_cell");
 
-			drawService = new SlotDrawService(slots, iconStyle);
-
-				width  = InventoryAlgoritm.getInstance().getInventoryWidth(slots);
-				height = InventoryAlgoritm.getInstance().getInventoryHeight(slots);
+			drawService = new SlotDrawService(slots, iconStyle, iconShadow);
 
 			eventData    = new EventContainer();
 			selectedCell = new ItemPosition(-1, -1);
@@ -220,26 +245,13 @@ namespace Engine.EGUI.Inventory {
 
 		void Update () {
 
-#if UNITY_EDITOR
-
-			if (debugMode) { 
-				offsetX = (debugWindowWidth - width) * 0.5f + movXPos;
-				offsetY = (debugWindowHeight - height) * 0.5f + movYPos;
-			} else {
-				offsetX = (Screen.width - width) * 0.5f + movXPos;
-				offsetY = (Screen.height - height) * 0.5f + movYPos;
-			}
-
-#else
-			offsetX = (Screen.width - width) * 0.5f + movXPos;
-			offsetY = (Screen.height - height) * 0.5f + movYPos;
-#endif
-
-			if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTORY))
-				if (!visible)
+			if (!visible) {
+				if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTORY))
 					show();
-				else
-					hide();
+			} else
+				if (CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.INVENTORY) ||
+					CrossPlatformInputManager.GetButtonDown(SingletonNames.Input.ESC))
+				hide();
 
 		}
 
@@ -347,7 +359,7 @@ namespace Engine.EGUI.Inventory {
 
 			if (externalInventory != null) {
 
-				if(eventData.mouseEvent.LMouseDown && selectedItem != null) {
+				if(eventData.mouseEvent.LMouseDown && selectedItem != null && eventData.endSlot != null) {
 
 					int result = externalInventory.addItem(selectedItem.item);
 

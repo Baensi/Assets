@@ -53,13 +53,16 @@ namespace Engine.EGUI.Inventory {
 				correctCellImage = DImageList.getInstance().getImage("inventory_correct_cell");
 
 				playerInventory = SingletonNames.getInventory().GetComponent<UInventory>();
-				drawService = new ItemDrawService(playerInventory.iconStyle);
+				drawService = new ItemDrawService(playerInventory.iconStyle, playerInventory.iconShadow);
 				titleStyle = playerInventory.titleStyle;
 				
 				titleText = CLang.getInstance().get(titleTextId);
 				captionText = CLang.getInstance().get(captionTextId);
 
 				initListItems.Clear();
+
+				slot.position.CellsXCount = cellXCount;
+				slot.position.CellsYCount = cellYCount;
 
 			}
 
@@ -88,14 +91,11 @@ namespace Engine.EGUI.Inventory {
 			slot.position.OffsetX=x;
 			slot.position.OffsetY=y;
 
-			slot.position.CellsXCount = cellXCount;
-			slot.position.CellsYCount = cellYCount;
-
 			float width = getWidth();
 			float height = getHeight();
 
 			bounds       = new Rect(x, y, width, height);
-			titleRect    = new Rect(x, y - 12, getWidth(), 48);
+			titleRect    = new Rect(x, y - 12, width, 48);
 
 			float maxWidth  = CellSettings.cellPaddingX + MAX_COUNT_X * CellSettings.cellWidth;
 			float maxHeight = CellSettings.cellPaddingY + MAX_COUNT_Y * CellSettings.cellHeight;
@@ -235,7 +235,7 @@ namespace Engine.EGUI.Inventory {
 				playerInventory = SingletonNames.getInventory().GetComponent<UInventory>();
 
 			if(drawService==null)
-				drawService = new ItemDrawService(playerInventory.iconStyle);
+				drawService = new ItemDrawService(playerInventory.iconStyle, playerInventory.iconShadow);
 
 			titleStyle = playerInventory.titleStyle;
 

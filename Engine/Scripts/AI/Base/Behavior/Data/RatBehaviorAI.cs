@@ -32,7 +32,7 @@ namespace Engine.AI.Behavior {
 				states.health                    = 30f;
 				states.maxHealth                 = 30f;
 
-			OnStart();
+			base.OnStart();
 		} 
 
 		void Update() {

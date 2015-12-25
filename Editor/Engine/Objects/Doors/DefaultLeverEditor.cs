@@ -17,7 +17,6 @@ namespace EngineEditor.Objects.Doors {
 		}
 
 		public override void OnInspectorGUI() {
-
 			base.OnInspectorGUI();
 
 			previewMode = EditorGUILayout.Toggle(new GUIContent("Предпросмотр"), previewMode);

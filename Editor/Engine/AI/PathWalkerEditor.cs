@@ -11,16 +11,16 @@ namespace EngineEditor.AI {
 	[CustomEditor(typeof(EnemyBehaviorAI),true)]
 	public class PathWalkerEditor : Editor {
 
-		private AIWindow window;
+		//private AIWindow window;
 
 		void OnEnable() {
 
-			window = (AIWindow)EditorFactory.getInstance().FindWindow(AIWindow.id);
+			//window = (AIWindow)EditorFactory.getInstance().FindWindow(AIWindow.id);
 
-			if (window == null) {
-				window = (AIWindow)EditorWindow.GetWindow(typeof(AIWindow));
-				window.titleContent.text = "AI";
-			}
+			//if (window == null) {
+			//	window = (AIWindow)EditorWindow.GetWindow(typeof(AIWindow));
+			//	window.titleContent.text = "AI";
+			//}
 
 		}
 

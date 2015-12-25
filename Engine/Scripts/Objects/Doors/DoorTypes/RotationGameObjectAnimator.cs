@@ -34,7 +34,6 @@ namespace Engine.Objects.Doors {
 		}
 
 		public bool isComplete(GameObject gameObject, Vector3 vector, int direction, float speed) {
-
 			Vector3 rotation = gameObject.transform.rotation.eulerAngles;
 
 			if (gameObject.transform.parent != null)
@@ -43,11 +42,9 @@ namespace Engine.Objects.Doors {
 			vector   = normalization(vector);
 			rotation = normalization(rotation);
 
-				speed *= 1.5f;
-
-			return Mathf.Abs(rotation.x - vector.x) <= speed &&
-				   Mathf.Abs(rotation.y - vector.y) <= speed &&
-				   Mathf.Abs(rotation.z - vector.z) <= speed;
+			return Mathf.Abs(rotation.x - vector.x) <= 5 &&
+				   Mathf.Abs(rotation.y - vector.y) <= 5 &&
+				   Mathf.Abs(rotation.z - vector.z) <= 5;
 
 		}
 

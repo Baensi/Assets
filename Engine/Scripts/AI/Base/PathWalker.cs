@@ -64,7 +64,6 @@ namespace Engine.AI {
 		private float memoryTimeStamp;
 		private float idleTimeStamp;
 
-		private NavMeshPath  tmpPath = new NavMeshPath();
 		private NavMeshAgent agent;
 		private Animator     animator;
 
@@ -344,8 +343,6 @@ namespace Engine.AI {
 
 			if (states.health <= 0) // ходок умер
 				DoDie();
-
-			base.OnUpdateEnemyBehaviorAI();
 
 			bool moveFlag = true;
 

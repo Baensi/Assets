@@ -38,15 +38,9 @@ namespace Engine.AI.Behavior {
 		}
 
 			public void OnStartEnemyBehaviorAI(Animator animator) {
-				pathBehavior = GetComponent<PathBehavior>();
+				pathBehavior = gameObject.GetComponent<PathBehavior>();
 				audioBehavior = new AudioBehavior();
 				animationBehavior = new AnimationBehavior(animator);
-			}
-
-			public void OnUpdateEnemyBehaviorAI() {
-
-				
-
 			}
 
 		public PathBehavior getPathBehavior() {
