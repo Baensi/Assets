@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using Engine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,8 +16,8 @@ namespace Engine.AI.Behavior {
 	public class PathBehavior : MonoBehaviour, IPathBehavior {
 
 		/// <summary> Набор патрулей </summary>
-		[SerializeField] private AIPatrol      patrol = new AIPatrol(new List<AIPath>());
-		[SerializeField] private List<AIPoint> stayPoints = new List<AIPoint>();
+		[SerializeField] public AIPatrol patrol;
+		[SerializeField] public AIPoints stayPoints;
 
 			void Start() {
 				
@@ -26,7 +28,7 @@ namespace Engine.AI.Behavior {
 		void OnDrawGizmos() {
 
 			if (stayPoints != null)
-				foreach (AIPoint point in stayPoints) {
+				foreach (AIPoint point in stayPoints.getPoints()) {
 					Gizmos.color = new Color(1f,1f,0,0.5f);
 					Gizmos.DrawCube(point.getData(), new Vector3(1f, 1f, 1f));
 
@@ -40,18 +42,23 @@ namespace Engine.AI.Behavior {
 
 					List<AIPoint> points = path.getPoints();
 
-					Vector3 startPosition = points[0].getData();
+					if (points != null && points.Count > 0) {
 
-					foreach (AIPoint pos in points) {
+						Vector3 startPosition = points[0].getData();
 
-						Gizmos.color = path.color;
-						Gizmos.DrawLine(startPosition, pos.getData());
+						foreach (AIPoint pos in points) {
 
-						Gizmos.color = new Color(1f, 0.98f, 0f);
-						pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0, 0, 0)));
-						startPosition = pos.getData();
+							Gizmos.color = path.color;
+							Gizmos.DrawLine(startPosition, pos.getData());
+
+							Gizmos.color = new Color(1f, 0.98f, 0f);
+							pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0, 0, 0)));
+							startPosition = pos.getData();
+
+						}
 
 					}
+
 				}
 			}
 
@@ -59,12 +66,11 @@ namespace Engine.AI.Behavior {
 
 #endif
 
-
-		public List<AIPoint> getStayPoints() {
+		public AIPoints getStayPoints() {
 			return stayPoints;
         }
 
-		public void setStayPoints(List<AIPoint> stayPoints) {
+		public void setStayPoints(AIPoints stayPoints) {
 			this.stayPoints = stayPoints;
         }
 

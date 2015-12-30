@@ -25,7 +25,6 @@ namespace Engine.Objects {
 			if (!drawGizmos)
 				return;
 
-			Color colorRange = new Color(1f, 1f, 0f, 0.3f);
 			Color colorDisable = new Color(1f, 0f, 0f, 0.2f);
 
 			Gizmos.color = colorDisable;

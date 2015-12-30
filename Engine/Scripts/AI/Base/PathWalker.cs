@@ -180,8 +180,12 @@ namespace Engine.AI {
 
 			NavMeshHit Hit;
 			NavMesh.SamplePosition(point, out Hit, maxOutDistance, NavMesh.AllAreas);
-			
-            this.point = Hit.position; 
+			Vector3 newPoint = Hit.position;
+
+			if (newPoint.x==Mathf.Infinity || newPoint.y==Mathf.Infinity || newPoint.z==Mathf.Infinity)
+				return; // не меняем значение, если есть хотябы одная бесконечность!
+
+			this.point = newPoint; 
 
 		}
 
@@ -266,7 +270,7 @@ namespace Engine.AI {
 			float min    = maxOutDistance / 4f;
 
 			Vector3 newPoint    = new Vector3(-min + UnityEngine.Random.value * offset, 0, -min + UnityEngine.Random.value * offset);
-			Vector3 randomPoint = getPathBehavior().getStayPoints()[Random.Range(0, getPathBehavior().getStayPoints().Count - 1)].getData();
+			Vector3 randomPoint = getPathBehavior().getStayPoints().getPoints()[Random.Range(0, getPathBehavior().getStayPoints().getPoints().Count)].getData();
 
 			setPoint(randomPoint+newPoint);
 

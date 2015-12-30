@@ -4,13 +4,14 @@ using UnityEngine;
 
 namespace Engine.AI.Behavior {
 
-	public class AIPatrol {
+	public class AIPatrol : ScriptableObject {
 
-		private List<AIPath> paths;
+		[SerializeField] public List<AIPath> paths;
 
-		public AIPatrol(List<AIPath> paths) {
-			this.paths = paths;
-        }
+			void OnEnable() {
+				if (paths == null)
+					paths = new List<AIPath>();
+			}
 
 		public List<AIPath> getPaths() {
 			return paths;
