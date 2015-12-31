@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 
-namespace EngineEditor.Beansi {
+namespace EngineEditor.Baensi {
 
 	public static class FileChooser {
 

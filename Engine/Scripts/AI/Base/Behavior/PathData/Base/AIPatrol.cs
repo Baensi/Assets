@@ -13,6 +13,10 @@ namespace Engine.AI.Behavior {
 					paths = new List<AIPath>();
 			}
 
+			public void Create(List<AIPath> paths) {
+				this.paths = paths;
+            }
+
 		public List<AIPath> getPaths() {
 			return paths;
 		}

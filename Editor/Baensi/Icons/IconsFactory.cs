@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace EngineEditor.Beansi {
+namespace EngineEditor.Baensi {
 
+	/// <summary> Набор иконок </summary>
 	public enum Icons : int {
 
 		Empty   = 0x00,
@@ -18,6 +19,9 @@ namespace EngineEditor.Beansi {
 
 	};
 
+	/// <summary>
+	/// Класс-фабрика иконок для редактора
+	/// </summary>
 	public class IconsFactory {
 
 		private const string PATH = "./Assets/Editor/baensi/icons/data/";

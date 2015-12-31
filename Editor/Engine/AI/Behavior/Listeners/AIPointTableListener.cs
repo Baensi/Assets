@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Engine.AI.Behavior;
-using EngineEditor.Beansi;
+using EngineEditor.Baensi;
 
 namespace EngineEditor.AI {
-	public class AIPointTableListener : ITableListeners<AIPoint> {
+	public class AIPointTableListener : ITableListener<AIPoint> {
 
 		private static AIPointTableListener instance;
 

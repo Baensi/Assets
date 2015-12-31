@@ -64,16 +64,14 @@ namespace Engine.AI {
 		/// <returns>Возвращает логический результат - ВИДЕН ЛИ объект gameObject? из указанной точки point или нет</returns>
 		public bool isSee(Vector3 point, GameObject gameObject, float maxAngle, float maxDistance) {
 
-			Vector3 heading = gameObject.transform.position - point;
-			Vector3 direction = heading / heading.magnitude;
+			if(Vector3.Distance(point,gameObject.transform.position)>maxDistance)
+				return false;
 
-			Ray ray = new Ray(point, direction);
-			RaycastHit[] hitInfo = Physics.RaycastAll(ray, maxDistance);
+			RaycastHit hitInfo;
 
-			if (hitInfo!=null)
-				foreach(RaycastHit hit in hitInfo)
-					if(hit.transform.gameObject == gameObject)
-						return true;
+			if(Physics.Linecast(point, gameObject.transform.position, out hitInfo))
+				if(hitInfo.transform.gameObject == gameObject)
+					return true;
 
 			return false;
 		}

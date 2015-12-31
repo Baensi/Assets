@@ -7,44 +7,36 @@ using Engine.Player.Animations;
 namespace Engine.Player.Behavior {
 
 	[RequireComponent(typeof(Actions))]
-	public class PlayerBehavior : MonoBehaviour, AIC {
+	[RequireComponent(typeof(Animator))]
+	public class PlayerBehavior : EnemyBehaviorAI {
 
-		private Actions actions;
+		private Animator animator;
+		private Actions  actions;
 
 			void Start() {
-				actions = GetComponent<Actions>();
+			
+				animator = GetComponent<Animator>();
+				actions  = GetComponent<Actions>();
+			
+				fraction = AIFraction.Friend;
+				base.OnStartEnemyBehaviorAI(animator,null);
+
 			}
 
-		public IAnimationBehavior getAnimationBehavior() {
-			return actions;
-		}
-
-		public IAudioBehavior getAudioBehavior() {
-			return null;
-		}
-
-		public void getDamage(PlayerStates value) {
+		public override void getDamage(PlayerStates value) {
 			GamePlayer.states+=value;
 		}
 
-		public PlayerStates getDamageStates() {
+		public override PlayerStates getDamageStates() {
 			return null;
 		}
 
-		public AIFraction getFraction() {
-			return AIFraction.Friend;
-		}
-
-		public PlayerSpecifications getSpecifications() {
+		public override PlayerSpecifications getSpecifications() {
 			return GamePlayer.specifications;
 		}
 
-		public PlayerStates getStates() {
+		public override PlayerStates getStates() {
 			return GamePlayer.states;
-		}
-
-		public GameObject toObject() {
-			return gameObject;
 		}
 
 	}

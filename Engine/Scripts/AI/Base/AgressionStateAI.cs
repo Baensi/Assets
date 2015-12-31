@@ -13,7 +13,7 @@ namespace Engine.AI {
 		Normal  = 0x00,
 		Warning = 0x01,
 		Enemy   = 0x02
-
+		
 	};
 
 }

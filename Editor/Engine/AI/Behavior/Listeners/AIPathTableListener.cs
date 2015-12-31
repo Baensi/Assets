@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Engine.AI.Behavior;
-using EngineEditor.Beansi;
+using EngineEditor.Baensi;
 
 namespace EngineEditor.AI {
-	public class AIPathTableListener : ITableListeners<AIPath> {
+	public class AIPathTableListener : ITreeTableListener<AIPath,AIPoint> {
 
 		private static AIPathTableListener instance;
 
@@ -16,23 +16,35 @@ namespace EngineEditor.AI {
 			return instance;
 		}
 
+		public List<AIPoint> GetItems(AIPath tree) {
+			return tree.getPoints();
+		}
+
 		public AIPath OnConstruct() {
             return ScriptableObject.CreateInstance<AIPath>();
+		}
+
+		public AIPoint OnConstructItem() {
+			return ScriptableObject.CreateInstance<AIPoint>();
 		}
 
 		public void OnEdit(List<AIPath> data, int index, AIPath item) {
 
 			item.editMode = Tables.BoolEditField(item.editMode);
+			item.color    = EditorGUILayout.ColorField(item.color);
 
-				if(GUILayout.Button("+v",GUILayout.Width(30), GUILayout.Height(20))) {
-					item.getPoints().Add(ScriptableObject.CreateInstance<AIPoint>());
-				}
+		}
 
-			item.color = EditorGUILayout.ColorField(item.color);
+		public void OnEditItem(List<AIPoint> items, int index, AIPoint item) {
+
+			item.setData(Tables.Vector3Field(item.getData(),64));
 
 		}
 
 		public void OnHandlers(AIPath item) {
+
+			if (Selection.activeGameObject == null)
+				return;
 
 			Quaternion zero = Quaternion.Euler(0, 0, 0);
 
@@ -44,7 +56,7 @@ namespace EngineEditor.AI {
 			if (points == null || points.Count==0)
 				return;
 
-			Vector3 start = points[0].getData();
+			Vector3 start = Selection.activeGameObject.transform.position;
 
 			foreach (AIPoint point in points) {
 
@@ -55,11 +67,11 @@ namespace EngineEditor.AI {
 					point.setData(Hit.position);
 				}
 
-				Handles.color = new Color(0.1f, 1f, 0.1f, 0.6f);
+				Handles.color = item.color;
 				Handles.DrawLine(start, point.getData());
 
-				Handles.color = new Color(0.1f, 1f, 0.1f, 0.2f);
-				Handles.SphereCap(0, point.getData(), zero, point.getRange()); // рисуем область, в которой может перемещаться AI
+				Handles.color = new Color(0.1f, 1f, 0.1f, 0.5f);
+				Handles.CubeCap(0, point.getData(), zero, 2f); // рисуем область, в которой может перемещаться AI
 
 				start = point.getData();
 			}

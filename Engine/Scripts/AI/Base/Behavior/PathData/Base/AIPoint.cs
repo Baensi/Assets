@@ -12,6 +12,11 @@ namespace Engine.AI.Behavior {
 		[SerializeField] public Vector3 data;
 		[SerializeField] public float   range = 0f;
 
+			public void Create(Vector3 data, float range = 0f) {
+				this.data = data;
+				this.range = range;
+			}
+
 		public void setRange(float range) {
 			this.range = range;
 		}

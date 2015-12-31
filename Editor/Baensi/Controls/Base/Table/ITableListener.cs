@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EngineEditor.Beansi {
+namespace EngineEditor.Baensi {
 
-	public interface ITableCustomRowEditListener<T> {
+	public interface ITableListener<T> : IHandlersListener<T>  {
+
+		T OnConstruct();
 
 		void OnEdit(List<T> data, int index, T item);
 

@@ -11,7 +11,7 @@ namespace Engine.AI {
 	/// </summary>
 	[RequireComponent(typeof(Animator))]
 	[RequireComponent(typeof(NavMeshAgent))]
-	public class PathWalker : EnemyBehaviorAI {
+	public class PathWalker : EnemyBehaviorAI, IMoveBehavior {
 
 		private bool destroyed = false;
 
@@ -21,7 +21,8 @@ namespace Engine.AI {
 		private const int RUN   = 0x04;
 
 		/// <summary> Задержка перед сканированием видимых объектов </summary>
-		private const float SEE_UPDATE_TIME = 0.2f;
+		private const float SEE_UPDATE_TIME  = 0.2f;
+		private const float MOVE_UPDATE_TIME = 1f;
 
 		/// <summary> Максимальное время которое AI может стоять на месте без дела </summary>
 		[SerializeField] public float maxIdleDelay = 15f;
@@ -61,8 +62,11 @@ namespace Engine.AI {
 		private AgressionStateAI state = AgressionStateAI.Normal;
 
 		private float seeDelayTimeStamp;
+		private float moveDelayTimeStamp;
 		private float memoryTimeStamp;
 		private float idleTimeStamp;
+
+		private Vector3 oldPosition;
 
 		private NavMeshAgent agent;
 		private Animator     animator;
@@ -212,7 +216,7 @@ namespace Engine.AI {
         }
 
 
-		public override void OnSeeIteration() {
+		public void OnSeeIteration() {
 
 			if(target!=null)
 				return;
@@ -232,7 +236,7 @@ namespace Engine.AI {
 
 		}
 
-		public override void OnMoveIteration() {
+		public void OnMoveIteration() {
 
 			if(destroyed)
 				return;
@@ -264,7 +268,7 @@ namespace Engine.AI {
 
 		}
 
-		public override void OnFindNewIdlePoint() {
+		public void OnFindNewIdlePoint() {
 
 			float offset = maxOutDistance / 2f;
 			float min    = maxOutDistance / 4f;
@@ -276,7 +280,7 @@ namespace Engine.AI {
 
 		}
 
-		public override void OnIdleIteration() {
+		public void OnIdleIteration() {
 
 			if (State == AgressionStateAI.Normal) {
 
@@ -303,7 +307,7 @@ namespace Engine.AI {
 
 		}
 
-		public override void OnAttackIteration() {
+		public void OnAttackIteration() {
 
 			if (target!=null && State == AgressionStateAI.Enemy) {
 				getAnimationBehavior().setAttack();
@@ -317,21 +321,21 @@ namespace Engine.AI {
 
         }
 
-		public override bool isMinIdleDistance(Vector3 point1, Vector3 point2, float minMovDistance) {
+		public bool isMinIdleDistance(Vector3 point1, Vector3 point2, float minMovDistance) {
 			return Vector3.Distance(point1,point2) <= minMovDistance;
         }
 
-		public override bool isMinAttackDistance(Transform point1, Transform point2, float minAttackDistance, Transform target) {
+		public bool isMinAttackDistance(Transform point1, Transform point2, float minAttackDistance, Transform target) {
 			if (point1 == null || point2 == null)
 				return false;
 			return Vector3.Distance(point1.position,point2.position) <= minAttackDistance && target != null;
         }
 
-		public override bool isSeeDistanceGameObject(Transform targetObject, Transform seeObject) {
+		public bool isSeeDistanceGameObject(Transform targetObject, Transform seeObject) {
 			return Vector3.Distance(targetObject.position, seeObject.position) <= seeDistance;
 		}
 
-		public override bool isSeeGameObject(Transform targetObject, Transform seeObject, float seeAngle, float seeDistance) {
+		public bool isSeeGameObject(Transform targetObject, Transform seeObject, float seeAngle, float seeDistance) {
 			return LookViewService.getInstance().isSee(seeObject.position, targetObject.gameObject, seeAngle, seeDistance);
         }
 
@@ -354,6 +358,28 @@ namespace Engine.AI {
 			if (Time.time - seeDelayTimeStamp >= SEE_UPDATE_TIME) {
 				OnSeeIteration();
 				seeDelayTimeStamp = Time.time;
+			}
+
+			if(Time.time - moveDelayTimeStamp >= MOVE_UPDATE_TIME) { // проверка на "заторы"
+
+				if(Vector3.Distance(transform.position, oldPosition) <= 0.1f)  // дистанция практически не сменилась
+					switch (walkState) {
+						case WALK: // врагов поблизости нет, ходок идёт на точку, но, дистанция не меняется
+						
+								OnFindNewIdlePoint(); // пытаемся идти на другую точку
+
+							break;
+						case RUN: // есть враг, но, ходок во что то упёрся 
+
+								target = null;
+								State = AgressionStateAI.Normal; // пытаемся забыть цель, до неё не достать
+
+							break;
+					}
+
+				moveDelayTimeStamp = Time.time;
+				oldPosition = transform.position;
+
 			}
 
 				// Проверяем,

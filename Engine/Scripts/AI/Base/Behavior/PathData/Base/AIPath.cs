@@ -21,6 +21,10 @@ namespace Engine.AI.Behavior {
 					points = new List<AIPoint>();
 			}
 
+			public void Create(List<AIPoint> points) {
+				this.points = points;
+			}
+
 		public List<AIPoint> getPoints() {
 			return points;
 		}

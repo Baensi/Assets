@@ -8,7 +8,7 @@ namespace Engine.AI.Behavior {
 	/// Модель поведения враждебного герою AI
 	/// </summary>
 	[RequireComponent(typeof(PathBehavior))]
-	public abstract class EnemyBehaviorAI : MonoBehaviour, AIC, IMoveBehavior {
+	public abstract class EnemyBehaviorAI : MonoBehaviour, AIC {
 
 		[SerializeField] public AIFraction fraction;
 
@@ -43,6 +43,12 @@ namespace Engine.AI.Behavior {
 				animationBehavior = new AnimationBehavior(animator);
 			}
 
+			public void OnStartEnemyBehaviorAI(Animator animator, PathBehavior pathBehavior) {
+				this.pathBehavior = pathBehavior;
+				audioBehavior = new AudioBehavior();
+				animationBehavior = new AnimationBehavior(animator);
+			}
+
 		public PathBehavior getPathBehavior() {
 			return pathBehavior;
 		}
@@ -58,16 +64,6 @@ namespace Engine.AI.Behavior {
 		public GameObject toObject() {
 			return gameObject;
 		}
-
-		public abstract void OnFindNewIdlePoint();
-        public abstract void OnSeeIteration();
-		public abstract void OnMoveIteration();
-		public abstract void OnIdleIteration();
-		public abstract void OnAttackIteration();
-		public abstract bool isMinIdleDistance(Vector3 point1, Vector3 point2, float minMovDistance);
-		public abstract bool isMinAttackDistance(Transform point1, Transform point2, float minAttackDistance, Transform target);
-		public abstract bool isSeeDistanceGameObject(Transform targetObject, Transform seeObject);
-		public abstract bool isSeeGameObject(Transform targetObject, Transform seeObject, float seeAngle, float seeDistance);
 
 	}
 

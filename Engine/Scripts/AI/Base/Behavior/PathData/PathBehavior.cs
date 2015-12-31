@@ -4,10 +4,6 @@ using UnityEngine;
 using System.IO;
 using Engine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace Engine.AI.Behavior {
 
 	/// <summary>
@@ -35,32 +31,6 @@ namespace Engine.AI.Behavior {
 					Gizmos.color = new Color(0,1f,0,0.5f);
 					Gizmos.DrawLine(transform.position, point.getData());
 				}
-
-			if (patrol != null) {
-
-				foreach (AIPath path in patrol.getPaths()) {
-
-					List<AIPoint> points = path.getPoints();
-
-					if (points != null && points.Count > 0) {
-
-						Vector3 startPosition = points[0].getData();
-
-						foreach (AIPoint pos in points) {
-
-							Gizmos.color = path.color;
-							Gizmos.DrawLine(startPosition, pos.getData());
-
-							Gizmos.color = new Color(1f, 0.98f, 0f);
-							pos.setData(Handles.DoPositionHandle(pos.getData(), Quaternion.Euler(0, 0, 0)));
-							startPosition = pos.getData();
-
-						}
-
-					}
-
-				}
-			}
 
 		}
 

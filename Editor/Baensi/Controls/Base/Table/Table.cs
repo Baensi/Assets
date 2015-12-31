@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace EngineEditor.Beansi {
+namespace EngineEditor.Baensi {
 
 	public static class Tables {
 
@@ -15,6 +15,7 @@ namespace EngineEditor.Beansi {
 		private const int LABEL_SIZE = 24;
 
 		private static System.Collections.ArrayList removeList = new System.Collections.ArrayList();
+		private static System.Collections.ArrayList removeItemList = new System.Collections.ArrayList();
 
 		public static bool BoolEditField(bool value, int widthLabel = 20, int widthArea = 20) {
 			EditorGUILayout.BeginHorizontal();
@@ -28,14 +29,14 @@ namespace EngineEditor.Beansi {
 			return value;
 		}
 
-		public static Vector3 Vector3Field(Vector3 vector) {
+		public static Vector3 Vector3Field(Vector3 vector, int width = 32) {
 			EditorGUILayout.BeginHorizontal();
 				GUILayout.Label("X:", GUILayout.Width(20),GUILayout.Height(20));
-				vector.x = EditorGUILayout.FloatField(vector.x, GUILayout.MaxWidth(32));
+				vector.x = EditorGUILayout.FloatField(vector.x, GUILayout.MaxWidth(width));
 				GUILayout.Label("Y:", GUILayout.Width(20),GUILayout.Height(20));
-				vector.y = EditorGUILayout.FloatField(vector.y, GUILayout.MaxWidth(32));
+				vector.y = EditorGUILayout.FloatField(vector.y, GUILayout.MaxWidth(width));
 				GUILayout.Label("Z:", GUILayout.Width(20),GUILayout.Height(20));
-				vector.z = EditorGUILayout.FloatField(vector.z, GUILayout.MaxWidth(32));
+				vector.z = EditorGUILayout.FloatField(vector.z, GUILayout.MaxWidth(width));
 			EditorGUILayout.EndHorizontal();
 			return vector;
 		}
@@ -99,7 +100,7 @@ namespace EngineEditor.Beansi {
 			}
 		}
 
-		public static void DrawTable<T>(string title, List<T> data, ITableListeners<T> listener, bool deleteMessage = false) {
+		public static void DrawTable<T>(string title, List<T> data, ITableListener<T> listener, bool deleteMessage = false) {
 
 			if(data==null)
 				return;
@@ -157,7 +158,109 @@ namespace EngineEditor.Beansi {
 
 		}
 
-		public static void DoHandlers<T>(List<T> data, ITableListeners<T> listener) {
+		public static void DrawTreeTable<T,U>(string title, List<T> data, ITreeTableListener<T,U> listenerTree, bool deleteMessage = false) {
+
+			if (data == null)
+				return;
+
+			Splitter(DELIM_COLOR, 3);
+			GUILayout.Label(title, EditorStyles.boldLabel);
+			EditorGUILayout.Separator();
+			Splitter(DELIM_COLOR, 5);
+
+			if (data.Count == 0) {
+
+				EditorGUILayout.BeginHorizontal();
+				GUILayout.Label("<Нет элементов>", EditorStyles.boldLabel);
+
+				if (GUILayout.Button("Добавить")) {
+					data.Add(listenerTree.OnConstruct());
+					return;
+				}
+
+				EditorGUILayout.EndHorizontal();
+
+			} else
+				for (int i = 0; i < data.Count; i++) {
+
+					EditorGUILayout.BeginHorizontal();
+
+					GUILayout.Label(i.ToString(), GUILayout.Width(LABEL_SIZE), GUILayout.Height(20));
+
+					listenerTree.OnEdit(data, i, data[i]); // вызываем отрисовку строчки
+
+					if (GUILayout.Button(IconsFactory.getInstance().getIcon(Icons.Remove), GUILayout.Width(BUTTON_SIZE), GUILayout.Height(BUTTON_SIZE))) {
+						if (!deleteMessage || EditorUtility.DisplayDialog("Удаление элемента", "Вы действительно хотите удалить элемент?", "Да", "Нет"))
+							removeList.Add(data[i]);
+					}
+
+					if (GUILayout.Button(IconsFactory.getInstance().getIcon(Icons.Add), GUILayout.Width(BUTTON_SIZE), GUILayout.Height(BUTTON_SIZE))) {
+						data.Insert(i + 1, listenerTree.OnConstruct()); // добавляем новый элемент в нужное место
+						return;
+					}
+
+					EditorGUILayout.EndHorizontal();
+
+					Splitter(DELIM_COLOR, 2);
+
+					List<U> items = listenerTree.GetItems(data[i]);
+					if (items.Count != 0) {
+						for (int itemIndex = 0; itemIndex < items.Count; itemIndex++) {
+
+							EditorGUILayout.BeginHorizontal();
+							GUILayout.Label(itemIndex.ToString(), GUILayout.Width(LABEL_SIZE), GUILayout.Height(20));
+							listenerTree.OnEditItem(items, itemIndex, items[itemIndex]);
+
+							if (GUILayout.Button(IconsFactory.getInstance().getIcon(Icons.Remove), GUILayout.Width(BUTTON_SIZE), GUILayout.Height(BUTTON_SIZE))) {
+								removeItemList.Add(items[itemIndex]);
+							}
+
+							if (GUILayout.Button(IconsFactory.getInstance().getIcon(Icons.Add), GUILayout.Width(BUTTON_SIZE), GUILayout.Height(BUTTON_SIZE))) {
+								items.Insert(itemIndex + 1, listenerTree.OnConstructItem()); // добавляем новый элемент в нужное место
+								return;
+							}
+
+							EditorGUILayout.EndHorizontal();
+
+							Splitter(DELIM_COLOR, 2);
+
+						}
+
+					} else {
+
+						EditorGUILayout.BeginHorizontal();
+						GUILayout.Label("<Нет элементов>", EditorStyles.boldLabel);
+
+						if (GUILayout.Button("Добавить")) {
+							items.Add(listenerTree.OnConstructItem());
+							return;
+						}
+
+						EditorGUILayout.EndHorizontal();
+
+					}
+
+					if (removeItemList.Count > 0) {
+						foreach (U item in removeItemList)
+							if (items.Contains(item))
+								items.Remove(item);
+						removeItemList.Clear();
+					}
+
+				}
+
+			EditorGUILayout.Separator();
+
+			if (removeList.Count > 0) {
+				foreach (T item in removeList)
+					if (data.Contains(item))
+						data.Remove(item);
+				removeList.Clear();
+			}
+
+		}
+
+		public static void DoHandlers<T>(List<T> data, IHandlersListener<T> listener) {
 			if(data==null)
 				return;
 			if (data.Count!=0)
